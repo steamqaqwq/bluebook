@@ -6,12 +6,11 @@ declare module 'vue' {
   export interface GlobalComponents {
     Anime: typeof import('./src/components/anime.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
-    ElCarousel: typeof import('element-plus/es')['ElCarousel']
-    ElCarouselItem: typeof import('element-plus/es')['ElCarouselItem']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElRow: typeof import('element-plus/es')['ElRow']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Newcomp: typeof import('./src/components/newcomp.vue')['default']
+    PublishBtn: typeof import('./src/components/PublishBtn.vue')['default']
   }
 }
 
