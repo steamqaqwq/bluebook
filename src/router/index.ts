@@ -13,6 +13,7 @@ export const constantRoutes = [
     path: '/',
     name: 'index',
     alias: '/',
+    redirect:'recommend',
     component: Index,
     meta: {
       title: '首页'
@@ -23,7 +24,8 @@ export const constantRoutes = [
         name: 'fav',
         component: () => import('@/views/Fav/index.vue'),
         meta: {
-          title: '关注'
+          title: '关注',
+          index:1
         }
       },
       {
@@ -31,7 +33,8 @@ export const constantRoutes = [
         name: 'recommend',
         component: () => import('@/views/Recommend/index.vue'),
         meta: {
-          title: '发现'
+          title: '发现',
+          index:2
         }
       },
       {
@@ -39,7 +42,8 @@ export const constantRoutes = [
         name: 'nearby',
         component: () => import('@/views/Nearby/index.vue'),
         meta: {
-          title: '附近'
+          title: '附近',
+          index:3
         }
       }
     ]
