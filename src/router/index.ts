@@ -3,25 +3,21 @@ import Index from '@/views/Index/index.vue';
 import Login from '@/views/Login/index.vue';
 export const constantRoutes = [
   {
-    path: '/',
+    path: '/login',
     component: Login,
     meta: {
-      title: '首页'
+      title: ''
     }
-
-    // children: [
-    //   //主页面内容
-    //   {
-    //     path: '/main',
-    //     name: 'main',
-    //     alias: '/',
-    //     component: () => import('@/views/Index/main.vue'),
-    //     meta: {
-    //       title: '首页',
-    //       index: 1
-    //     }
-    //   }
-    // ]
+  },
+  {
+    path: '/',
+    name: 'index',
+    alias: '/',
+    component: Index,
+    meta: {
+      title: '首页',
+      // index: 1
+    }
   }
 ];
 
@@ -32,6 +28,6 @@ const router = createRouter({
 
 router.afterEach((to, from) => {
   // console.log('后置',to,from)
-  (document as any).title = to.meta.title || from.meta.title;
+  (document as any).title = '小蓝书-'+to.meta.title || from.meta.title;
 });
 export default router;

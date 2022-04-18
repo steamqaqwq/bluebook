@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import router from './router/index';
+import '@/permission' 
 import '@/assets/styles/base.less';
 import 'animate.css';
 import '@/assets/styles/tailwind.css';
