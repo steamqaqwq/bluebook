@@ -9,7 +9,7 @@ import Mock, { Random } from 'mockjs';
 //     isVideo?:boolean;
 // }
 const notes:any[] = [];
-for (let i = 0; i < 50; i++) {
+for (let i = 0; i <= 23; i++) {
     notes.push(
         Mock.mock({
         id: Random.id(),

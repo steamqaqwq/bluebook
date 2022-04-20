@@ -14,4 +14,13 @@
   import mainShow from './mainshow.vue';
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .containerbox {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+  }
+  .showItems {
+    width: 100%;
+  }
+</style>
