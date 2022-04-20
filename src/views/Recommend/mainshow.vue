@@ -1,17 +1,22 @@
 <template>
-  <div class="main">
-    <!-- <template v-for="i in 5"> </template> -->
-    <div class="note" v-for="note in notes" :key="note.id">
-      <div>
-        <img :src="note.cover" alt="" />
-      </div>
-      <div class="title">{{ note.title }}</div>
-      <div class="usermsg">
-        <div class="useravatar">
-          <img :src="note.avatar" alt="" />
+  <div class="main" v-if="notesList.length">
+    <div class="column" v-for="notes in notesList">
+      <div class="note" v-for="note in notes" :key="note.id">
+        <div class="note_cover">
+          <img :src="note.cover" alt="" />
         </div>
-        <div class="fav">
-          <div class="icon"></div>
+        <div class="note_title">{{ note.title }}</div>
+        <div class="note_usermsg">
+          <div class="useravatar">
+            <img :src="note.avatar" alt="" />
+          </div>
+          <div class="username text-xl">{{ note.username }}</div>
+          <div class="fav">
+            <div class="icon">
+              <icon-svg iconClass="icon-Player"></icon-svg>
+            </div>
+            <div class="favnums text-xl">{{ note.favs }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -29,7 +34,7 @@
       method: 'get'
     }).then((res) => {
       notes.value = (res as any).notes;
-      const initColumns = 6;
+      const initColumns = 5;
       console.log(notes.value[0], notes.value[-1]);
       length.value = notes.value.length;
       // const initPoint = notes.value.length;
@@ -55,25 +60,75 @@
 <style lang="less" scoped>
   .main {
     display: flex;
-    flex-wrap: wrap;
     justify-content: flex-start;
     width: 100%;
+    .column {
+      flex: 1;
+    }
   }
   .note {
-    width: 150px;
+    width: 200px;
     display: flex;
+    position: relative;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 10px;
-    border: 1px solid blue;
-    margin: 10px;
-    &:nth-of-type(4) {
+    margin: 0 0 20px;
+    background-color: #fff;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    &:hover::before {
+      content: '';
+      display: block;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.234);
+    }
+
+    &:nth-of-type(2n) {
       padding: 30px 0;
     }
   }
-  .usermsg {
+  .note_cover {
+    width: 100%;
+    img {
+      width: 100%;
+      height: auto;
+      max-height: 300px;
+    }
+  }
+  .note_title {
+    // padding: 1px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .note_usermsg {
+    width: 100%;
+    padding: 5px 10px;
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    .useravatar {
+      overflow: hidden;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+    }
+    .username {
+      margin-left: 2px;
+      font-size: medium;
+      color: #eee;
+    }
+    .fav {
+      margin-left: auto;
+    }
   }
 </style>
