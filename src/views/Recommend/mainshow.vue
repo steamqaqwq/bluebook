@@ -5,6 +5,7 @@
         <div class="note_cover">
           <img :src="note.cover" alt="" />
         </div>
+        <div class="video_icon" v-show="note.isVideo"><span class="iconfont icon-videofill text-xl text-white"></span></div>
         <div class="note_title">{{ note.title }}</div>
         <div class="note_usermsg">
           <div class="useravatar">
@@ -25,23 +26,30 @@
 
 <script setup lang="ts">
   import request from '@/utils/request';
-  import { onMounted, ref, reactive } from 'vue';
+  import { onMounted, ref, reactive, watch } from 'vue';
   const notes = ref<note[]>([]);
   const length = ref();
+  const initColumns = ref(5);
   onMounted(() => {
     request({
       url: '/notes/getnotes',
       method: 'get'
     }).then((res) => {
       notes.value = (res as any).notes;
-      const initColumns = 5;
-      console.log(notes.value[0], notes.value[-1]);
+      initColumns.value = Math.floor(window.innerWidth / 200);
+      // console.log(notes.value[0], notes.value[-1]);
       length.value = notes.value.length;
       // const initPoint = notes.value.length;
       // 需求 如 [1,2,3,4,5,6,7] 拆分为按3列 [1,4,7],[2,5],[3,6]
       // 监听页面大小变化 改变数组列数
+      splitNotes(notes);
+    });
+    const splitNotes = (notes) => {
+      if (notesList.value.length) {
+        notesList.value = [];
+      }
       notes.value.reduce((pre: number, cur) => {
-        if (pre == initColumns) {
+        if (pre == initColumns.value) {
           pre = 0;
         }
         if (notesList.value[pre]) {
@@ -52,8 +60,43 @@
         }
         return ++pre;
       }, 0);
+    };
+
+    var timer;
+    window.addEventListener('resize', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        initColumns.value = Math.floor(window.innerWidth / 200);
+        //获取列数
+      }, 200);
     });
+    // 监听列数变化重新分列
+    watch(initColumns, (old, cur) => {
+      splitNotes(notes);
+    });
+    var lastChild;
+    const io = new IntersectionObserver((config) => {
+      // intersectionRatio 触发观测者显示的比例
+      // io.disconnect() 讲该观测者失效
+      //不观察box
+      // console.log('config', config[0].intersectionRatio);
+      // console.log('显示box');
+      // 观测到最后一个元素
+      if (config[0].intersectionRatio > 0) {
+        io.unobserve(lastChild);
+        request('/notes/getnewnotes').then((res) => {
+          splitNotes(res.newnotes);
+        });
+      }
+    });
+
+    setTimeout(() => {
+      let box = document.querySelectorAll('.note');
+      var lastChild = box[box.length - 1];
+      io.observe(lastChild);
+    }, 1000);
   });
+
   const notesList = ref<note[][]>([]);
 </script>
 
@@ -83,13 +126,21 @@
       content: '';
       display: block;
       position: absolute;
+      z-index: 10;
       width: 100%;
       height: 100%;
       background-color: rgba(0, 0, 0, 0.234);
     }
+    .video_icon {
+      position: absolute;
 
+      width: 28px;
+      height: 28px;
+      right: 10px;
+      top: 10px;
+    }
     &:nth-of-type(2n) {
-      padding: 30px 0;
+      padding-bottom: 60px;
     }
   }
   .note_cover {
