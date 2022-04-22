@@ -26,29 +26,42 @@
 
 <script setup lang="ts">
   import request from '@/utils/request';
-  import { onMounted, ref, reactive, watch } from 'vue';
+  import { onMounted, ref, reactive, watch, watchEffect } from 'vue';
   const notes = ref<note[]>([]);
   const length = ref();
   const initColumns = ref(5);
+  const lastchild = ref<Element>(); //记录当前最后一个字元素
   onMounted(() => {
     request({
       url: '/notes/getnotes',
       method: 'get'
-    }).then((res) => {
-      notes.value = (res as any).notes;
-      initColumns.value = Math.floor(window.innerWidth / 200);
-      // console.log(notes.value[0], notes.value[-1]);
-      length.value = notes.value.length;
-      // const initPoint = notes.value.length;
-      // 需求 如 [1,2,3,4,5,6,7] 拆分为按3列 [1,4,7],[2,5],[3,6]
-      // 监听页面大小变化 改变数组列数
-      splitNotes(notes);
-    });
+    })
+      .then((res) => {
+        notes.value = (res as any).notes;
+        if (!initColumns.value) {
+          initColumns.value = Math.floor(window.innerWidth / 200);
+
+          if (initColumns.value > 5) {
+            initColumns.value = 5;
+          }
+        }
+        // console.log(notes.value[0], notes.value[-1]);
+        length.value = notes.value.length;
+        // const initPoint = notes.value.length;
+        // 需求 如 [1,2,3,4,5,6,7] 拆分为按3列 [1,4,7],[2,5],[3,6]
+        // 监听页面大小变化 改变数组列数
+        splitNotes(notes.value);
+      })
+      .then((res) => {
+        lastchild.value = getLastChild();
+        io.observe(lastchild.value);
+      });
+    //分割数组
     const splitNotes = (notes) => {
       if (notesList.value.length) {
         notesList.value = [];
       }
-      notes.value.reduce((pre: number, cur) => {
+      notes.reduce((pre: number, cur) => {
         if (pre == initColumns.value) {
           pre = 0;
         }
@@ -62,39 +75,66 @@
       }, 0);
     };
 
+    // 基础上加？ 取出最短一列 从最短一列开始加
+    // 重新分组?easy -> 加在原来的数组 在分割一次 性能差？
+    // 分割新数组
+    // const splitNewNotes = (notes) => {
+    //   notes.value.reduce((pre: number, cur) => {
+    //     if (pre == initColumns.value) {
+    //       pre = 0;
+    //     }
+    //     if (notesList.value[pre]) {
+    //       notesList.value[pre].push(cur);
+    //     } else {
+    //       notesList.value[pre] = [];
+    //       notesList.value[pre].push(cur);
+    //     }
+    //     return ++pre;
+    //   }, 0);
+    // };
+    //
     var timer;
     window.addEventListener('resize', () => {
       clearTimeout(timer);
       timer = setTimeout(() => {
-        initColumns.value = Math.floor(window.innerWidth / 200);
+        let columns = Math.floor(window.innerWidth / 200);
+        // console.log('columns', window.innerWidth);
+        initColumns.value = columns > 5 ? 5 : columns;
         //获取列数
       }, 200);
     });
     // 监听列数变化重新分列
     watch(initColumns, (old, cur) => {
-      splitNotes(notes);
+      splitNotes(notes.value);
     });
-    var lastChild;
+    watch(notes, (old, cur) => {
+      splitNotes(notes.value);
+    });
+    watchEffect(() => {});
     const io = new IntersectionObserver((config) => {
       // intersectionRatio 触发观测者显示的比例
       // io.disconnect() 讲该观测者失效
       //不观察box
-      // console.log('config', config[0].intersectionRatio);
-      // console.log('显示box');
       // 观测到最后一个元素
       if (config[0].intersectionRatio > 0) {
-        io.unobserve(lastChild);
-        request('/notes/getnewnotes').then((res) => {
-          splitNotes(res.newnotes);
-        });
+        io.unobserve(lastchild.value!);
+        request('/notes/getnewnotes')
+          .then((res) => {
+            notes.value = notes.value.concat((res as any).newnotes);
+          })
+          .then(() => {
+            lastchild.value = getLastChild();
+            io.observe(lastchild.value);
+          });
       }
     });
 
-    setTimeout(() => {
-      let box = document.querySelectorAll('.note');
-      var lastChild = box[box.length - 1];
-      io.observe(lastChild);
-    }, 1000);
+    //获取最多子元素的一列 检测最后一个子元素
+    const getLastChild = () => {
+      let parentEle = document.querySelector('.column:first-child');
+      let lastchild = parentEle!.lastElementChild!;
+      return lastchild;
+    };
   });
 
   const notesList = ref<note[][]>([]);
