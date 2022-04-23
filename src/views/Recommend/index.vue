@@ -16,9 +16,13 @@
 
 <style lang="less" scoped>
   .containerbox {
+    margin-top: 40px;
     display: flex;
     flex-direction: row;
     overflow: hidden;
+  }
+  .leftNav {
+    width: 200px;
   }
   .showItems {
     width: 100%;

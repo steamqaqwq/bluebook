@@ -45,6 +45,14 @@ export const constantRoutes = [
           title: '附近',
           index:3
         }
+      },
+      {
+        path: 'notedetail',
+        name:'notedetail',
+        component: () => import('@/views/Notedetail/index.vue'),
+        meta: {
+          title: '接受参数',
+        }
       }
     ]
   }

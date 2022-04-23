@@ -22,6 +22,7 @@
     // border: 1px solid @themecolor2;
     padding: 1px;
     max-width: 100px;
+
     // padding:10px;
     /deep/.el-menu {
       border-right: none;

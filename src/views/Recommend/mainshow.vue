@@ -11,12 +11,12 @@
           <div class="useravatar">
             <img :src="note.avatar" alt="" />
           </div>
-          <div class="username text-xl">{{ note.username }}</div>
+          <div class="username text-sm text-gray-400">{{ note.username }}</div>
           <div class="fav">
             <div class="icon">
-              <icon-svg iconClass="icon-Player"></icon-svg>
+              <span class="iconfont icon-xihuan1"></span>
             </div>
-            <div class="favnums text-xl">{{ note.favs }}</div>
+            <div class="favnums text-xs">{{ note.favs }}</div>
           </div>
         </div>
       </div>
@@ -143,10 +143,11 @@
 <style lang="less" scoped>
   .main {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-evenly;
     width: 100%;
     .column {
-      flex: 1;
+      // flex: 1;
+      margin-left: 20px;
     }
   }
   .note {
@@ -192,7 +193,6 @@
     }
   }
   .note_title {
-    // padding: 1px;
     text-align: left;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -216,10 +216,15 @@
     .username {
       margin-left: 2px;
       font-size: medium;
-      color: #eee;
     }
     .fav {
       margin-left: auto;
+      display: inline-flex;
+      flex-direction: row;
+      align-items: center;
+      .icon {
+        margin: 0 5px;
+      }
     }
   }
 </style>
