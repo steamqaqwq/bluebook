@@ -19,13 +19,27 @@
         </div>
       </div>
       <div class="login">
-        <div class="text-xl font-bold text-left mb-5">短信登录</div>
-        <el-row>
-          <el-input v-model="formdata.input2" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="Message" />
-        </el-row>
-        <el-row> <el-input v-model="formdata.input" class="w-50 m-2 login-input" placeholder="验证码" /></el-row>
-
-        <el-row> <button class="login-btn" @click="login()">登录</button></el-row>
+        <div class="login_type absolute text-xl top-0 right-0" @click="changeIcon()">
+          <span class="iconfont text-3xl" :class="curIcon"></span>
+        </div>
+        <div class="outerbox relative">
+          <template v-if="curLoginType == 0">
+            <div class="text-xl font-bold text-left mb-5">短信登录</div>
+            <el-row>
+              <el-input v-model="formdata.input2" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="Message" />
+            </el-row>
+            <el-row> <el-input v-model="formdata.input" class="w-50 m-2 login-input" placeholder="验证码" /></el-row>
+            <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
+          </template>
+          <template v-else>
+            <div class="text-xl font-bold text-left mb-5">用户名密码登录</div>
+            <el-row>
+              <el-input v-model="formdata.input2" class="w-50 m-2 login-input" placeholder="用户名" :prefix-icon="Message" />
+            </el-row>
+            <el-row> <el-input v-model="formdata.input" class="w-50 m-2 login-input" placeholder="密码" /></el-row>
+            <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
+          </template>
+        </div>
       </div>
     </div>
   </div>
@@ -35,15 +49,31 @@
 <script setup lang="ts">
   import { data } from '@/api/login';
   import { Message } from '@element-plus/icons-vue';
-  import { reactive } from 'vue';
+  import { reactive, ref } from 'vue';
   import { useRouter } from 'vue-router';
   import anime from 'animejs';
+  enum loginType {
+    password,
+    message
+  }
+  const curLoginType = ref(loginType.password);
+  const curIcon = ref<string>('icon-mima');
+  const changeIcon = () => {
+    if (curIcon.value == 'icon-mima') {
+      curIcon.value = 'icon-duanxinyanzheng';
+      curLoginType.value = loginType.password;
+    } else {
+      curIcon.value = 'icon-mima';
+      curLoginType.value = loginType.message;
+    }
+  };
+  console.log('curLoginType', curLoginType);
   const formdata = reactive({
     input: '',
     input2: ''
   });
 
-  function login(): void {
+  function login(loginType): void {
     const $router = useRouter();
     $router.push({ name: 'index' });
   }
@@ -170,10 +200,20 @@
       box-shadow: 0 0 40px rgb(0 0 0 / 10%);
       border-radius: 16px;
       right: 20px;
+      overflow: hidden;
       top: 50%;
       transform: translateY(-50%);
       // background-color: #fff;
       padding: 30px;
+      .login_type {
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        background-color: @themecolor3;
+        color: white;
+        clip-path: polygon(0 0, 100% 0, 100% 100%);
+        cursor: pointer;
+      }
       .login-btn {
         background-color: @themecolor3;
         color: white;
