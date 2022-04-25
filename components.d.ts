@@ -13,7 +13,6 @@ declare module 'vue' {
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
     ElRow: typeof import('element-plus/es')['ElRow']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     IconFont: typeof import('./src/components/iconFont.vue')['default']
     Newcomp: typeof import('./src/components/newcomp.vue')['default']
     PublishBtn: typeof import('./src/components/PublishBtn.vue')['default']

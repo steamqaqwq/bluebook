@@ -3,11 +3,11 @@
     <div class="carousel relative">
       <div class="slider">
         <ul>
-          <li v-for="(imgurl, index) in imgs">
-            <Transition name="right">
-              <img :src="imgurl" alt="" v-show="index + 1 === curIndex" />
-            </Transition>
-          </li>
+          <TransitionGroup :name="direction">
+            <li v-for="(imgurl, index) in imgs" :key="imgurl" v-show="index + 1 === curIndex">
+              <img :src="imgurl" alt="" />
+            </li>
+          </TransitionGroup>
         </ul>
       </div>
       <div class="change-pic">
@@ -27,13 +27,15 @@
 </template>
 
 <script setup lang="ts">
-  import { defineProps, ref, reactive, watch } from 'vue';
+  import { defineProps, ref, reactive, watch, computed } from 'vue';
   const props = defineProps<{
     imgs: string[];
   }>();
   const curIndex = ref(1);
+  const lastIndex = ref(0);
   // 处理按钮
   const changepic = (num: number, index = 0) => {
+    lastIndex.value = curIndex.value;
     if (num == 1) {
       // 上一张
       if (curIndex.value == 1) {
@@ -54,6 +56,18 @@
     }
   };
   watch(curIndex, (old, cur) => {});
+
+  // 处理动画方向
+  const direction = computed(() => {
+    // 两if处理最初和最后一张图片切换的方向
+    if (curIndex.value == 1 && lastIndex.value == props.imgs.length) {
+      return 'right';
+    }
+    if (curIndex.value == props.imgs.length && lastIndex.value == 1) {
+      return 'left';
+    }
+    return curIndex.value > lastIndex.value ? 'right' : 'left';
+  });
 </script>
 
 <style lang="less" scoped>
@@ -67,6 +81,7 @@
         width: 100%;
         height: 100%;
         position: relative;
+        overflow: hidden;
         li {
           // display: none;
           position: absolute;
@@ -96,30 +111,29 @@
   }
   //动画效果处理
 
-  .right-enter-from {
-    // opacity: 0;
-    // display: block !important;
+  .right-enter-from,
+  .left-leave-to {
     transform: translateX(100%);
   }
   //开始过度了
-  .right-enter-active {
-    transition: all 1s linear;
-    transform: translateX(0%);
+  .left-enter-active,
+  .left-leave-active,
+  .right-enter-active,
+  .right-leave-active {
+    transition: all 1s ease;
   }
   //过度完成
-  .right-enter-to {
+  .right-enter-to,
+  .left-enter-to {
+    transform: translateX(0);
   }
   //离开的过度
   .right-leave-from {
   }
-  //离开中过度
-  .right-leave-active {
-    transition: all 1s linear;
-  }
   //离开完成
-  .right-leave-to {
-    // opacity: 0;
-    // display: none;
+  .right-leave-to,
+  .left-enter-from {
+    transform: translateX(-100%);
   }
   .small-pic {
     overflow: hidden;
