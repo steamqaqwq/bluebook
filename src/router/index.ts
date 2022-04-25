@@ -10,6 +10,14 @@ export const constantRoutes = [
     }
   },
   {
+
+    path: '/creator',
+    component:  () => import('@/views/Creator/index.vue'),
+    meta: {
+      title: '创作者中心'
+    }
+  },
+  {
     path: '/',
     name: 'index',
     alias: '/',
