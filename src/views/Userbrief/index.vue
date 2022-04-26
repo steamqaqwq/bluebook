@@ -12,13 +12,34 @@
           <p class="author_say">📮3545369536@qq.com 🙋‍♀️高级育婴师📖分享五年育婴经验 👩‍👧母婴👠穿搭🏡家居💝好物 👧家有可爱的小公举一枚</p>
         </div>
       </div>
-      <div class="author_notes"></div>
+      <div class="author_notes">
+        <div class="title text-2xl">笔记</div>
+        <div class="main_show">
+          <template v-for="note in notes" :key="note.id">
+            <note :note="note"></note>
+          </template>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import Header from '@/components/header.vue';
+  import request from '@/utils/request';
+  import { ref, onMounted } from 'vue';
+  import note from '@/views/Recommend/note.vue';
+  const notes = ref<note[]>([]);
+  onMounted(() => {
+    setTimeout(() => {
+      request({
+        method: 'get',
+        url: '/notes/usernotes'
+      }).then((res) => {
+        notes.value = (res as any).usernotes;
+      });
+    }, 1000);
+  });
 </script>
 
 <style lang="less" scoped>
@@ -37,15 +58,17 @@
     padding: 0 10px;
     width: 100%;
     height: 250px;
+    border-bottom: 1px solid #eee;
+
     .author_avatar {
       width: 160px;
       height: 160px;
-      border-radius: 50%;
-      overflow: hidden;
       img {
         width: 160px;
         height: 160px;
-        // object-fit: content;
+        max-width: 160px;
+        border-radius: 50%;
+        overflow: hidden;
       }
     }
     .author_introduce {
@@ -55,9 +78,27 @@
       width: 100%;
       margin: 0 40px;
       text-align: left;
+      justify-content: center;
       p {
         margin: 5px 0;
       }
+    }
+  }
+  .author_notes {
+    width: 100%;
+    overflow: hidden;
+    .title {
+      width: 100px;
+      margin: 10px auto;
+      border-bottom: 2px solid @themecolor3;
+      cursor: pointer;
+    }
+    .main_show {
+      margin-top: 20px;
+      display: grid;
+      width: 100%;
+      grid-template-columns: repeat(4, 1fr);
+      column-gap: 10px;
     }
   }
   //图片加载处理

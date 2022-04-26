@@ -25,7 +25,8 @@
     height: 80px;
     width: 100%;
     line-height: 80px;
-    border-bottom: 1px solid #eee;
+    // border-bottom: 1px solid #eee;
+    box-shadow: 1px 2px 1px 0px #eee;
     .inner-header {
       margin: 0 auto;
       padding: 0 10px;

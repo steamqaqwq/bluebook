@@ -1,5 +1,5 @@
 <template>
-  <div class="main" v-if="notesList.length">
+  <div class="main_box" v-if="notesList.length">
     <div class="column" v-for="notes in notesList">
       <div class="note" v-for="note in notes" :key="note.id">
         <div class="note_cover">
@@ -141,7 +141,7 @@
 </script>
 
 <style lang="less" scoped>
-  .main {
+  .main_box {
     display: flex;
     justify-content: space-evenly;
     width: 100%;
