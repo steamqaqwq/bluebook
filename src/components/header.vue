@@ -9,7 +9,7 @@
           <div class="user_fun">
             <ul>
               <li>退出账号</li>
-              <li>退出账号</li>
+              <li>其它</li>
             </ul>
           </div>
         </div>
@@ -23,11 +23,13 @@
 <style lang="less" scoped>
   .header {
     height: 80px;
+    width: 100%;
     line-height: 80px;
     border-bottom: 1px solid #eee;
     .inner-header {
       margin: 0 auto;
-      width: 1200px;
+      padding: 0 10px;
+      max-width: 1200px;
       height: 100%;
     }
     .user_avatar {
@@ -37,6 +39,14 @@
       display: flex;
       flex-direction: row;
       align-items: center;
+      user-select: none;
+      cursor: pointer;
+      &:hover {
+        .user_fun {
+          // display: flex;
+          visibility: visible !important;
+        }
+      }
       .avatar {
         margin: 0 5px;
         height: 28px;
@@ -50,13 +60,16 @@
         }
       }
       .user_fun {
-        display: flex;
+        // display: none;
+        visibility: hidden;
         position: absolute;
         flex-direction: column;
         width: 120px;
         overflow: hidden;
         right: 20px;
+        border-radius: 6px;
         top: 70px;
+        transition: visibility 0.8s;
         padding: 1px;
         box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.3), 0px 4px 14px rgba(0, 0, 0, 0.1);
         ul {
@@ -73,7 +86,8 @@
       }
       &:hover {
         .user_fun {
-          display: flex;
+          // display: flex;
+          visibility: hidden;
         }
       }
     }

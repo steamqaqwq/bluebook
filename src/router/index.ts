@@ -10,18 +10,24 @@ export const constantRoutes = [
     }
   },
   {
-
     path: '/creator',
-    component:  () => import('@/views/Creator/index.vue'),
+    component: () => import('@/views/Creator/index.vue'),
     meta: {
       title: '创作者中心'
+    }
+  },
+  {
+    path: '/userbrief',
+    component: () => import('@/views/Userbrief/index.vue'),
+    meta: {
+      // title: ''
     }
   },
   {
     path: '/',
     name: 'index',
     alias: '/',
-    redirect:'recommend',
+    redirect: 'recommend',
     component: Index,
     meta: {
       title: '首页'
@@ -33,7 +39,7 @@ export const constantRoutes = [
         component: () => import('@/views/Fav/index.vue'),
         meta: {
           title: '关注',
-          index:1
+          index: 1
         }
       },
       {
@@ -42,7 +48,7 @@ export const constantRoutes = [
         component: () => import('@/views/Recommend/index.vue'),
         meta: {
           title: '发现',
-          index:2
+          index: 2
         }
       },
       {
@@ -51,15 +57,15 @@ export const constantRoutes = [
         component: () => import('@/views/Nearby/index.vue'),
         meta: {
           title: '附近',
-          index:3
+          index: 3
         }
       },
       {
         path: 'notedetail',
-        name:'notedetail',
+        name: 'notedetail',
         component: () => import('@/views/Notedetail/index.vue'),
         meta: {
-          title: '接受参数',
+          title: '接受参数'
         }
       }
     ]
