@@ -1,13 +1,4 @@
 import Mock, { Random } from 'mockjs';
-// interface note {
-//     id:number|string;
-//     username:string;
-//     title:string;
-//     avatar:string;
-//     cover:string;
-//     isFav?:boolean;
-//     isVideo?:boolean;
-// }
 const notes: any[] = [];
 for (let i = 0; i <= 23; i++) {
   notes.push(

@@ -2,10 +2,10 @@
   <div class="navmenu">
     <el-menu default-active="0" :default-openeds="['2']">
       <el-menu-item>
-        <router-link to="#"> 发布图文 </router-link>
+        <router-link :to="{ name: 'uploadimg' }"> 发布图文 </router-link>
       </el-menu-item>
       <el-menu-item>
-        <router-link to="#"> 发布视频 </router-link>
+        <router-link :to="{ name: 'uploadvideo' }"> 发布视频 </router-link>
       </el-menu-item>
       <el-menu-item index="0">
         <el-icon><house /></el-icon>
@@ -49,6 +49,10 @@
     /deep/.el-sub-menu {
       font-size: 20px;
       font-weight: 300;
+      border-bottom: 1px solid #eee;
+    }
+    /deep/.el-sub-menu .el-menu-item {
+      border-bottom: none;
     }
     a {
       display: block;

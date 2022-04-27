@@ -9,13 +9,7 @@ export const constantRoutes = [
       title: ''
     }
   },
-  {
-    path: '/creator',
-    component: () => import('@/views/Creator/index.vue'),
-    meta: {
-      title: '创作者中心'
-    }
-  },
+
   {
     path: '/userbrief',
     component: () => import('@/views/Userbrief/index.vue'),
@@ -71,10 +65,37 @@ export const constantRoutes = [
     ]
   }
 ];
-
+// 创作中心
+const creatorRoute = [
+  {
+    path: '/creator',
+    component: () => import('@/views/Creator/index.vue'),
+    meta: {
+      title: '创作者中心'
+    },
+    children: [
+      {
+        path: '/creator/uploadvideo',
+        name: 'uploadvideo',
+        component: () => import('@/views/Creator/video-upload.vue'),
+        meta: {
+          title: '视频上传'
+        }
+      },
+      {
+        path: '/creator/imgupload',
+        name: 'uploadimg',
+        component: () => import('@/views/Creator/img-upload.vue'),
+        meta: {
+          title: '图文上传'
+        }
+      }
+    ]
+  }
+];
 const router = createRouter({
   history: createWebHistory(),
-  routes: constantRoutes
+  routes: [...constantRoutes, ...creatorRoute]
 });
 
 router.afterEach((to, from) => {
