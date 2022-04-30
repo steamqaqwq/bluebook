@@ -9,12 +9,15 @@
       </el-menu-item>
       <el-menu-item index="0">
         <el-icon><house /></el-icon>
-        <template #title>首页</template>
+        <template #title> <router-link :to="{ name: 'home' }">首页</router-link></template>
       </el-menu-item>
-      <el-menu-item index="1">
-        <el-icon><tickets /></el-icon>
-        <template #title>笔记管理</template>
-      </el-menu-item>
+      <router-link :to="{ name: 'notemanage' }">
+        <el-menu-item index="1">
+          <el-icon><tickets /></el-icon>
+          <template #title>笔记管理</template>
+        </el-menu-item>
+      </router-link>
+
       <el-sub-menu index="2">
         <template #title>
           <span style="margin-right: 0.5rem; margin-left: 0.25rem" class="iconfont icon-data text-xl"></span>
@@ -54,7 +57,7 @@
     /deep/.el-sub-menu .el-menu-item {
       border-bottom: none;
     }
-    a {
+    a:nth-child(-n + 1) {
       display: block;
       width: 176px;
       height: 40px;

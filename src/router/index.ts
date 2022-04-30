@@ -89,6 +89,30 @@ const creatorRoute = [
         meta: {
           title: '图文上传'
         }
+      },
+      {
+        path: '/creator/home',
+        name: 'home',
+        component: () => import('@/views/Creator/home.vue'),
+        meta: {
+          // title: ''
+        }
+      },
+      {
+        path: '/creator/notemanage',
+        name: 'notemanage',
+        component: () => import('@/views/Creator/notemanage.vue'),
+        meta: {
+          // title: '图文上传'
+        }
+      },
+      {
+        path: '/creator/datamanage',
+        name: 'datamanage',
+        component: () => import('@/views/Creator/datamanage.vue'),
+        meta: {
+          // title: '图文上传'
+        }
       }
     ]
   }

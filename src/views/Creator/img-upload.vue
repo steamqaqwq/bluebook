@@ -16,6 +16,7 @@
           <img :src="img.url" alt="" class="w-20 h-20" />
         </div>
       </div> -->
+      <el-button class="text-black" type="success" @click="submitUpload"> 点击上传 </el-button>
       <div class="upload_tips">
         <div class="tip">
           <p class="tip_title">图片大小</p>
@@ -28,9 +29,9 @@
         </div>
         <div class="tip">
           <p class="tip_title">图片数量</p>
-          <p>仅支持最多9张图片上传</p>
+          <p>支持最多9张图片上传</p>
         </div>
-        <el-progress type="circle" :percentage="progressConfig.progressPercent" />
+        <!-- <el-progress type="circle" :percentage="progressConfig.progressPercent" /> -->
       </div>
     </div>
   </div>
@@ -41,7 +42,7 @@
   import { ref, reactive, toRaw } from 'vue';
   import { Plus } from '@element-plus/icons-vue';
   import request from '@/utils/request';
-  import type { UploadProps, UploadUserFile } from 'element-plus';
+  import type { UploadProps, UploadUserFile, UploadInstance } from 'element-plus';
   const fileList = ref<UploadUserFile[]>([
     // {
     //   name: 'food.jpeg',
@@ -68,10 +69,15 @@
     };
     progressConfig.progressFlag = true;
     let form = new FormData();
-    form.append('fileList', JSON.stringify(fileList.value));
+    form.append('file', params.file);
     return request.post('/upload/img', form, config).then((res) => {
       progressConfig.progressPercent = 100;
     });
+  }
+
+  const uploadRef = ref<UploadInstance>();
+  function submitUpload() {
+    uploadRef.value!.submit();
   }
   const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
     console.log('uploadFile', uploadFiles);
@@ -82,9 +88,6 @@
     dialogVisible.value = true;
   };
   const handleBeforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
-    // console.log('rawFile', rawFile);
-    // console.log('beforeupload');
-
     previewImage(rawFile);
     // (fileList as any).push({ name: rawFile.name, raw: rawFile });
     console.log('fileList', toRaw(fileList));

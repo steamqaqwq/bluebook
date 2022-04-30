@@ -6,6 +6,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Anime: typeof import('./src/components/anime.vue')['default']
     Carousel: typeof import('./src/components/carousel.vue')['default']
+    CreatorTitle: typeof import('./src/components/CreatorTitle.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElIcon: typeof import('element-plus/es')['ElIcon']
