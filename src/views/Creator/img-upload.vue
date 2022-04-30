@@ -3,10 +3,19 @@
     <div class="title">上传图片</div>
     <div class="content">
       <div class="upload_img">
-        <el-upload class="upload-demo" :show-file-list="true" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
-          <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+        <el-upload action="#" drag multiple list-type="picture-card" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :httpRequest="uploadSectionFile">
+          <el-icon><Plus /></el-icon>
         </el-upload>
+
+        <el-dialog v-model="dialogVisible">
+          <img w-full :src="dialogImageUrl" alt="Preview Image" />
+        </el-dialog>
       </div>
+      <!-- <div class="preview_imgs" style="width: 100%; height: 500px; display: flex; flex-direction: row; flex-wrap: wrap">
+        <div class="preview_item w-20 h-20" v-for="img in fileList" :key="img.url">
+          <img :src="img.url" alt="" class="w-20 h-20" />
+        </div>
+      </div> -->
       <div class="upload_tips">
         <div class="tip">
           <p class="tip_title">图片大小</p>
@@ -20,8 +29,8 @@
         <div class="tip">
           <p class="tip_title">图片数量</p>
           <p>仅支持最多9张图片上传</p>
-          <!-- <p></p> -->
         </div>
+        <el-progress type="circle" :percentage="progressConfig.progressPercent" />
       </div>
     </div>
   </div>
@@ -29,13 +38,78 @@
 
 <script setup lang="ts">
   import { UploadFilled } from '@element-plus/icons-vue';
+  import { ref, reactive, toRaw } from 'vue';
+  import { Plus } from '@element-plus/icons-vue';
+  import request from '@/utils/request';
+  import type { UploadProps, UploadUserFile } from 'element-plus';
+  const fileList = ref<UploadUserFile[]>([
+    // {
+    //   name: 'food.jpeg',
+    //   url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+    // }
+  ]);
+  // const fileList = ref<{ name: string; url: string }[]>([]);
+  const dialogImageUrl = ref('');
+  const dialogVisible = ref(false);
+
+  // 进度条 与手动上传
+  const progressConfig = reactive({
+    progressPercent: 0,
+    progressFlag: false
+  });
+  function uploadSectionFile(params) {
+    const config = {
+      //axios 进度条事件
+      onUploadProgress: (progressEvent) => {
+        // progressEvent.loaded:已上传文件大小
+        // progressEvent.total:被上传文件的总大小
+        progressConfig.progressPercent = Number(((progressEvent.loaded / progressEvent.total) * 90).toFixed(2));
+      }
+    };
+    progressConfig.progressFlag = true;
+    let form = new FormData();
+    form.append('fileList', JSON.stringify(fileList.value));
+    return request.post('/upload/img', form, config).then((res) => {
+      progressConfig.progressPercent = 100;
+    });
+  }
+  const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
+    console.log('uploadFile', uploadFiles);
+  };
+  const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
+    console.log('uploadfile', uploadFile);
+    // dialogImageUrl.value = uploadFile.raw!;
+    dialogVisible.value = true;
+  };
+  const handleBeforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
+    // console.log('rawFile', rawFile);
+    // console.log('beforeupload');
+
+    previewImage(rawFile);
+    // (fileList as any).push({ name: rawFile.name, raw: rawFile });
+    console.log('fileList', toRaw(fileList));
+  };
+
+  // 预加载图片
+  function previewImage(rawFile) {
+    try {
+      var src = window.URL.createObjectURL(rawFile);
+      Array.prototype.push.call(fileList.value, { name: rawFile.name, url: src });
+      console.log('fileList', fileList.value);
+      // target.onload = function () {
+      // 	window.URL.revokeObjectURL(this.src);
+      // };
+    } catch (e) {
+      throw new Error('游览器不支持URL');
+    }
+  }
 </script>
 
 <style lang="less" scoped>
   .img_upload {
     padding: 20px;
     box-sizing: border-box;
-    min-height: 800px;
+    min-height: 650px;
     min-width: 1000px;
     width: auto;
     border-radius: 8px;
@@ -63,20 +137,22 @@
       .upload-demo,
       /deep/.el-upload,
       /deep/.el-upload-dragger {
-        width: 100%;
-        height: 500px;
+        // width: 100%;
+        // height: 400px;
       }
-      /deep/.el-upload-dragger {
+      :deep(.el-upload-dragger) {
         display: flex;
+        height: 100%;
+        border: none;
         flex-direction: column;
         justify-content: center;
         align-items: center;
       }
       /deep/.el-upload__text {
-        font-size: 30px;
+        // font-size: 30px;
       }
       /deep/.el-icon--upload {
-        font-size: 100px;
+        // font-size: 100px;
       }
     }
     .upload_tips {

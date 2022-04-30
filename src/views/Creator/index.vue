@@ -30,8 +30,9 @@
     background-color: white;
   }
   .right-content {
-    margin: 30px 20px;
+    margin: 10px 20px;
     width: 100%;
     height: 100%;
+    overflow: scroll;
   }
 </style>
