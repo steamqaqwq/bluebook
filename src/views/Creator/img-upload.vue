@@ -3,7 +3,7 @@
     <div class="title">上传图片</div>
     <div class="content">
       <div class="upload_img">
-        <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :httpRequest="uploadSectionFile">
+        <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :auto-upload="false">
           <el-icon><Plus /></el-icon>
         </el-upload>
 
@@ -11,8 +11,8 @@
           <img w-full :src="dialogImageUrl" alt="Preview Image" />
         </el-dialog>
       </div>
-      <input type="text" placeholder="请输入标题" />
-      <textarea name="" id="" cols="30" rows="10"> </textarea>
+      <input type="text" placeholder="请输入标题" v-model="formdata.title" />
+      <textarea name="" id="" cols="30" rows="10" v-model="formdata.description"> </textarea>
       <!-- <div class="preview_imgs" style="width: 100%; height: 500px; display: flex; flex-direction: row; flex-wrap: wrap">
         <div class="preview_item w-20 h-20" v-for="img in fileList" :key="img.url">
           <img :src="img.url" alt="" class="w-20 h-20" />
@@ -33,7 +33,7 @@
           <p class="tip_title">图片数量</p>
           <p>支持最多9张图片上传</p>
         </div>
-        <!-- <el-progress type="circle" :percentage="progressConfig.progressPercent" /> -->
+        <el-progress type="circle" :percentage="progressConfig.progressPercent" />
       </div>
     </div>
   </div>
@@ -44,13 +44,14 @@
   import { ref, reactive, toRaw } from 'vue';
   import { Plus } from '@element-plus/icons-vue';
   import request from '@/utils/request';
-  import type { UploadProps, UploadUserFile, UploadInstance } from 'element-plus';
+  import type { UploadProps, UploadUserFile, UploadInstance, UploadRequestHandler } from 'element-plus';
   const fileList = ref<UploadUserFile[]>([
     // {
     //   name: 'food.jpeg',
     //   url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
     // }
   ]);
+  const fileRawList = ref<{ raw: File }[]>([]);
   const formdata = reactive({
     title: '一个大标题',
     description: 'dfssssssssssdfsdf',
@@ -66,6 +67,11 @@
     progressFlag: false
   });
   function uploadSectionFile(params) {
+    console.log('上传次数');
+  }
+
+  const uploadRef = ref<UploadInstance>();
+  function submitUpload() {
     const config = {
       //axios 进度条事件
       onUploadProgress: (progressEvent) => {
@@ -76,38 +82,41 @@
     };
     progressConfig.progressFlag = true;
     let form = new FormData();
-    form.append('files', params.file);
-    form.append('blogTheme');
-    return request.post('/upload/image', form, config).then((res) => {
-      console.log('upload', res);
-      progressConfig.progressPercent = 100;
+    form.append('blogTheme', formdata.title);
+    form.append('blogTalk', formdata.description);
+    form.append('tag.tagNameArray', JSON.stringify(formdata.tags));
+    fileList.value.forEach((item) => {
+      form.append('files', item['raw']!);
     });
-  }
-
-  const uploadRef = ref<UploadInstance>();
-  function submitUpload() {
-    uploadRef.value!.submit();
+    request({
+      url: '/upload/image',
+      method: 'POST',
+      data: form
+    }).then((res) => {
+      console.log('上传', res);
+    });
   }
   const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
     console.log('uploadFile', uploadFiles);
   };
   const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
-    console.log('uploadfile', uploadFile);
+    // console.log('uploadfile', uploadFile);
     // dialogImageUrl.value = uploadFile.raw!;
     dialogVisible.value = true;
   };
   const handleBeforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
     previewImage(rawFile);
+
     // (fileList as any).push({ name: rawFile.name, raw: rawFile });
-    console.log('fileList', toRaw(fileList));
+    // console.log('fileList', toRaw(fileList));
   };
 
   // 预加载图片
   function previewImage(rawFile) {
     try {
       var src = window.URL.createObjectURL(rawFile);
-      Array.prototype.push.call(fileList.value, { name: rawFile.name, url: src });
-      console.log('fileList', fileList.value);
+      // Array.prototype.push.call(fileList.value,);
+      fileList.value.push({ name: rawFile.name, url: src, raw: rawFile });
       // target.onload = function () {
       // 	window.URL.revokeObjectURL(this.src);
       // };
