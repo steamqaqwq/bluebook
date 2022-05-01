@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-  import request from '@/utils/request';
+  import request from '@/utils/requestMock';
   import { onMounted, ref, reactive, watch, watchEffect } from 'vue';
   const notes = ref<note[]>([]);
   const length = ref();

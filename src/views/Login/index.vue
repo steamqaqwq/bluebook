@@ -26,17 +26,17 @@
           <template v-if="curLoginType == 0">
             <div class="text-xl font-bold text-left mb-5">短信登录</div>
             <el-row>
-              <el-input v-model="formdata.input2" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="Message" />
+              <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="Message" />
             </el-row>
-            <el-row> <el-input v-model="formdata.input" class="w-50 m-2 login-input" placeholder="验证码" /></el-row>
+            <el-row> <el-input v-model="formdata.password" class="w-50 m-2 login-input" placeholder="验证码" /></el-row>
             <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
           </template>
           <template v-else>
             <div class="text-xl font-bold text-left mb-5">用户名密码登录</div>
             <el-row>
-              <el-input v-model="formdata.input2" class="w-50 m-2 login-input" placeholder="用户名" :prefix-icon="Message" />
+              <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="用户名" :prefix-icon="Message" />
             </el-row>
-            <el-row> <el-input v-model="formdata.input" class="w-50 m-2 login-input" placeholder="密码" /></el-row>
+            <el-row> <el-input v-model="formdata.password" class="w-50 m-2 login-input" placeholder="密码" /></el-row>
             <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
           </template>
         </div>
@@ -51,6 +51,7 @@
   import { Message } from '@element-plus/icons-vue';
   import { reactive, ref } from 'vue';
   import { useRouter } from 'vue-router';
+  import request from '@/utils/request';
   import anime from 'animejs';
   enum loginType {
     password,
@@ -69,13 +70,25 @@
   };
   console.log('curLoginType', curLoginType);
   const formdata = reactive({
-    input: '',
-    input2: ''
+    username: '',
+    password: ''
   });
 
   function login(loginType): void {
     const $router = useRouter();
-    $router.push({ name: 'index' });
+    request({
+      url: '/person/login/password',
+      method: 'POST',
+      params: {
+        phonenumber: formdata.username,
+        password: formdata.password
+      },
+      headers: { person: 'person' }
+    }).then((res) => {
+      if ((res as any).code == 200) {
+        $router.push({ name: 'index' });
+      }
+    });
   }
   // 处理动画
   setTimeout(() => {
@@ -91,7 +104,6 @@
       loop: true,
       autoplay: true,
       easing: 'easeInOutQuad',
-
       duration: 3000
     });
   }, 0);

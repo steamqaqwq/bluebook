@@ -3,7 +3,7 @@
     <div class="title">上传图片</div>
     <div class="content">
       <div class="upload_img">
-        <el-upload action="#" drag multiple list-type="picture-card" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :httpRequest="uploadSectionFile">
+        <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :httpRequest="uploadSectionFile">
           <el-icon><Plus /></el-icon>
         </el-upload>
 
@@ -11,6 +11,8 @@
           <img w-full :src="dialogImageUrl" alt="Preview Image" />
         </el-dialog>
       </div>
+      <input type="text" placeholder="请输入标题" />
+      <textarea name="" id="" cols="30" rows="10"> </textarea>
       <!-- <div class="preview_imgs" style="width: 100%; height: 500px; display: flex; flex-direction: row; flex-wrap: wrap">
         <div class="preview_item w-20 h-20" v-for="img in fileList" :key="img.url">
           <img :src="img.url" alt="" class="w-20 h-20" />
@@ -49,6 +51,11 @@
     //   url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
     // }
   ]);
+  const formdata = reactive({
+    title: '一个大标题',
+    description: 'dfssssssssssdfsdf',
+    tags: ['rap', '篮球', '唱跳']
+  });
   // const fileList = ref<{ name: string; url: string }[]>([]);
   const dialogImageUrl = ref('');
   const dialogVisible = ref(false);
@@ -69,8 +76,10 @@
     };
     progressConfig.progressFlag = true;
     let form = new FormData();
-    form.append('file', params.file);
-    return request.post('/upload/img', form, config).then((res) => {
+    form.append('files', params.file);
+    form.append('blogTheme');
+    return request.post('/upload/image', form, config).then((res) => {
+      console.log('upload', res);
       progressConfig.progressPercent = 100;
     });
   }
