@@ -1,29 +1,26 @@
 <template>
   <div class="navmenu">
     <el-menu default-active="0" :default-openeds="['2']">
-      <el-menu-item>
+      <el-menu-item @click="$router.push({ name: 'uploadimg' })">
         <router-link :to="{ name: 'uploadimg' }"> 发布图文 </router-link>
       </el-menu-item>
-      <el-menu-item>
+      <el-menu-item @click="$router.push({ name: 'uploadvideo' })">
         <router-link :to="{ name: 'uploadvideo' }"> 发布视频 </router-link>
       </el-menu-item>
-      <el-menu-item index="0">
+      <el-menu-item index="0" @click="$router.push({ name: 'home' })">
         <el-icon><house /></el-icon>
-        <template #title> <router-link :to="{ name: 'home' }">首页</router-link></template>
+        <template #title> 首页</template>
       </el-menu-item>
-      <router-link :to="{ name: 'notemanage' }">
-        <el-menu-item index="1">
-          <el-icon><tickets /></el-icon>
-          <template #title>笔记管理</template>
-        </el-menu-item>
-      </router-link>
-
+      <el-menu-item index="1" @click="$router.push({ name: 'notemanage' })">
+        <el-icon><tickets /></el-icon>
+        <template #title>笔记管理</template>
+      </el-menu-item>
       <el-sub-menu index="2">
         <template #title>
           <span style="margin-right: 0.5rem; margin-left: 0.25rem" class="iconfont icon-data text-xl"></span>
           <span class="text-xl">数据看板</span>
         </template>
-        <el-menu-item index="2-1">
+        <el-menu-item index="2-1" @click="$router.push({ name: 'datamanage' })">
           <el-icon><icon-menu /></el-icon>
           <template #title>笔记数据</template>
         </el-menu-item>
@@ -39,6 +36,9 @@
   import { navs } from '@/api/recommend';
   import { ref } from 'vue';
   import { Tickets, Menu as IconMenu, House, Setting } from '@element-plus/icons-vue';
+  import { useRouter, useRoute } from 'vue-router';
+  const $router = useRouter();
+  const $route = useRoute();
 </script>
 
 <style lang="less" scoped>
