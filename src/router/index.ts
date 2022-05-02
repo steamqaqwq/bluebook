@@ -55,6 +55,14 @@ export const constantRoutes = [
         }
       },
       {
+        path:'/search/:key',
+        name:'search',
+        component: () => import('@/views/Search/index.vue'),
+        meta:{
+          title:'搜索'
+        }
+      },
+      {
         path: 'notedetail',
         name: 'notedetail',
         component: () => import('@/views/Notedetail/index.vue'),
@@ -117,6 +125,14 @@ const creatorRoute = [
     ]
   }
 ];
+// const searchRoute = [
+//   {
+//     path:'/search/:key',
+//     name:'searchpage',
+//     component: () => import('@/views/Search/index.vue'),
+   
+//   }
+// ]
 const router = createRouter({
   history: createWebHistory(),
   routes: [...constantRoutes, ...creatorRoute]

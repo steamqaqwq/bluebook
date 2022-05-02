@@ -1,6 +1,9 @@
 <template>
   <div class="header">
     <div class="logo"></div>
+    <div class="search">
+      <Search></Search>
+    </div>
     <div class="nav">
       <ul class="navlist" ref="ulList">
         <li v-for="(item, index) in navlist" :key="item.title" @mouseover="changeHoverClass(index + 1)" @mouseleave="changeHoverClassLeave">
@@ -22,6 +25,7 @@
 
 <script setup lang="ts">
   import { onMounted, ref, reactive, watch, computed } from 'vue';
+  import Search from '@/components/search.vue';
   import { banners, kss, navlist } from '../../api/index';
   import { RouterLink, useLink } from 'vue-router';
   import { useRouter, onBeforeRouteUpdate } from 'vue-router';
@@ -69,6 +73,13 @@
     align-items: center;
     height: 80px;
     border-bottom: 1px solid #eee;
+    position: relative;
+    .search {
+      position: absolute;
+      left: 20%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
     .logo {
       height: 80px;
       width: 120px;

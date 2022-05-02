@@ -21,6 +21,7 @@ declare module 'vue' {
     IconFont: typeof import('./src/components/iconFont.vue')['default']
     Newcomp: typeof import('./src/components/newcomp.vue')['default']
     PublishBtn: typeof import('./src/components/PublishBtn.vue')['default']
+    Search: typeof import('./src/components/search.vue')['default']
   }
 }
 
