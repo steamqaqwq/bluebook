@@ -3,7 +3,7 @@
     <div class="title">上传图片</div>
     <div class="content">
       <div class="upload_img">
-        <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :auto-upload="false">
+        <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" style="float: left" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :auto-upload="false">
           <el-icon><Plus /></el-icon>
         </el-upload>
 
@@ -11,14 +11,14 @@
           <img w-full :src="dialogImageUrl" alt="Preview Image" />
         </el-dialog>
       </div>
-      <input type="text" placeholder="请输入标题" v-model="formdata.title" />
-      <textarea name="" id="" cols="30" rows="10" v-model="formdata.description"> </textarea>
+      <input class="input_title" type="text" placeholder="填写标题，能获得更多赞哦~" v-model="formdata.title" />
+      <textarea class="input_textarea" placeholder="填写相关信息，让更多人看见你吧！" name="" id="" cols="30" rows="10" v-model="formdata.description"> </textarea>
       <!-- <div class="preview_imgs" style="width: 100%; height: 500px; display: flex; flex-direction: row; flex-wrap: wrap">
         <div class="preview_item w-20 h-20" v-for="img in fileList" :key="img.url">
           <img :src="img.url" alt="" class="w-20 h-20" />
         </div>
       </div> -->
-      <el-button class="text-black" type="success" @click="submitUpload"> 点击上传 </el-button>
+      <el-button class="text-black w-20" type="success" @click="submitUpload"> 点击上传 </el-button>
       <div class="upload_tips">
         <div class="tip">
           <p class="tip_title">图片大小</p>
@@ -53,8 +53,8 @@
   ]);
   const fileRawList = ref<{ raw: File }[]>([]);
   const formdata = reactive({
-    title: '一个大标题',
-    description: 'dfssssssssssdfsdf',
+    title: '',
+    description: '',
     tags: ['rap', '篮球', '唱跳']
   });
   // const fileList = ref<{ name: string; url: string }[]>([]);
@@ -154,7 +154,11 @@
   }
   .content {
     margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     .upload_img {
+      // width: 100%;
       .upload-demo,
       /deep/.el-upload,
       /deep/.el-upload-dragger {
@@ -199,6 +203,18 @@
           color: gray;
         }
       }
+    }
+  }
+  .input_title,
+  .input_textarea {
+    margin: 5px 0;
+    padding: 1px 10px;
+    max-width: 500px;
+    border-radius: 3px;
+    border: 1px solid #888;
+    outline: none;
+    &:hover:focus {
+      border: 1px solid @themecolor;
     }
   }
 </style>
