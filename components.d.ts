@@ -22,6 +22,8 @@ declare module 'vue' {
     Newcomp: typeof import('./src/components/newcomp.vue')['default']
     PublishBtn: typeof import('./src/components/PublishBtn.vue')['default']
     Search: typeof import('./src/components/search.vue')['default']
+    ShowNote: typeof import('./src/components/ShowNote.vue')['default']
+    ShowNotes: typeof import('./src/components/ShowNotes.vue')['default']
   }
 }
 

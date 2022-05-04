@@ -1,37 +1,35 @@
-import axios from 'axios'
+import axios from 'axios';
 // import { ElNotification , ElMessageBox, ElMessage, ElLoading } from 'element-plus'
-import store from '@/store'
-import { getToken } from '@/utils/auth'
-
+import store from '@/store';
+import { getToken } from '@/utils/auth';
 
 const service = axios.create({
-//   baseURL: 'http://localhost:9090',
+  //   baseURL: 'http://localhost:9090',
   timeout: 5000 // request timeout
-})
+});
 
 // request interceptor
 service.interceptors.request.use(
-  config => {
+  (config) => {
     // store.state.isloading = true
     // if (store.getters.token) {
-      if(getToken()){
-        // config.headers['token'] = getToken()
-      }
+    if (getToken()) {
+      // config.headers['token'] = getToken()
+    }
     // }
-    return config
+    return config;
   },
-  error => {
-    
-    return Promise.reject(error)
+  (error) => {
+    return Promise.reject(error);
   }
-)
+);
 
 // response interceptor
 service.interceptors.response.use(
-  response => {
+  (response) => {
     // store.state.isloading = false
-    const res = response.data
-   
+    const res = response.data;
+
     // if the custom code is not 20000, it is judged as an error.
     // if (res.code !== 20000) {
     //   Message({
@@ -44,9 +42,9 @@ service.interceptors.response.use(
     //   return res
     // }
 
-    return res
+    return res;
   },
-  error => {
+  (error) => {
     // let whiteList = []
     // console.log('err' + error) // for debug
     // console.log(error.message.match(/[0-9]+/))
@@ -61,11 +59,11 @@ service.interceptors.response.use(
     // }else{
     //   store.state.isloading = false
     // }
-    setTimeout(()=>{
-    //   store.state.isloading = false
-    },5000)
-    return Promise.reject(error)
+    setTimeout(() => {
+      //   store.state.isloading = false
+    }, 5000);
+    return Promise.reject(error);
   }
-)
+);
 
-export default service
+export default service;

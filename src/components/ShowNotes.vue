@@ -27,11 +27,26 @@
 <script setup lang="ts">
   import request from '@/utils/requestMock';
   import { onMounted, ref, reactive, watch, watchEffect } from 'vue';
+  import useColumns from '@/hooks/useColumns';
+  const props = withDefaults(
+    defineProps<{
+      maxColumns: number;
+      outerWidth: number;
+      noteWidth?: number;
+      timeout?: number;
+    }>(),
+    {
+      timeout: 200,
+      noteWidth: 200
+    }
+  );
   const notes = ref<note[]>([]);
   const length = ref();
-  const initColumns = ref(5);
+  const initColumns = ref<number>();
   const lastchild = ref<Element>(); //记录当前最后一个子元素
+
   onMounted(() => {
+    // clearInterval(timer)
     request({
       url: '/notes/getnotes',
       method: 'get'
@@ -39,9 +54,9 @@
       .then((res) => {
         notes.value = (res as any).notes;
         if (!initColumns.value) {
-          initColumns.value = Math.floor(window.innerWidth / 200);
-          if (initColumns.value > 5) {
-            initColumns.value = 5;
+          initColumns.value = useColumns(props.maxColumns, props.outerWidth, props.noteWidth).initColumns;
+          if (initColumns.value > props.maxColumns) {
+            initColumns.value = props.maxColumns;
           }
         }
         // console.log(notes.value[0], notes.value[-1]);
@@ -96,9 +111,9 @@
     window.addEventListener('resize', () => {
       clearTimeout(timer);
       timer = setTimeout(() => {
-        let columns = Math.floor(window.innerWidth / 200);
+        let columns = Math.floor(props.outerWidth / props.noteWidth);
         // console.log('columns', window.innerWidth);
-        initColumns.value = columns > 5 ? 5 : columns;
+        initColumns.value = columns > props.maxColumns ? props.maxColumns : columns;
         //获取列数
       }, 200);
     });
@@ -109,7 +124,10 @@
     watch(notes, (old, cur) => {
       splitNotes(notes.value);
     });
-    watchEffect(() => {});
+    //  watch(props.outerWidth, (old, cur) => {
+    //   splitNotes(notes.value);
+    // });
+    // watchEffect(() => {});
     const io = new IntersectionObserver((config) => {
       // intersectionRatio 触发观测者显示的比例
       // io.disconnect() 讲该观测者失效
@@ -146,7 +164,7 @@
     width: 100%;
     .column {
       // flex: 1;
-      margin-left: 20px;
+      // margin-left: 20px;
     }
   }
   .note {

@@ -55,11 +55,12 @@ export const constantRoutes = [
         }
       },
       {
-        path:'/search/:key',
-        name:'search',
+        path: '/search',
+        name: 'search',
         component: () => import('@/views/Search/index.vue'),
-        meta:{
-          title:'搜索'
+        meta: {
+          title: '搜索',
+          index: 2
         }
       },
       {
@@ -130,7 +131,7 @@ const creatorRoute = [
 //     path:'/search/:key',
 //     name:'searchpage',
 //     component: () => import('@/views/Search/index.vue'),
-   
+
 //   }
 // ]
 const router = createRouter({
