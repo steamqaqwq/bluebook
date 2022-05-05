@@ -15,7 +15,9 @@
     "paths": {
       "@/*": ["src/*"]  //路径别名
     },
-    "types": ["element-plus/global"] //element plus
+    "types": ["element-plus/global"], //element plus
+    "allowJs": true,                                      // 允许js
+
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]

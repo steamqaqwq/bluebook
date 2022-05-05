@@ -12,11 +12,18 @@
         <div class="slider" :style="{ left: curLeftValue }" :class="{ initleft: isExactActive }"></div>
       </ul>
     </div>
+    <div class="usermsg">
+      <div class="avatar" @click="$router.push({ name: 'creator' })">
+        <img src="@/assets/images/defaultAvatar.jpg" alt="" />
+      </div>
+      <div class="username">XXXu</div>
+    </div>
     <div class="pub-btn">
       <el-button type="primary" :icon="Plus">发布</el-button>
     </div>
   </div>
   <div class="containerbox">
+    <baidumap></baidumap>
     <div class="inner_box">
       <router-view> </router-view>
     </div>
@@ -24,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+  import baidumap from '@/components/baidumap.vue';
   import { onMounted, ref, reactive, watch, computed } from 'vue';
   import Search from '@/components/search.vue';
   import { banners, kss, navlist } from '../../api/index';
@@ -31,7 +39,7 @@
   import { useRouter, onBeforeRouteUpdate } from 'vue-router';
   import { Plus } from '@element-plus/icons-vue';
   const { route, href, isActive, isExactActive, navigate } = useLink((RouterLink as any).props);
-
+  const $router = useRouter();
   // 初始化标签
   let initIndex = ref((route.value.meta.index as number) || 2);
   let hover = ref(false);
@@ -80,6 +88,23 @@
       top: 50%;
       transform: translateY(-50%);
     }
+    .usermsg {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      margin-right: 10px;
+      .avatar {
+        height: 38px;
+        width: 38px;
+        overflow: hidden;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      .username {
+        user-select: none;
+      }
+    }
     .logo {
       height: 80px;
       width: 120px;
@@ -109,14 +134,6 @@
         .active {
           color: #fff;
         }
-        // &:hover {
-        //   a {
-        //     color: #fff;
-        //   }
-        //   .initleft {
-        //     left: initial !important;
-        //   }
-        // }
       }
       // navBar 特效
 

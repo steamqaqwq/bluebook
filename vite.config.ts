@@ -53,5 +53,14 @@ export default defineConfig({
         additionalData: `@import "${path.resolve(__dirname, 'src/assets/styles/base.less')}";`
       }
     }
+  },
+  server: {
+    proxy: {
+      '/baiduapi': {
+        target: 'http://api.map.baidu.com/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/baiduapi/, '')
+      }
+    }
   }
 });

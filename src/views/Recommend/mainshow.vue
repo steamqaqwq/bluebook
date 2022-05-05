@@ -3,7 +3,7 @@
     <div class="column" v-for="notes in notesList">
       <div class="note" v-for="note in notes" :key="note.id">
         <div class="note_cover" :class="{ animation: isanimate }">
-          <img src="@/assets/images/imgLoading.png" @load="loadImage(note.cover, $event)" alt="" />
+          <img src="@/assets/images/imgLoading.png" @load="loadImage(note.cover, $event)" @alt="" />
         </div>
         <div class="video_icon" v-show="note.isVideo"><span class="iconfont icon-videofill text-xl text-white"></span></div>
         <div class="note_title">{{ note.title }}</div>
@@ -36,12 +36,9 @@
   const blurSet = ref('7px');
   const isanimate = ref(true);
   const loadImage = (src, e) => {
-    // console.log('event', e);
-    e.path.img.src = src;
-    // console.log('src',src)
-    // showPic.value = true;
-    blurSet.value = '0px';
     isanimate.value = false;
+    e.path[0].src = src;
+    blurSet.value = '0px';
   };
   onMounted(() => {
     request({
@@ -49,10 +46,7 @@
       method: 'get'
     })
       .then((res) => {
-        setTimeout(() => {
-          notes.value = (res as any).notes;
-        }, 2000);
-
+        notes.value = (res as any).notes;
         if (!initColumns.value) {
           initColumns.value = Math.floor(window.innerWidth / 200);
           if (initColumns.value > 5) {
