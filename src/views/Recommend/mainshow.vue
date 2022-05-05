@@ -2,8 +2,8 @@
   <div class="main_box" v-if="notesList.length">
     <div class="column" v-for="notes in notesList">
       <div class="note" v-for="note in notes" :key="note.id">
-        <div class="note_cover">
-          <img :src="note.cover" alt="" />
+        <div class="note_cover" :class="{ animation: isanimate }">
+          <img src="@/assets/images/imgLoading.png" @load="loadImage(note.cover, $event)" alt="" />
         </div>
         <div class="video_icon" v-show="note.isVideo"><span class="iconfont icon-videofill text-xl text-white"></span></div>
         <div class="note_title">{{ note.title }}</div>
@@ -31,13 +31,28 @@
   const length = ref();
   const initColumns = ref(5);
   const lastchild = ref<Element>(); //记录当前最后一个子元素
+  // 加载图片处理
+  // const showPic = ref(false);
+  const blurSet = ref('7px');
+  const isanimate = ref(true);
+  const loadImage = (src, e) => {
+    // console.log('event', e);
+    e.path.img.src = src;
+    // console.log('src',src)
+    // showPic.value = true;
+    blurSet.value = '0px';
+    isanimate.value = false;
+  };
   onMounted(() => {
     request({
       url: '/notes/getnotes',
       method: 'get'
     })
       .then((res) => {
-        notes.value = (res as any).notes;
+        setTimeout(() => {
+          notes.value = (res as any).notes;
+        }, 2000);
+
         if (!initColumns.value) {
           initColumns.value = Math.floor(window.innerWidth / 200);
           if (initColumns.value > 5) {
@@ -185,10 +200,30 @@
   }
   .note_cover {
     width: 100%;
+    // min-height
+    filter: blur(v-bind(blurSet));
+    //
+    // animation:
+    transition: all 0.5s;
+
     img {
       width: 100%;
       height: auto;
       max-height: 300px;
+    }
+  }
+  .animation {
+    animation: flash 3s ease-in-out infinite;
+    @keyframes flash {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+      100% {
+        opacity: 1;
+      }
     }
   }
   .note_title {
