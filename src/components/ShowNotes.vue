@@ -112,7 +112,7 @@
       clearTimeout(timer);
       timer = setTimeout(() => {
         let columns = Math.floor(props.outerWidth / props.noteWidth);
-        // console.log('columns', window.innerWidth);
+        console.log('resize_columns', props.outerWidth);
         initColumns.value = columns > props.maxColumns ? props.maxColumns : columns;
         //获取列数
       }, 200);

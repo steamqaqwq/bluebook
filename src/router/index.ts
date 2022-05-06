@@ -82,6 +82,7 @@ const creatorRoute = [
     meta: {
       title: '创作者中心'
     },
+    redirect: '/creator/home',
     children: [
       {
         path: '/creator/uploadvideo',
@@ -126,6 +127,16 @@ const creatorRoute = [
     ]
   }
 ];
+const userRoute = [
+  {
+    path: '/my',
+    name: 'my',
+    component: () => import('@/views/User/index.vue'),
+    meta: {
+      title: '个人空间'
+    }
+  }
+];
 // const searchRoute = [
 //   {
 //     path:'/search/:key',
@@ -136,7 +147,7 @@ const creatorRoute = [
 // ]
 const router = createRouter({
   history: createWebHistory(),
-  routes: [...constantRoutes, ...creatorRoute]
+  routes: [...constantRoutes, ...creatorRoute, ...userRoute]
 });
 
 router.afterEach((to, from) => {

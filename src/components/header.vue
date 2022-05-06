@@ -72,6 +72,7 @@
         top: 70px;
         transition: visibility 0.8s;
         padding: 1px;
+        background-color: #fff;
         box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.3), 0px 4px 14px rgba(0, 0, 0, 0.1);
         ul {
           width: 100%;

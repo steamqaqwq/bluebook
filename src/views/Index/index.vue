@@ -23,7 +23,6 @@
     </div>
   </div>
   <div class="containerbox">
-    <baidumap></baidumap>
     <div class="inner_box">
       <router-view> </router-view>
     </div>
@@ -31,7 +30,6 @@
 </template>
 
 <script setup lang="ts">
-  import baidumap from '@/components/baidumap.vue';
   import { onMounted, ref, reactive, watch, computed } from 'vue';
   import Search from '@/components/search.vue';
   import { banners, kss, navlist } from '../../api/index';
