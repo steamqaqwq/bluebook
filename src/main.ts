@@ -10,6 +10,7 @@ import 'element-plus/dist/index.css';
 import './mock';
 import App from './App.vue';
 import iconFont from '@/components/iconFont.vue';
+
 const pinia = createPinia();
 const app = createApp(App);
 app.component('iconSvg', iconFont); // 注册全局图标

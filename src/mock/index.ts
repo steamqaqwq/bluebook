@@ -19,4 +19,8 @@ Mock.mock('/api/ranks', 'get', ranks.getRanks);
 // 搜索用户数据
 import usercards from './data/usercards';
 Mock.mock('/search/users', 'get', usercards.getusers);
+
+// 模拟评论数据
+import comments from './data/comments';
+Mock.mock('/api/comments', 'get', comments.getcomments);
 export default Mock;

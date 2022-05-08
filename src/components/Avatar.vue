@@ -33,9 +33,11 @@
     height: v-bind(height);
     overflow: hidden;
     border-radius: 50%;
+    cursor: pointer;
     img {
       width: 100%;
       height: 100%;
+      object-fit: cover;
     }
   }
 </style>

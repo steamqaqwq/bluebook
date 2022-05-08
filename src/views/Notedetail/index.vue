@@ -36,7 +36,7 @@
           <el-button type="primary">评论</el-button>
         </div>
         <div>
-          <comments></comments>
+          <Comments :comments="comments" v-if="comments.length"></Comments>
         </div>
       </div>
     </div>
@@ -58,14 +58,20 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import carousel from '@/components/carousel.vue';
-  import comment from './comment.vue';
   import avatar from '@/components/Avatar.vue';
-  import comments from './comment.vue';
+  import Comments from './comment.vue';
+  import request from '@/utils/requestMock';
   const isVideo = ref(false);
   const my_input = ref();
   const imgs = ref(['https://ci.xiaohongshu.com/4c8bd876-2fa0-215d-c274-95696cbf84ff?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/7b6b921c-6307-e883-3e39-e8460444a13c?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/c676f40e-190f-2c98-ff7c-1c2e3667f596?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/f92ebc99-242c-62b4-b8be-bbcba01be146?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/8319245c-8f87-14e5-4f7a-72ffa6c2eaba?imageView2/2/w/1080/format/jpg']);
+  const comments = ref([]);
+  onMounted(() => {
+    request.get('/api/comments').then((res: any) => {
+      comments.value = res.comments;
+    });
+  });
 </script>
 
 <style lang="less" scoped>
