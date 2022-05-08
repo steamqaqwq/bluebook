@@ -30,6 +30,14 @@
       <div class="time_msg text-gray-500 text-xl">发布于 2022-04-14 11:26</div>
       <div class="commends">
         <div class="title">笔记评论</div>
+        <div class="my_input">
+          <avatar></avatar>
+          <el-input type="textarea" show-word-limit resize="none" :rows="2" v-model="my_input" :input-style="{ width: '300px' }" placeholder="发一条想表达的评论.."></el-input>
+          <el-button type="primary">评论</el-button>
+        </div>
+        <div>
+          <comments></comments>
+        </div>
       </div>
     </div>
     <div class="author_show">
@@ -52,7 +60,11 @@
 <script setup lang="ts">
   import { ref } from 'vue';
   import carousel from '@/components/carousel.vue';
+  import comment from './comment.vue';
+  import avatar from '@/components/Avatar.vue';
+  import comments from './comment.vue';
   const isVideo = ref(false);
+  const my_input = ref();
   const imgs = ref(['https://ci.xiaohongshu.com/4c8bd876-2fa0-215d-c274-95696cbf84ff?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/7b6b921c-6307-e883-3e39-e8460444a13c?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/c676f40e-190f-2c98-ff7c-1c2e3667f596?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/f92ebc99-242c-62b4-b8be-bbcba01be146?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/8319245c-8f87-14e5-4f7a-72ffa6c2eaba?imageView2/2/w/1080/format/jpg']);
 </script>
 
@@ -135,12 +147,28 @@
   }
   .commends {
     margin-top: 20px;
+    width: 100%;
     .title {
       width: 100%;
       border-left: 5px solid @themecolor2;
       font-size: 20px;
       font-weight: bold;
       padding-left: 8px;
+      text-align: left;
+    }
+    .my_input {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 100px;
+      border-bottom: 1px solid #888;
+      margin-bottom: 20px;
+      width: 100%;
+      /deep/.el-button {
+        width: 60px;
+        height: 50px;
+        margin-left: 20px;
+      }
     }
   }
 </style>

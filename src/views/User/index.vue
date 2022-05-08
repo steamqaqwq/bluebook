@@ -8,7 +8,7 @@
         </div>
         <div class="user_name text-2xl">XXu</div>
         <div class="user_id text-xs text-gray-400">id:234023098</div>
-        <div class="user_status" v-for="item in statusData" :key="item.title">
+        <div class="user_status" v-for="(item, index) in statusData" :key="item.title" @click="openStatusDetail(index)">
           <p>{{ item.nums }}</p>
           <p class="text-gray-400 text-sm">{{ item.title }}</p>
         </div>
@@ -37,18 +37,31 @@
         </div>
       </div>
     </div>
-    <div class="attention-fans-container"></div>
+    <div class="attention-fans-container">
+      <AttentionFans @close="closeList"></AttentionFans>
+    </div>
+    <el-dialog title="提示" v-model="dialogVisible" width="30%" destroy-on-close center>
+      <p><span class="iconfont icon-Note text-2xl"></span> 当前发布笔记数 2</p>
+      <p><span class="iconfont icon-thumb-up text-2xl"></span> 当前获得点赞数 0</p>
+      <p><span class="iconfont icon-6Collection_01 text-2xl"></span> 当前获得收藏数 2</p>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button type="primary" @click="dialogVisible = false">我知道了</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
   import Header from '@/components/header.vue';
   import request from '@/utils/request';
-  import { ref, reactive, onMounted, computed } from 'vue';
+  import { ref, reactive, onMounted, computed, watch } from 'vue';
   import MyNotes from './MyNotes.vue';
   import MyFavs from './MyFavs.vue';
   import MyThumbs from './MyThumbs.vue';
   import MySetting from './MySetting.vue';
+  import AttentionFans from './AttentionFans.vue';
   const statusData = [
     { nums: 0, title: '关注' },
     { nums: 3, title: '粉丝' },
@@ -74,6 +87,39 @@
         return MySetting;
       default:
         return MyNotes;
+    }
+  });
+  // 处理点击状态右侧弹窗
+  const openStatus = ref(false);
+  const translateV = ref('110%');
+  // Dialog 弹窗
+  const dialogVisible = ref(false);
+
+  function openStatusDetail(index) {
+    if (index == 0 || index == 1) {
+      if (openStatus.value) {
+        closeList();
+      } else {
+        openList();
+      }
+    } else if (index == 2) {
+      closeList();
+      dialogVisible.value = true;
+    }
+  }
+  function openList() {
+    // translateV.value = '0';
+    openStatus.value = true;
+  }
+  function closeList() {
+    // translateV.value = '110%';
+    openStatus.value = false;
+  }
+  watch(openStatus, (v) => {
+    if (v) {
+      translateV.value = '0';
+    } else {
+      translateV.value = '110%';
     }
   });
 </script>
@@ -127,6 +173,7 @@
         }
       }
       .user_status {
+        cursor: pointer;
         margin: 5px 0;
       }
       .brief {
@@ -146,7 +193,6 @@
       width: 50%;
       box-sizing: border-box;
       margin-right: 30px;
-
       .center_nav {
         width: 100%;
         padding: 20px 10px;
@@ -183,6 +229,32 @@
         margin: 10px 0;
         border-radius: 12px;
         overflow: hidden;
+      }
+    }
+  }
+  .attention-fans-container {
+    width: 300px;
+    height: 100%;
+    margin-top: 80px;
+    position: fixed;
+    right: 0;
+    top: 0;
+    transform: translateX(v-bind(translateV));
+    transition: all 0.5s ease-out;
+  }
+  /deep/.el-dialog {
+    border-radius: 12px;
+    width: 300px;
+    p {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+      margin: 5px;
+      span {
+        margin-right: 15px;
+        color: @themecolor;
       }
     }
   }

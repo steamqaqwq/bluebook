@@ -6,7 +6,7 @@ import '@/assets/styles/base.less';
 import 'animate.css';
 import '@/assets/styles/tailwind.css';
 // import ElementPlus from 'element-plus'
-// import 'element-plus/dist/index.css'
+import 'element-plus/dist/index.css';
 import './mock';
 import App from './App.vue';
 import iconFont from '@/components/iconFont.vue';
