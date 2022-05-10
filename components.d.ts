@@ -11,7 +11,6 @@ declare module 'vue' {
     CreatorTitle: typeof import('./src/components/CreatorTitle.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCascader: typeof import('element-plus/es')['ElCascader']
-    ElCol: typeof import('element-plus/es')['ElCol']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElDivider: typeof import('element-plus/es')['ElDivider']
@@ -32,7 +31,6 @@ declare module 'vue' {
     Newcomp: typeof import('./src/components/newcomp.vue')['default']
     PublishBtn: typeof import('./src/components/PublishBtn.vue')['default']
     Search: typeof import('./src/components/search.vue')['default']
-    ShowNote: typeof import('./src/components/ShowNote.vue')['default']
     ShowNotes: typeof import('./src/components/ShowNotes.vue')['default']
   }
 }

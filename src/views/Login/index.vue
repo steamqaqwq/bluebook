@@ -23,25 +23,27 @@
           <span class="iconfont text-3xl" :class="curIcon"></span>
         </div>
         <div class="outerbox relative">
-          <template v-if="curLoginType == 0">
-            <div class="text-xl font-bold text-left mb-5">短信登录</div>
-            <el-row>
-              <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="Iphone" />
-            </el-row>
-            <el-row class="relative">
-              <el-input :prefix-icon="Message" v-model="formdata.password" class="w-50 m-2 login-input" placeholder="验证码" />
-              <div class="sendCode" :style="{ color: formdata.username ? '#818cf8' : '#888', cursor: formdata.username ? 'pointer' : 'no-drop' }" @click="sendCode">发送验证码</div>
-            </el-row>
-            <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
-          </template>
-          <template v-else>
-            <div class="text-xl font-bold text-left mb-5">用户名密码登录</div>
-            <el-row>
-              <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="用户名" :prefix-icon="User" />
-            </el-row>
-            <el-row> <el-input v-model="formdata.password" class="w-50 m-2 login-input" placeholder="密码" :prefix-icon="Lock" /></el-row>
-            <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
-          </template>
+          <keep-alive>
+            <template v-if="curLoginType == 0">
+              <div class="text-xl font-bold text-left mb-5">短信登录</div>
+              <el-row>
+                <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="Iphone" />
+              </el-row>
+              <el-row class="relative">
+                <el-input :prefix-icon="Message" v-model="formdata.password" class="w-50 m-2 login-input" placeholder="验证码" />
+                <div class="sendCode" :style="{ color: formdata.username ? '#818cf8' : '#888', cursor: formdata.username ? 'pointer' : 'no-drop' }" @click="sendCode">发送验证码</div>
+              </el-row>
+              <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
+            </template>
+            <template v-else>
+              <div class="text-xl font-bold text-left mb-5">用户名密码登录</div>
+              <el-row>
+                <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="用户名" :prefix-icon="User" />
+              </el-row>
+              <el-row> <el-input v-model="formdata.password" class="w-50 m-2 login-input" placeholder="密码" :prefix-icon="Lock" /></el-row>
+              <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
+            </template>
+          </keep-alive>
         </div>
       </div>
     </div>
@@ -79,19 +81,49 @@
 
   function login(loginType): void {
     const $router = useRouter();
-    request({
-      url: '/person/login/password',
-      method: 'POST',
-      params: {
-        phonenumber: formdata.username,
-        password: formdata.password
-      },
-      headers: { person: 'person' }
-    }).then((res) => {
-      if ((res as any).code == 200) {
-        $router.push({ name: 'index' });
-      }
-    });
+    // 短信验证
+    if (loginType == 0) {
+      request({
+        url: '/person/login/verify',
+        method: 'post',
+        params: {
+          phonenumber: formdata.username,
+          verify: formdata.password
+        },
+        headers: { person: 'person' }
+      }).then((res) => {
+        console.log(res, 'login');
+      });
+    } else if (loginType == 1) {
+      request({
+        url: '/person/login/password',
+        method: 'post',
+        params: {
+          phonenumber: formdata.username,
+          password: formdata.password
+        },
+        headers: { person: 'person' }
+      }).then((res) => {
+        if ((res as any).code == 200) {
+          $router.push({ path: '/' });
+        }
+      });
+    }
+    // 密码登录
+
+    // request({
+    //   url: '/person/login/password',
+    //   method: 'POST',
+    //   params: {
+    //     phonenumber: formdata.username,
+    //     password: formdata.password
+    //   },
+    //   headers: { person: 'person' }
+    // }).then((res) => {
+    //   if ((res as any).code == 200) {
+    //     $router.push({ name: 'index' });
+    //   }
+    // });
   }
   // 处理动画
   setTimeout(() => {
@@ -112,7 +144,18 @@
   }, 0);
 
   //发送验证码
-  function sendCode() {}
+  function sendCode() {
+    request({
+      url: '/person/verification',
+      method: 'GET',
+      params: {
+        phonenumber: formdata.username
+      }
+    }).then((res: any) => {
+      // 弹窗
+      formdata.password = res.verify;
+    });
+  }
 </script>
 
 <style lang="less" scoped>
