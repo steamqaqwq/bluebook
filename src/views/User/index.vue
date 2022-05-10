@@ -138,7 +138,7 @@
   }
   .main-content {
     margin: 100px auto;
-    overflow: hidden;
+    // overflow: hidden;
     background-color: #f9f9f9;
     max-width: @lg_m;
     display: flex;
@@ -154,6 +154,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: sticky;
+      top: 15%;
       // width:200px;
       margin: 0 25px;
       width: 20%;
@@ -220,6 +222,8 @@
       flex-direction: column;
       align-items: center;
       padding: 20px 0;
+      position: sticky;
+      top: 15%;
       .title {
         font-size: 20px;
         margin-bottom: 12px;

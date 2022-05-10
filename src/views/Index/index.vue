@@ -13,13 +13,13 @@
       </ul>
     </div>
     <div class="usermsg">
-      <div class="avatar" @click="$router.push({ name: 'creator' })">
+      <div class="avatar" @click="jumpNewWindow('my')">
         <img src="@/assets/images/defaultAvatar.jpg" alt="" />
       </div>
       <div class="username">XXXu</div>
     </div>
     <div class="pub-btn">
-      <el-button type="primary" :icon="Plus">发布</el-button>
+      <el-button type="primary" :icon="Plus" @click="jumpNewWindow('home')">发布</el-button>
     </div>
   </div>
   <div class="containerbox">
@@ -69,6 +69,14 @@
     initLeftv = 10 + 120 * initIndex.value - 120 + 'px';
     curIndex.value = initIndex.value;
   });
+
+  // 路由跳转到新窗口
+  function jumpNewWindow(routeName) {
+    const routeUrl = $router.resolve({
+      name: routeName
+    });
+    window.open(routeUrl.href, '_blank');
+  }
 </script>
 
 <style lang="less" scoped>
@@ -175,13 +183,14 @@
     float: right;
     margin-right: 20px;
     /deep/.el-button {
-      width: 130px;
+      width: 100px;
       height: 40px;
       background-color: @themecolor3;
       color: white;
       border: none;
       &:hover {
-        filter: invert(1);
+        color: white;
+        background-color: @themecolor;
       }
     }
   }

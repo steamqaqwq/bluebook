@@ -1,7 +1,7 @@
 <template>
   <div class="main_box" v-if="notesList.length">
     <div class="column" v-for="notes in notesList">
-      <div class="note" v-for="note in notes" :key="note.id">
+      <div class="note" v-for="note in notes" :key="note.id" @click="$router.push({ name: 'notedetail' })">
         <div class="note_cover" :class="{ animation: isanimate }">
           <img src="@/assets/images/imgLoading.png" @load="loadImage(note.cover, $event)" @alt="" />
         </div>
@@ -27,6 +27,8 @@
 <script setup lang="ts">
   import request from '@/utils/requestMock';
   import { onMounted, ref, reactive, watch, watchEffect } from 'vue';
+  import { useRouter } from 'vue-router';
+  const $router = useRouter();
   const notes = ref<note[]>([]);
   const length = ref();
   const initColumns = ref(5);

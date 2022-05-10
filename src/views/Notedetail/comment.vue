@@ -1,6 +1,6 @@
 <template>
   <div class="comments-list">
-    <div class="comment-item" v-for="comment in comments">
+    <div class="comment-item" v-for="(comment, index) in comments" :key="comment.id">
       <div class="comment-title">
         <avatar width="50px" height="50px"></avatar>
         <div class="comment-author">{{ comment.author }}</div>
@@ -9,80 +9,73 @@
       <div class="comment-status">
         <span class="time">{{ timeFormat(comment.date) }}</span>
         <span class="ml-5 mr-5"><span class="thumbs iconfont icon-xihuan1"></span> {{ comment.favs }} </span>
-        <span class="reply-btn" @click="reply(comment.id)">回复</span>
+        <span class="reply-btn" @click="reply(comment.id, comment.author, comment.id)">回复</span>
       </div>
-      <div class="comment-reply-list" v-if="comment.children.length">
-        <div class="comment-reply-item" v-for="replycomment in comment.children">
-          <div class="reply-title">
-            <avatar style="" class="mr-5" width="30px" height="30px"></avatar>
-            <div>
-              <span class="comment-author">{{ replycomment.author }}:</span>
-              <span class="ml-5">{{ replycomment.content }}</span>
-            </div>
-          </div>
-          <div class="comment-status">
-            <span class="time">{{ timeFormat(replycomment.date) }}</span>
-            <span class="ml-5 mr-5"><span class="thumbs iconfont icon-xihuan1"></span> {{ replycomment.favs }} </span>
-            <span class="reply-btn" @click="reply(replycomment.id)">回复</span>
-          </div>
-        </div>
-      </div>
+      <reply-list ref="reply_list" :replies="comment.children" :postid="comment.id" @reply="reply"></reply-list>
+      <replybox v-if="showreply && comment.id == curReplyId" :user="curReplyUser" class="ml-10 border-none"></replybox>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive, computed } from 'vue';
+  import { ref, reactive, computed, onMounted } from 'vue';
   import avatar from '@/components/Avatar.vue';
   import dayjs from 'dayjs';
   import relativeTime from 'dayjs/plugin/relativeTime'; //使用dayjs 插件 fromnow
   import 'dayjs/locale/zh-cn'; // 导入本地化语言
+  import ReplyList from './ReplyList.vue';
+  import replybox from './replybox.vue';
   const props = defineProps(['comments']);
+  const reply_list = ref([]);
   dayjs.extend(relativeTime);
   dayjs.locale('zh-cn');
-  // const comments = [
-  //   {
-  //     id: 1,
-  //     author: 'XXu',
-  //     avatar: '@/assets/images/defaultAvatar.jpg',
-  //     date: 1652005039383,
-  //     favs: 2,
-  //     content: '送来肯江三扥戳囧该呆呆呆呆呆呆呆呆呆呆鸡噢噢噢噢哦哦哦哦哦哦\nsdlfjoisdfhirhhhhhhhhhh\n',
-  //     children: [
-  //       {
-  //         id: 2,
-  //         author: 'zzXXu',
-  //         avatar: '@/assets/images/defaultAvatar.jpg',
-  //         date: 1651749679000,
-  //         favs: 2,
-  //         content: '来自远方的一条回复',
-  //         children: []
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     id: 1,
-  //     author: 'XXu',
-  //     avatar: '@/assets/images/defaultAvatar.jpg',
-  //     date: 1611111212,
-  //     favs: 2,
-  //     content: '送来肯江三扥戳囧该呆呆呆呆呆呆呆呆呆呆鸡噢噢噢噢哦哦哦哦哦哦\nsdlfjoisdfhirhhhhhhhhhh\n',
-  //     children: []
-  //   }
-  // ];
-  // 回复
-  function reply(id: number) {}
 
+  //显示更多
+  const isShowmore = ref(false);
+  // 分页
+  const pageStatus = reactive({
+    currentPage: 1, //当前页面
+    currentPageIndex: '', //
+    pageSize: 8 // 页面最大显示
+  });
+
+  // 分页索引继承
+  function changeIndex(index) {
+    return (pageStatus.currentPage - 1) * pageStatus.pageSize + index + 1;
+  }
+  function pageChange(curpage) {
+    pageStatus.currentPage = curpage;
+  }
+  // 回复
+  const showreply = ref(false);
+  const curReplyId = ref(0);
+  const curReplyUser = reactive({
+    userid: 0,
+    username: ''
+  });
+  function reply(id: number, username: string, postid: number) {
+    //初始化 清空当前
+    curReplyUser.userid = 0;
+    curReplyUser.username = '';
+    showreply.value = true;
+
+    //赋值
+    curReplyUser.userid = id;
+    curReplyUser.username = username;
+    curReplyId.value = postid;
+  }
   // 格式化时间
   const timeFormat = (time) => {
     let time_: number = time;
+    // 统一时间以毫秒为单位
     if (String(time).length <= 10) {
       time_ = time_ * 1000;
     }
+    // 时间差值
     const timegap = Date.now() - time_;
-    /* 
+    /*
         1秒 1000
-        1分钟 1000 * 60 60000 
+        1分钟 1000 * 60 60000
         1小时 1000 * 60 * 60 3600000
         1天 1000 * 60 * 60 * 24 86400000
         1个月 1000 * 60 * 60 * 24 * 30 2592000000
@@ -97,7 +90,7 @@
   };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
   .comments-list {
     display: flex;
     flex-direction: column;
@@ -146,6 +139,7 @@
     }
   }
   .comment-item .comment-reply-list {
+    transition: all 0.7s;
     margin-left: 50px;
     .comment-status {
       margin-left: 50px;
@@ -155,5 +149,10 @@
       flex-direction: row;
       text-align: left;
     }
+  }
+
+  .hide_post {
+    display: none;
+    // color: blue;
   }
 </style>

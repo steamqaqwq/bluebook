@@ -18,7 +18,7 @@
           </div>
         </div>
       </div>
-      <div class="login">
+      <div class="login bg-gradient-to-tr from-purple-100 via-pink-300 to-blue-300">
         <div class="login_type absolute text-xl top-0 right-0" @click="changeIcon()">
           <span class="iconfont text-3xl" :class="curIcon"></span>
         </div>
@@ -26,17 +26,20 @@
           <template v-if="curLoginType == 0">
             <div class="text-xl font-bold text-left mb-5">短信登录</div>
             <el-row>
-              <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="Message" />
+              <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="Iphone" />
             </el-row>
-            <el-row> <el-input v-model="formdata.password" class="w-50 m-2 login-input" placeholder="验证码" /></el-row>
+            <el-row class="relative">
+              <el-input :prefix-icon="Message" v-model="formdata.password" class="w-50 m-2 login-input" placeholder="验证码" />
+              <div class="sendCode" :style="{ color: formdata.username ? '#818cf8' : '#888', cursor: formdata.username ? 'pointer' : 'no-drop' }" @click="sendCode">发送验证码</div>
+            </el-row>
             <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
           </template>
           <template v-else>
             <div class="text-xl font-bold text-left mb-5">用户名密码登录</div>
             <el-row>
-              <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="用户名" :prefix-icon="Message" />
+              <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="用户名" :prefix-icon="User" />
             </el-row>
-            <el-row> <el-input v-model="formdata.password" class="w-50 m-2 login-input" placeholder="密码" /></el-row>
+            <el-row> <el-input v-model="formdata.password" class="w-50 m-2 login-input" placeholder="密码" :prefix-icon="Lock" /></el-row>
             <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
           </template>
         </div>
@@ -48,7 +51,7 @@
 
 <script setup lang="ts">
   import { data } from '@/api/login';
-  import { Message } from '@element-plus/icons-vue';
+  import { Message, User, Lock, Iphone } from '@element-plus/icons-vue';
   import { reactive, ref } from 'vue';
   import { useRouter } from 'vue-router';
   import request from '@/utils/request';
@@ -58,7 +61,7 @@
     message
   }
   const curLoginType = ref(loginType.password);
-  const curIcon = ref<string>('icon-mima');
+  const curIcon = ref<string>('icon-duanxinyanzheng');
   const changeIcon = () => {
     if (curIcon.value == 'icon-mima') {
       curIcon.value = 'icon-duanxinyanzheng';
@@ -107,6 +110,9 @@
       duration: 3000
     });
   }, 0);
+
+  //发送验证码
+  function sendCode() {}
 </script>
 
 <style lang="less" scoped>
@@ -126,6 +132,7 @@
     min-height: 800px;
     background: url('@/assets/images/login_background.png');
     width: 100%;
+    height: 100%;
     .container_inner {
       position: relative;
       height: 100%;
@@ -155,8 +162,12 @@
       .introduce_video {
         position: absolute;
         height: auto;
+        z-index: 1;
         width: 200px;
         transition: all 0.5s;
+        @media (max-width: @md) {
+          display: none;
+        }
         .circle {
           border-radius: 50%;
           overflow: hidden;
@@ -212,11 +223,17 @@
       box-shadow: 0 0 40px rgb(0 0 0 / 10%);
       border-radius: 16px;
       right: 20px;
+      z-index: 999;
       overflow: hidden;
       top: 50%;
+
       transform: translateY(-50%);
-      // background-color: #fff;
+      background-color: #fff;
       padding: 30px;
+      @media (max-width: @md) {
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
       .login_type {
         width: 50px;
         height: 50px;
@@ -241,6 +258,22 @@
         height: 50px;
         font-size: 16px;
         border-radius: 10px;
+      }
+
+      .sendCode {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 10%;
+        color: #888;
+        font-size: 15px;
+        cursor: no-drop;
+        user-select: none;
+        &:before {
+          content: '';
+          border-left: 1px solid #eee;
+          margin-right: 10px;
+        }
       }
     }
   }
