@@ -98,7 +98,6 @@
       display: flex;
       flex-direction: row;
       align-items: center;
-
       margin-right: 10px;
       .avatar {
         height: 38px;
@@ -130,6 +129,7 @@
       transform: initial;
       margin-left: 200px;
       li {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         a {
           display: block;
           width: 120px;
