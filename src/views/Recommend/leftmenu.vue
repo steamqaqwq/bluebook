@@ -22,10 +22,21 @@
     // border: 1px solid @themecolor2;
     padding: 1px;
     max-width: 100px;
-
+    position: sticky;
+    top: 10%;
+    z-index: 100;
     // padding:10px;
-    /deep/.el-menu {
+    :deep(.el-menu) {
       border-right: none;
+      .el-menu-item {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      }
+    }
+    @media (max-width: @md) {
+      :deep(.el-menu) {
+        display: flex;
+      }
+      margin-left: 0;
     }
   }
 </style>

@@ -10,10 +10,12 @@ declare module 'vue' {
     Carousel: typeof import('./src/components/carousel.vue')['default']
     CreatorTitle: typeof import('./src/components/CreatorTitle.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElDivider: typeof import('element-plus/es')['ElDivider']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
+    ElPagination: typeof import('element-plus/es')['ElPagination']
     ElRow: typeof import('element-plus/es')['ElRow']
     Header: typeof import('./src/components/header.vue')['default']
     IconFont: typeof import('./src/components/iconFont.vue')['default']
@@ -21,6 +23,7 @@ declare module 'vue' {
     PublishBtn: typeof import('./src/components/PublishBtn.vue')['default']
     Search: typeof import('./src/components/search.vue')['default']
     ShowNotes: typeof import('./src/components/ShowNotes.vue')['default']
+    ShowNotesBackup: typeof import('./src/components/ShowNotesBackup.vue')['default']
   }
 }
 

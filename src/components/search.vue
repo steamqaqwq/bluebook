@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-    <input class="search_input" type="text" v-model="search_v" @keyup.enter="toSearch" />
+    <input class="search_input" v-if="isShowInput" :style="{ width: width }" :class="{}" placeholder="搜你想搜" type="text" v-model="search_v" @keyup.enter="toSearch" />
     <span class="iconfont icon-search" @click="toSearch"></span>
   </div>
 </template>
@@ -8,6 +8,15 @@
 <script setup lang="ts">
   import { ref, reactive } from 'vue';
   import { useRouter } from 'vue-router';
+  const props = withDefaults(
+    defineProps<{
+      width?: string;
+      isShowInput?: boolean;
+    }>(),
+    {
+      isShowInput: true
+    }
+  );
   const $router = useRouter();
   const search_v = ref('');
   const toSearch = () => {

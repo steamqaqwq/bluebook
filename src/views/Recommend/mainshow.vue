@@ -32,7 +32,7 @@
   const notes = ref<note[]>([]);
   const length = ref();
   const initColumns = ref(5);
-  const lastchild = ref<Element>(); //记录当前最后一个子元素
+  const lastchild = ref<Element | HTMLElement>(); //记录当前最后一个子元素
   // 加载图片处理
   // const showPic = ref(false);
   const blurSet = ref('7px');
@@ -111,6 +111,7 @@
         // console.log('columns', window.innerWidth);
         initColumns.value = columns > 5 ? 5 : columns;
         //获取列数
+        console.log('获取新的最后子元素', lastchild.value);
       }, 200);
     });
     // 监听列数变化重新分列
@@ -134,6 +135,7 @@
           })
           .then(() => {
             lastchild.value = getLastChild();
+
             io.observe(lastchild.value);
           });
       }
@@ -143,6 +145,7 @@
     const getLastChild = () => {
       let parentEle = document.querySelector('.column:first-child');
       let lastchild = parentEle!.lastElementChild!;
+      (lastchild! as HTMLElement).style.backgroundColor = 'black';
       return lastchild;
     };
   });
@@ -157,7 +160,7 @@
     width: 100%;
     .column {
       // flex: 1;
-      margin-left: 20px;
+      margin-right: 20px;
     }
   }
   .note {

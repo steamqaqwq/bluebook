@@ -1,9 +1,7 @@
 <template>
   <div class="header">
     <div class="logo"></div>
-    <div class="search">
-      <Search></Search>
-    </div>
+
     <div class="nav">
       <ul class="navlist" ref="ulList">
         <li v-for="(item, index) in navlist" :key="item.title" @mouseover="changeHoverClass(index + 1)" @mouseleave="changeHoverClassLeave">
@@ -12,14 +10,21 @@
         <div class="slider" :style="{ left: curLeftValue }" :class="{ initleft: isExactActive }"></div>
       </ul>
     </div>
-    <div class="usermsg">
-      <div class="avatar" @click="jumpNewWindow('my')">
-        <img src="@/assets/images/defaultAvatar.jpg" alt="" />
+
+    <div class="other-fun">
+      <div class="search">
+        <Search class="search-1"></Search>
       </div>
-      <div class="username">XXXu</div>
-    </div>
-    <div class="pub-btn">
-      <el-button type="primary" :icon="Plus" @click="jumpNewWindow('home')">发布</el-button>
+      <div class="usermsg">
+        <router-link to="/search" class="search-2 mr-5"><span class="iconfont icon-search relative hover:text-indigo-500 text-2xl"></span></router-link>
+        <div class="avatar" @click="jumpNewWindow('my')">
+          <img src="@/assets/images/defaultAvatar.jpg" alt="" />
+        </div>
+        <div class="username">XXXu</div>
+      </div>
+      <div class="pub-btn">
+        <el-button type="primary" :icon="Plus" @click="jumpNewWindow('home')">发布</el-button>
+      </div>
     </div>
   </div>
   <div class="containerbox">
@@ -88,17 +93,30 @@
     height: 80px;
     border-bottom: 1px solid #eee;
     position: relative;
+
     .search {
       position: absolute;
-      left: 20%;
+      left: 63%;
       top: 50%;
       transform: translateY(-50%);
+
+      @media (max-width: @lg_m) {
+        .search-1 {
+          display: none;
+        }
+      }
     }
     .usermsg {
       display: flex;
       flex-direction: row;
       align-items: center;
       margin-right: 10px;
+      .search-2 {
+        display: none;
+        @media (max-width: @lg_m) {
+          display: block;
+        }
+      }
       .avatar {
         height: 38px;
         width: 38px;
@@ -112,12 +130,22 @@
     }
     .logo {
       height: 80px;
-      width: 120px;
-      margin-left: 120px;
+      min-width: 120px;
+      margin-left: 20px;
       background: url('@/assets/logo.png') no-repeat center;
       background-size: 250% 250%;
-      float: left;
     }
+    .other-fun {
+      display: flex;
+      flex-direction: row;
+    }
+    .nav {
+      // max-width: 600px;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
     .navlist {
       float: left;
       display: flex;
@@ -125,11 +153,9 @@
       flex-direction: row;
       align-items: center;
       height: 100%;
-      min-width: 600px;
       transform: initial;
-      margin-left: 200px;
       li {
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0); // 去除手机
         a {
           display: block;
           width: 120px;
@@ -141,8 +167,8 @@
           color: #fff;
         }
       }
-      // navBar 特效
 
+      // navBar 特效
       .slider {
         width: 100px;
         height: 60%;
@@ -178,11 +204,45 @@
         }
       }
     }
+
+    @media (max-width: @md) {
+      .nav {
+        width: 100%;
+      }
+      .logo,
+      .search,
+      .usermsg,
+      .pub-btn {
+        display: none;
+      }
+      .navlist {
+        width: 100%;
+        justify-content: center;
+        margin-left: 0;
+      }
+
+      //设置顶部滑动
+      .slider {
+        display: none;
+      }
+      .nav_active {
+        color: @themecolor2 !important;
+        border-bottom: 2px solid @themecolor2;
+      }
+      .navlist {
+        li {
+          .active {
+            color: @themecolor2;
+          }
+        }
+      }
+      //滑动样式结束
+    }
   }
   .pub-btn {
     float: right;
     margin-right: 20px;
-    /deep/.el-button {
+    :deep(.el-button) {
       width: 100px;
       height: 40px;
       background-color: @themecolor3;
@@ -194,6 +254,7 @@
       }
     }
   }
+
   .containerbox {
     // background-color: @bg1;
   }

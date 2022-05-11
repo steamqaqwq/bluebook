@@ -2,8 +2,8 @@
   <div class="main_box" v-if="notesList.length">
     <div class="column" v-for="notes in notesList">
       <div class="note" v-for="note in notes" :key="note.id">
-        <div class="note_cover" :class="{ animation: isanimate }">
-          <img src="@/assets/images/imgLoading.png" @load="loadImage(note.cover, $event)" @alt="" />
+        <div class="note_cover">
+          <img :src="note.cover" alt="" />
         </div>
         <div class="video_icon" v-show="note.isVideo"><span class="iconfont icon-videofill text-xl text-white"></span></div>
         <div class="note_title">{{ note.title }}</div>
@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
   import request from '@/utils/requestMock';
-  import { onMounted, ref, reactive, watch, watchEffect, nextTick, computed } from 'vue';
+  import { onMounted, ref, reactive, watch, watchEffect, nextTick } from 'vue';
   import useColumns from '@/hooks/useColumns';
   const props = withDefaults(
     defineProps<{
@@ -42,11 +42,7 @@
   );
   const notes = ref<note[]>([]);
   const length = ref();
-  const initColumns = computed(() => {
-    let columns = Math.floor(props.outerWidth / props.noteWidth);
-    // console.log('resize_columns', props.outerWidth);
-    return columns > props.maxColumns ? props.maxColumns : columns;
-  });
+  const initColumns = ref<number>();
   const lastchild = ref<Element>(); //记录当前最后一个子元素
 
   onMounted(() => {
@@ -57,12 +53,12 @@
     })
       .then((res) => {
         notes.value = (res as any).notes;
-        // if (!initColumns.value) {
-        //   initColumns.value = useColumns(props.maxColumns, props.outerWidth, props.noteWidth).initColumns;
-        //   if (initColumns.value > props.maxColumns) {
-        //     initColumns.value = props.maxColumns;
-        //   }
-        // }
+        if (!initColumns.value) {
+          initColumns.value = useColumns(props.maxColumns, props.outerWidth, props.noteWidth).initColumns;
+          if (initColumns.value > props.maxColumns) {
+            initColumns.value = props.maxColumns;
+          }
+        }
         // console.log(notes.value[0], notes.value[-1]);
         length.value = notes.value.length;
         // const initPoint = notes.value.length;
@@ -111,30 +107,25 @@
     //   }, 0);
     // };
     //
-    // var timer;
-    // window.addEventListener('resize', () => {
-    //   clearTimeout(timer);
-    //   timer = setTimeout(() => {
-    //     nextTick(() => {
-    //       let columns = Math.floor(props.outerWidth / props.noteWidth);
-    //       // console.log('resize_columns', props.outerWidth);
-    //       initColumns.value = columns > props.maxColumns ? props.maxColumns : columns;
-    //     });
+    var timer;
+    window.addEventListener('resize', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        nextTick(() => {
+          let columns = Math.floor(props.outerWidth / props.noteWidth);
+          // console.log('resize_columns', props.outerWidth);
+          initColumns.value = columns > props.maxColumns ? props.maxColumns : columns;
+        });
 
-    //     //获取列数
-    //   }, 200);
-    // });
+        //获取列数
+      }, 200);
+    });
     // 监听列数变化重新分列
     watch(initColumns, (old, cur) => {
       splitNotes(notes.value);
     });
     watch(notes, (old, cur) => {
       splitNotes(notes.value);
-    });
-    watch(lastchild, (old, cur) => {
-      if (!cur) {
-        lastchild.value = getLastChild();
-      }
     });
     //  watch(props.outerWidth, (old, cur) => {
     //   splitNotes(notes.value);
@@ -162,24 +153,11 @@
     const getLastChild = () => {
       let parentEle = document.querySelector('.column:first-child');
       let lastchild = parentEle!.lastElementChild!;
-      // console.log('lastchild', lastchild);
-      // 将最后一个子元素背景设置为黑 方便观测
-      (lastchild as HTMLElement).style.backgroundColor = 'black';
       return lastchild;
     };
   });
 
   const notesList = ref<note[][]>([]);
-
-  // 加载图片处理
-  // const showPic = ref(false);
-  const blurSet = ref('7px');
-  const isanimate = ref(true);
-  const loadImage = (src, e) => {
-    isanimate.value = false;
-    e.path[0].src = src;
-    blurSet.value = '0px';
-  };
 </script>
 
 <style lang="less" scoped>
@@ -226,33 +204,12 @@
       padding-bottom: 60px;
     }
   }
-
   .note_cover {
     width: 100%;
-    // min-height
-    filter: blur(v-bind(blurSet));
-    //
-    // animation:
-    transition: all 0.5s;
-
     img {
       width: 100%;
       height: auto;
       max-height: 300px;
-    }
-  }
-  .animation {
-    animation: flash 3s ease-in-out infinite;
-    @keyframes flash {
-      0% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.5;
-      }
-      100% {
-        opacity: 1;
-      }
     }
   }
   .note_title {
