@@ -1,7 +1,19 @@
 <template>
   <div class="main_box" v-if="notesList.length">
     <div class="column" v-for="notes in notesList">
-      <div class="note" v-for="note in notes" :key="note.id">
+      <div
+        class="note"
+        v-for="note in notes"
+        :key="note.id"
+        @click="
+          $router.push({
+            name: 'notedetail',
+            params: {
+              id: note.id
+            }
+          })
+        "
+      >
         <div class="note_cover" :class="{ animation: isanimate }">
           <img src="@/assets/images/imgLoading.png" @load="loadImage(note.cover, $event)" @alt="" />
         </div>

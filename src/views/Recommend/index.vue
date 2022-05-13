@@ -45,20 +45,6 @@
         });
       }, 300)
     );
-    // window.addEventListener('resize', () => {
-    //     // let columns = Math.floor(window.innerWidth / 200);
-    //     // console.log('columns', window.innerWidth);
-    //     // initColumns.value = columns > 5 ? 5 : columns;
-    //     //获取列数
-    //     // console.log('获取新的最后子元素', lastchild.value);
-    //     // outerwidth.value = notesElement.value.clientWidth;
-    //     nextTick(() => {
-    //       console.log('页面变化！！', notesElement.value);
-    //       if (notesElement.value.clientWidth) {
-    //         outerwidth.value = notesElement.value.clientWidth;
-    //       }
-    //     });
-    // });
   });
 </script>
 

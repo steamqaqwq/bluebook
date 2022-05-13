@@ -5,12 +5,12 @@
         <div class="logo"></div>
       </router-link>
       <div class="user_avatar">
-        <div>username</div>
+        <div>{{ $store.username }}</div>
         <div class="avatar">
-          <img src="@/assets/images/defaultAvatar.jpg" alt="" />
+          <img :src="$store.avatar" alt="" />
           <div class="user_fun">
             <ul>
-              <li>退出账号</li>
+              <li @click="$store.logout()">退出账号</li>
               <li>其它</li>
             </ul>
           </div>
@@ -20,7 +20,10 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import { useUserStore } from '@/store/user';
+  const $store = useUserStore();
+</script>
 
 <style lang="less" scoped>
   .header {
@@ -32,7 +35,7 @@
     .inner-header {
       margin: 0 auto;
       padding: 0 10px;
-      max-width: 1200px;
+      max-width: 90%;
       height: 100%;
     }
     .user_avatar {

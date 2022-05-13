@@ -4,7 +4,7 @@
     <div class="nav">
       <ul class="navlist" ref="ulList">
         <li v-for="(item, index) in navlist" :key="item.title" @mouseover="changeHoverClass(index + 1)" @mouseleave="changeHoverClassLeave">
-          <router-link class="text-xl" :class="{ active: (hover || curIndex == initIndex) && curIndex == index + 1 }" :to="item.to" active-class="nav_active" exact>{{ item.title }}</router-link>
+          <router-link class="text-xl" :class="{ active: (hover || curIndex == initIndex) && curIndex == index + 1 }" :to="item.to" active-class="nav_active">{{ item.title }}</router-link>
         </li>
         <div class="slider" :style="{ left: curLeftValue }" :class="{ initleft: isExactActive }"></div>
       </ul>
@@ -17,9 +17,9 @@
       <div class="usermsg">
         <router-link to="/search" class="search-2 mr-5"><span class="iconfont icon-search relative hover:text-indigo-500 text-2xl"></span></router-link>
         <div class="avatar" @click="jumpNewWindow('my')">
-          <img src="@/assets/images/defaultAvatar.jpg" alt="" />
+          <img :src="$store.avatar" alt="" />
         </div>
-        <div class="username">XXXu</div>
+        <div class="username">{{ $store.username }}</div>
       </div>
       <div class="pub-btn">
         <el-button type="primary" :icon="Plus" @click="jumpNewWindow('home')">发布</el-button>
@@ -40,8 +40,13 @@
   import { RouterLink, useLink } from 'vue-router';
   import { useRouter, onBeforeRouteUpdate } from 'vue-router';
   import { Plus } from '@element-plus/icons-vue';
+  import { getToken } from '@/utils/auth';
+  import request from '@/utils/requestMock';
+  import { useUserStore } from '@/store/user';
+
   const { route, href, isActive, isExactActive, navigate } = useLink((RouterLink as any).props);
   const $router = useRouter();
+  const $store = useUserStore();
   // 初始化标签
   let initIndex = ref((route.value.meta.index as number) || 2);
   let hover = ref(false);
@@ -81,6 +86,17 @@
     });
     window.open(routeUrl.href, '_blank');
   }
+
+  onMounted(() => {
+    //获取个人信息
+    request.get('/api/mymsg', { headers: { token: getToken()! } }).then((res: any) => {
+      // console.log(res);
+      res = res.data;
+      let username = res.username ? res.username : 'XXu';
+      let avatar = res.avatar ? res.avatar : '@/assets/images/defaultAvatar.jpg';
+      useUserStore().updateUser(username, avatar);
+    });
+  });
 </script>
 
 <style lang="less" scoped>
@@ -251,6 +267,9 @@
         color: white;
         background-color: @themecolor;
       }
+    }
+    @media (max-width: 750px) {
+      display: none;
     }
   }
 

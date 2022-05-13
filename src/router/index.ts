@@ -64,7 +64,7 @@ export const constantRoutes = [
         }
       },
       {
-        path: 'notedetail',
+        path: '/notedetail/:id',
         name: 'notedetail',
         component: () => import('@/views/Notedetail/index.vue'),
         meta: {

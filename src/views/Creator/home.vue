@@ -2,10 +2,10 @@
   <div class="home">
     <div class="person_msg">
       <div class="person_avatar">
-        <img src="@/assets/avatar.png" alt="" />
+        <img :src="useUserStore().avatar" alt="" />
       </div>
       <div class="person_detail">
-        <p class="person_name text-xl text-bold text-black">XXu</p>
+        <p class="person_name text-xl text-bold text-black">{{ useUserStore().username }}</p>
         <p><span>0 </span>关注&nbsp;&nbsp;&nbsp;&nbsp; <span>0 </span>粉丝&nbsp;&nbsp;&nbsp;&nbsp; <span>0 </span>获赞&nbsp;&nbsp;&nbsp;&nbsp; ID号： 4359349073</p>
         <p class="person_introduce">还没有简介</p>
       </div>
@@ -28,6 +28,8 @@
 
 <script setup lang="ts">
   import CreatorTitle from '@/components/CreatorTitle.vue';
+  import request from '@/utils/request';
+  import { useUserStore } from '@/store/user';
   const datas = [
     {
       title: '新增粉丝',

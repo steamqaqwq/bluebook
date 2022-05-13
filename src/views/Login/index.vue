@@ -23,27 +23,27 @@
           <span class="iconfont text-3xl" :class="curIcon"></span>
         </div>
         <div class="outerbox relative">
-          <keep-alive>
-            <template v-if="curLoginType == 0">
-              <div class="text-xl font-bold text-left mb-5">短信登录</div>
-              <el-row>
-                <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="Iphone" />
-              </el-row>
-              <el-row class="relative">
-                <el-input :prefix-icon="Message" v-model="formdata.password" class="w-50 m-2 login-input" placeholder="验证码" />
-                <div class="sendCode" :style="{ color: formdata.username ? '#818cf8' : '#888', cursor: formdata.username ? 'pointer' : 'no-drop' }" @click="sendCode">发送验证码</div>
-              </el-row>
-              <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
-            </template>
-            <template v-else>
-              <div class="text-xl font-bold text-left mb-5">用户名密码登录</div>
-              <el-row>
-                <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="用户名" :prefix-icon="User" />
-              </el-row>
-              <el-row> <el-input v-model="formdata.password" class="w-50 m-2 login-input" placeholder="密码" :prefix-icon="Lock" /></el-row>
-              <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
-            </template>
-          </keep-alive>
+          <!-- <keep-alive> -->
+          <template v-if="curLoginType == LoginType.message">
+            <div class="text-xl font-bold text-left mb-5">短信登录</div>
+            <el-row>
+              <el-input v-model.number="formdata.username" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="Iphone" />
+            </el-row>
+            <el-row class="relative">
+              <el-input :prefix-icon="Message" v-model="formdata.password" class="w-50 m-2 login-input" placeholder="验证码" />
+              <div class="sendCode" :style="{ color: formdata.username ? '#818cf8' : '#888', cursor: formdata.username ? 'pointer' : 'no-drop' }" @click="formdata.username ? sendCode() : ''">发送验证码</div>
+            </el-row>
+            <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
+          </template>
+          <template v-else-if="curLoginType == LoginType.password">
+            <div class="text-xl font-bold text-left mb-5">手机密码登录</div>
+            <el-row>
+              <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="User" />
+            </el-row>
+            <el-row> <el-input v-model="formdata.password" type="password" class="w-50 m-2 login-input" placeholder="密码" :prefix-icon="Lock" /></el-row>
+            <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
+          </template>
+          <!-- </keep-alive> -->
         </div>
       </div>
     </div>
@@ -54,36 +54,50 @@
 <script setup lang="ts">
   import { data } from '@/api/login';
   import { Message, User, Lock, Iphone } from '@element-plus/icons-vue';
-  import { reactive, ref } from 'vue';
+  import { reactive, ref, computed } from 'vue';
   import { useRouter } from 'vue-router';
+  import { ElMessage } from 'element-plus';
+  import { setToken } from '@/utils/auth';
   import request from '@/utils/request';
   import anime from 'animejs';
-  enum loginType {
+  const $router = useRouter();
+
+  // 0为Password 1为message
+  enum LoginType {
     password,
     message
   }
-  const curLoginType = ref(loginType.password);
-  const curIcon = ref<string>('icon-duanxinyanzheng');
+  const curLoginType = ref(LoginType.message);
+  const curIcon = computed(() => {
+    return curLoginType.value == LoginType.password ? 'icon-duanxinyanzheng' : 'icon-mima';
+  });
   const changeIcon = () => {
+    console.log(curIcon.value == 'icon-duanxinyanzheng');
     if (curIcon.value == 'icon-mima') {
-      curIcon.value = 'icon-duanxinyanzheng';
-      curLoginType.value = loginType.password;
-    } else {
-      curIcon.value = 'icon-mima';
-      curLoginType.value = loginType.message;
+      curLoginType.value = LoginType.password;
+    } else if (curIcon.value == 'icon-duanxinyanzheng') {
+      curLoginType.value = LoginType.message;
     }
   };
-  console.log('curLoginType', curLoginType);
+  // console.log('curLoginType', curLoginType);
+  // 既是密码登录也是短信验证
   const formdata = reactive({
     username: '',
     password: ''
   });
 
   function login(loginType): void {
-    const $router = useRouter();
     // 短信验证
-    if (loginType == 0) {
-      request({
+    if (formdata.username == '' && formdata.password == '') {
+      ElMessage({
+        message: '手机号或密码不能为空',
+        type: 'error'
+      });
+      return;
+    }
+    let promise;
+    if (loginType == LoginType.message) {
+      promise = request({
         url: '/person/login/verify',
         method: 'post',
         params: {
@@ -91,11 +105,9 @@
           verify: formdata.password
         },
         headers: { person: 'person' }
-      }).then((res) => {
-        console.log(res, 'login');
       });
-    } else if (loginType == 1) {
-      request({
+    } else if (loginType == LoginType.password) {
+      promise = request({
         url: '/person/login/password',
         method: 'post',
         params: {
@@ -103,27 +115,23 @@
           password: formdata.password
         },
         headers: { person: 'person' }
-      }).then((res) => {
-        if ((res as any).code == 200) {
-          $router.push({ path: '/' });
-        }
       });
     }
-    // 密码登录
-
-    // request({
-    //   url: '/person/login/password',
-    //   method: 'POST',
-    //   params: {
-    //     phonenumber: formdata.username,
-    //     password: formdata.password
-    //   },
-    //   headers: { person: 'person' }
-    // }).then((res) => {
-    //   if ((res as any).code == 200) {
-    //     $router.push({ name: 'index' });
-    //   }
-    // });
+    promise.then((res) => {
+      if (res.code == 200) {
+        ElMessage({
+          message: '登录成功！',
+          type: 'success'
+        });
+        setToken(res.token);
+        $router.push({ path: '/' });
+      } else {
+        ElMessage({
+          message: '登录失败！手机号或密码错误！',
+          type: 'error'
+        });
+      }
+    });
   }
   // 处理动画
   setTimeout(() => {
@@ -145,16 +153,29 @@
 
   //发送验证码
   function sendCode() {
-    request({
-      url: '/person/verification',
-      method: 'GET',
-      params: {
-        phonenumber: formdata.username
-      }
-    }).then((res: any) => {
-      // 弹窗
-      formdata.password = res.verify;
-    });
+    //测试手机号码正则
+    let reg = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+    if (reg.test(formdata.username)) {
+      ElMessage({
+        message: '短信发送成功!',
+        type: 'success'
+      });
+      request({
+        url: '/person/verification',
+        method: 'GET',
+        params: {
+          phonenumber: formdata.username
+        }
+      }).then((res: any) => {
+        // 弹窗
+        formdata.password = res.verify;
+      });
+    } else {
+      ElMessage({
+        message: '请输入有效的手机号码!',
+        type: 'error'
+      });
+    }
   }
 </script>
 
