@@ -1,11 +1,13 @@
 <template>
   <div class="header">
     <div class="inner-header">
-      <div class="logo"></div>
+      <router-link target="_blank" :to="{ path: '/' }">
+        <div class="logo"></div>
+      </router-link>
       <div class="user_avatar">
         <div>username</div>
         <div class="avatar">
-          <img src="@/assets/images/门诊服务.png" alt="" />
+          <img src="@/assets/images/defaultAvatar.jpg" alt="" />
           <div class="user_fun">
             <ul>
               <li>退出账号</li>

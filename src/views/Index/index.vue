@@ -1,7 +1,6 @@
 <template>
   <div class="header">
     <div class="logo"></div>
-
     <div class="nav">
       <ul class="navlist" ref="ulList">
         <li v-for="(item, index) in navlist" :key="item.title" @mouseover="changeHoverClass(index + 1)" @mouseleave="changeHoverClassLeave">
@@ -257,5 +256,6 @@
 
   .containerbox {
     // background-color: @bg1;
+    background-color: @bg_wrapper;
   }
 </style>

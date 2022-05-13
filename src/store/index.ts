@@ -1,9 +1,15 @@
-import {defineStore} from 'pinia'
-export default defineStore({
-    id:'main',
-    state:()=>{
-        return {
-            count:29
-        }
-    }
-})
+import { createPinia } from 'pinia';
+import piniaPluginPersist from 'pinia-plugin-persist';
+const store = createPinia();
+store.use(piniaPluginPersist);
+
+export default store;
+
+// export default defineStore({
+//   id: 'main',
+//   state: () => {
+//     return {
+//       count: 29
+//     };
+//   }
+// });

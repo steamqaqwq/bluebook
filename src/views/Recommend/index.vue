@@ -46,7 +46,6 @@
       }, 300)
     );
     // window.addEventListener('resize', () => {
-
     //     // let columns = Math.floor(window.innerWidth / 200);
     //     // console.log('columns', window.innerWidth);
     //     // initColumns.value = columns > 5 ? 5 : columns;

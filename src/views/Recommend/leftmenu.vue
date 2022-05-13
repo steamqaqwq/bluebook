@@ -23,6 +23,7 @@
     padding: 1px;
     max-width: 100px;
     position: sticky;
+    overflow: hidden;
     top: 10%;
     z-index: 100;
     // padding:10px;
@@ -37,6 +38,7 @@
         display: flex;
       }
       margin-left: 0;
+      overflow: initial;
     }
   }
 </style>
