@@ -1,7 +1,7 @@
 <template>
   <div class="AttentionFans">
     <div class="close" @click="emit('close')"></div>
-    <div class="title text-2xl text-bold-500">我的好友</div>
+    <div class="title web-font text-2x">我的好友</div>
     <div class="navs">
       <div class="nav" v-for="(nav, index) in navs" @click="curIndex = index" :class="{ active: curIndex == index }">{{ nav }}</div>
     </div>
@@ -11,7 +11,7 @@
           <img :src="user.avatar" alt="" />
         </div>
         <div class="user_brief">
-          <p class="username">{{ user.username }}</p>
+          <p class="username web-font-ku">{{ user.username }}</p>
           <p class="userbrief truncate text-gray-400 text-xs">{{ user.description }}</p>
         </div>
         <button class="followBtn" @click="follow(user.isFollow)">{{ user.isFollow ? '取消关注' : '关注' }}</button>
@@ -70,6 +70,22 @@
 </script>
 
 <style lang="less" scoped>
+  //定义字体
+  @font-face {
+    font-family: 'webfont';
+    font-display: swap;
+    src: url('//at.alicdn.com/t/webfont_qg05n99i5qp.eot'); /* IE9*/
+    src: url('//at.alicdn.com/t/webfont_qg05n99i5qp.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('//at.alicdn.com/t/webfont_qg05n99i5qp.woff2') format('woff2'), url('//at.alicdn.com/t/webfont_qg05n99i5qp.woff') format('woff'), /* chrome、firefox */ url('//at.alicdn.com/t/webfont_qg05n99i5qp.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/ url('//at.alicdn.com/t/webfont_qg05n99i5qp.svg#杨任东竹石体-Bold') format('svg'); /* iOS 4.1- */
+  }
+  .web-font {
+    font-family: 'webfont' !important;
+    font-style: normal;
+    font-size: 23px;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   .AttentionFans {
     display: flex;
     flex-direction: column;

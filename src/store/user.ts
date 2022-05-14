@@ -13,7 +13,7 @@ export const useUserStore = defineStore({
     updateUser(username, avatar) {
       this.username = username;
       this.avatar = avatar;
-      useRouter().push({path:'/'})
+      // useRouter().push({path:'/'})
     },
     logout(){
       this.username= '';

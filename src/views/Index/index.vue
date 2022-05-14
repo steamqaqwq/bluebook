@@ -3,7 +3,7 @@
     <div class="logo"></div>
     <div class="nav">
       <ul class="navlist" ref="ulList">
-        <li v-for="(item, index) in navlist" :key="item.title" @mouseover="changeHoverClass(index + 1)" @mouseleave="changeHoverClassLeave">
+        <li v-for="(item, index) in navList" :key="item.title" @mouseover="changeHoverClass(index + 1)" @mouseleave="changeHoverClassLeave">
           <router-link class="text-xl" :class="{ active: (hover || curIndex == initIndex) && curIndex == index + 1 }" :to="item.to" active-class="nav_active">{{ item.title }}</router-link>
         </li>
         <div class="slider" :style="{ left: curLeftValue }" :class="{ initleft: isExactActive }"></div>
@@ -36,17 +36,21 @@
 <script setup lang="ts">
   import { onMounted, ref, reactive, watch, computed } from 'vue';
   import Search from '@/components/search.vue';
-  import { banners, kss, navlist } from '../../api/index';
+  import { navlist } from '../../api/index';
   import { RouterLink, useLink } from 'vue-router';
   import { useRouter, onBeforeRouteUpdate } from 'vue-router';
   import { Plus } from '@element-plus/icons-vue';
   import { getToken } from '@/utils/auth';
-  import request from '@/utils/requestMock';
+  import requestMock from '@/utils/requestMock';
+  import request from '@/utils/request';
   import { useUserStore } from '@/store/user';
 
   const { route, href, isActive, isExactActive, navigate } = useLink((RouterLink as any).props);
   const $router = useRouter();
   const $store = useUserStore();
+
+  // 初始化列表
+  const navList = ref(navlist);
   // 初始化标签
   let initIndex = ref((route.value.meta.index as number) || 2);
   let hover = ref(false);
@@ -89,12 +93,27 @@
 
   onMounted(() => {
     //获取个人信息
-    request.get('/api/mymsg', { headers: { token: getToken()! } }).then((res: any) => {
+    requestMock.get('/api/mymsg', { headers: { token: getToken()! } }).then((res: any) => {
       // console.log(res);
       res = res.data;
       let username = res.username ? res.username : 'XXu';
       let avatar = res.avatar ? res.avatar : '@/assets/images/defaultAvatar.jpg';
       useUserStore().updateUser(username, avatar);
+
+      // 获取IP地址信息 修改navList信息
+      let ip = (window as any).returnCitySN.cip;
+      // ak  F4oiQviHpdsR3rIuEafCWmPInZgIok4P
+      // ip 183.236.187.196
+      fetch(`http://localhost:3000/baiduapi/location/ip?ak=F4oiQviHpdsR3rIuEafCWmPInZgIok4P&ip=${ip}&coor=bd09ll`, {
+        method: 'GET'
+      })
+        .then((res: any) => res.json())
+        .then((data) => {
+          console.log(data);
+          let city = data.content.address_detail.city;
+          city = city.replace('市', '');
+          navList.value[2].title = city;
+        });
     });
   });
 </script>

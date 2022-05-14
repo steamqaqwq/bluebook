@@ -121,7 +121,7 @@
       flex-direction: column;
       width: 300px;
       max-height: 500px;
-      align-items: center;
+      // align-items: center;
       position: sticky;
       top: 10%;
       .author_card {
@@ -163,23 +163,26 @@
       .fav_funcs {
         display: flex;
         flex-direction: column;
-        // width: 100px;
         padding: 15px;
-        background-color: @themecolor2;
+        width: 100px;
+        margin-left: 25px;
+        background: linear-gradient(to top right, #ffffff, #9198e5);
         border-radius: 10px;
         margin-top: 50px;
         p {
           text-align: left;
         }
         span {
-          color: #eadfdf;
+          // color: #eadfdf;
+          // color: @themecolor2;
+          color: #fff;
         }
         .span1 {
           font-size: 24px;
           margin: 20px 10px;
           cursor: pointer;
           &:hover {
-            color: #fff;
+            color: @themecolor2;
           }
         }
         .span2 {

@@ -48,6 +48,13 @@
         border: 1px solid @themecolor;
         width: 200px;
       }
+      @media (min-width: @lg) {
+        width: 250px;
+        height: 40px;
+        &:focus {
+          width: 300px;
+        }
+      }
     }
 
     .icon-search {

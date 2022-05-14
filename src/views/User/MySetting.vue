@@ -8,7 +8,7 @@
       <el-form-item label="名字">
         <el-input v-model="formdata.name" placeholder=""></el-input>
       </el-form-item>
-      <el-form-item label="小蓝书号">
+      <el-form-item label="ID号">
         <el-input disabled v-model="formdata.id"></el-input>
       </el-form-item>
       <el-form-item label="简介">
