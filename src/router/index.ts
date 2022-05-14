@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router';
 import Index from '@/views/Index/index.vue';
 import Login from '@/views/Login/index.vue';
+import errorpage from '@/views/Error/index.vue';
 export const constantRoutes = [
   {
     path: '/login',
@@ -137,6 +138,20 @@ const userRoute = [
     }
   }
 ];
+const errorRoute = [
+  {
+    path:'/error',
+    name:'error',
+    component: errorpage,
+    meta:{
+      title:'404'
+    }
+  },
+  {
+    path: "/:catchAll(.*)",
+    redirect: { name: "error" }
+}
+]
 // const searchRoute = [
 //   {
 //     path:'/search/:key',
@@ -147,7 +162,7 @@ const userRoute = [
 // ]
 const router = createRouter({
   history: createWebHistory(),
-  routes: [...constantRoutes, ...creatorRoute, ...userRoute]
+  routes: [...constantRoutes, ...creatorRoute, ...userRoute,...errorRoute]
 });
 
 router.afterEach((to, from) => {

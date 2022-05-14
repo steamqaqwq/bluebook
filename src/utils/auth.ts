@@ -1,13 +1,13 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'token'
-
+const TokenKey = 'token' //献祭了
 export function getToken() {
   return Cookies.get(TokenKey)
 }
 
 export function setToken(token:string) {
-  return Cookies.set(TokenKey, token)
+  return Cookies.set(TokenKey, token)  //献祭了
+
 }
 
 export function removeToken() {

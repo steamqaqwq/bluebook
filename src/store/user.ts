@@ -13,12 +13,13 @@ export const useUserStore = defineStore({
     updateUser(username, avatar) {
       this.username = username;
       this.avatar = avatar;
-      removeToken()
       useRouter().push({path:'/'})
     },
     logout(){
       this.username= '';
       this.avatar =  '';
+      removeToken();
+      location.reload()
     }
   },
   // 开启数据缓存
