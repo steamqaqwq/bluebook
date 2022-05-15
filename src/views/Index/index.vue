@@ -85,9 +85,20 @@
 
   // 路由跳转到新窗口
   function jumpNewWindow(routeName) {
-    const routeUrl = $router.resolve({
-      name: routeName
-    });
+    let routeUrl;
+    if (routeName == 'my') {
+      routeUrl = $router.resolve({
+        name: routeName,
+        params: {
+          userid: $store.userid
+        }
+      });
+    } else {
+      routeUrl = $router.resolve({
+        name: routeName
+      });
+    }
+
     window.open(routeUrl.href, '_blank');
   }
 
@@ -98,7 +109,8 @@
       res = res.data;
       let username = res.username ? res.username : 'XXu';
       let avatar = res.avatar ? res.avatar : '@/assets/images/defaultAvatar.jpg';
-      useUserStore().updateUser(username, avatar);
+      let id = res.userid;
+      useUserStore().updateUser(username, avatar, id);
 
       // 获取IP地址信息 修改navList信息
       let ip = (window as any).returnCitySN.cip;
@@ -138,6 +150,9 @@
         .search-1 {
           display: none;
         }
+      }
+      @media (min-width: @lg_p) {
+        // max-width:
       }
     }
     .usermsg {

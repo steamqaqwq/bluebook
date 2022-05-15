@@ -14,7 +14,7 @@
     </div>
 
     <div class="show_main" ref="outerbox">
-      <show-notes :max-columns="4" :outer-width="outerwidth" :note-width="220"></show-notes>
+      <show-notes :max-columns="4" :outer-width="outerwidth" :note-width="200"></show-notes>
     </div>
   </div>
 </template>
@@ -85,7 +85,8 @@
   .show_main {
     // height: 580px;
     margin-top: 20px;
-    overflow-x: auto;
+    margin-left: 10px;
+    // overflow-x: auto;
   }
   .active {
     color: @themecolor2;

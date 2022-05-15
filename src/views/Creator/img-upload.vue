@@ -44,7 +44,7 @@
           <p class="tip_title">图片数量</p>
           <p>支持最多9张图片上传</p>
         </div>
-        <el-progress type="circle" :percentage="progressConfig.progressPercent" />
+        <!-- <el-progress type="circle" :percentage="progressConfig.progressPercent" /> -->
       </div>
     </div>
   </div>

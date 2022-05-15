@@ -51,9 +51,20 @@
     position: relative;
     margin: 0 auto;
     // background: #fff;
+    @media (max-width: @md_p) {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
     .outer_box {
       width: 80%;
       margin-right: 30px;
+      @media (max-width: @md) {
+        // width: initial;
+        width: 100%;
+        margin-right: 0;
+        // margin-right: initial;
+        padding: 10px;
+      }
     }
     // overflow: hidden;
     .filter_nav {
@@ -83,5 +94,8 @@
   .ranks_show {
     // position: fixed;
     // right: 20px;
+    @media (max-width: @md_p) {
+      display: none;
+    }
   }
 </style>

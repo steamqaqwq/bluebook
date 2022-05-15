@@ -1,7 +1,7 @@
 <template>
   <!-- <div class="">笔记班车</div> -->
   <div class="show_notes" ref="notesElement">
-    <show-notes :max-columns="2" :outer-width="outerwidth!"></show-notes>
+    <show-notes :max-columns="2" :outer-width="outerwidth!" :noteWidth="200"></show-notes>
   </div>
 </template>
 

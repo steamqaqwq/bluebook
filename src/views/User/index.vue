@@ -10,14 +10,14 @@
         <div class="user_id text-xs text-gray-400">id:234023098</div>
         <div class="user_status" v-for="(item, index) in statusData" :key="item.title" @click="openStatusDetail(index)">
           <p>{{ item.nums }}</p>
-          <p class="text-gray-400 text-sm">{{ item.title }}</p>
+          <p class="text-gray-400 text-sm xiawu">{{ item.title }}</p>
         </div>
         <div class="brief text-xl text-gray-700">个人简介</div>
-        <div class="my_brief text-gray-500">暂时没有简介~</div>
+        <div class="my_brief text-gray-500 xiawu">暂时没有简介~</div>
       </div>
       <div class="center">
         <div class="center_nav">
-          <div class="nav_item" :class="{ active: index == curIndex }" v-for="(nav, index) in navs" :key="index" @click="changeNav(index)">{{ nav }}</div>
+          <div class="nav_item xiawu text-xl" :class="{ active: index == curIndex }" v-for="(nav, index) in navs" :key="index" @click="changeNav(index)">{{ nav }}</div>
           <span class="iconfont icon-setting text-2xl text-blue-400 ml-auto cursor-pointer" @click="changeNav('setting')"></span>
         </div>
         <div class="center_main">
@@ -71,7 +71,7 @@
   // 当前显示的组件
   // const curNav = ref(0);
   // 当前导航索引
-  const curIndex = ref();
+  const curIndex = ref<string | number>(0);
   function changeNav(index) {
     curIndex.value = index;
   }
@@ -161,6 +161,9 @@
       width: 20%;
       padding: 20px 0;
       max-height: 600px;
+      @media (max-width: @md) {
+        display: none;
+      }
       .user_avatar {
         height: 80px;
         width: 80px;
@@ -192,9 +195,12 @@
       }
     }
     .center {
-      width: 50%;
+      // width: 50%;
       box-sizing: border-box;
       margin-right: 30px;
+      margin-top: 25px;
+      min-height: 600px;
+      width: 600px;
       .center_nav {
         width: 100%;
         padding: 20px 10px;
@@ -224,6 +230,9 @@
       padding: 20px 0;
       position: sticky;
       top: 15%;
+      @media (max-width: @md_p) {
+        display: none;
+      }
       .title {
         font-size: 20px;
         margin-bottom: 12px;

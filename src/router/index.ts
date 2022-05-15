@@ -130,7 +130,7 @@ const creatorRoute = [
 ];
 const userRoute = [
   {
-    path: '/my',
+    path: '/my/:userid',
     name: 'my',
     component: () => import('@/views/User/index.vue'),
     meta: {

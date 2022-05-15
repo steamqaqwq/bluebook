@@ -3,7 +3,7 @@
     <div class="title">上传视频</div>
     <div class="content">
       <div class="upload_video">
-        <el-upload class="upload-demo" :show-file-list="false" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
+        <el-upload class="upload-demo" :limit="1" :show-file-list="true" drag action="" :before-upload="handleBeforeUpload" :auto-upload="false">
           <el-icon class="el-icon--upload"><upload-filled /></el-icon>
           <div class="el-upload__text">拖拽视频或<em>点击上传</em></div>
           <!-- <template #tip>
@@ -36,7 +36,6 @@
         <div class="textarea_btns_fun">
           <div class="fun_face">
             <el-button type="primary" @click="isShowFaces = !isShowFaces">添加表情</el-button>
-
             <div class="faces" v-show="isShowFaces">
               <Picker :data="emojiIndex" set="apple" @select="showEmoji" class="faces_picker" :style="{ height: '180px' }" :showPreview="false" :i18n="i18n" :showSearch="false" color="#818cf8" />
             </div>
@@ -124,11 +123,18 @@
     // console.log(tags);
     return tags;
   };
-  const fileRawList = ref<{ raw: File }[]>([]);
-  const formdata = reactive({
+  const file = ref<{ raw: File }>();
+  interface formdataType {
+    title: string;
+    description: string;
+    tags: string[];
+    file: File | any;
+  }
+  const formdata: formdataType = reactive({
     title: '',
     description: '',
-    tags: ['rap', '篮球', '唱跳']
+    tags: [],
+    file: ''
   });
   // const fileList = ref<{ name: string; url: string }[]>([]);
   const dialogImageUrl = ref('');
@@ -157,9 +163,8 @@
     form.append('blogTheme', formdata.title);
     form.append('blogTalk', formdata.description);
     form.append('tag.tagNameArray', JSON.stringify(getTags()));
-    fileList.value.forEach((item) => {
-      form.append('files', item['raw']!);
-    });
+    form.append('file', formdata.file);
+    // 上传
     request({
       url: '/upload/image',
       method: 'POST',
@@ -177,25 +182,10 @@
     dialogVisible.value = true;
   };
   const handleBeforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
-    previewImage(rawFile);
-
+    formdata.file = rawFile;
     // (fileList as any).push({ name: rawFile.name, raw: rawFile });
     // console.log('fileList', toRaw(fileList));
   };
-
-  // 预加载图片
-  function previewImage(rawFile) {
-    try {
-      var src = window.URL.createObjectURL(rawFile);
-      // Array.prototype.push.call(fileList.value,);
-      fileList.value.push({ name: rawFile.name, url: src, raw: rawFile });
-      // target.onload = function () {
-      // 	window.URL.revokeObjectURL(this.src);
-      // };
-    } catch (e) {
-      throw new Error('游览器不支持URL');
-    }
-  }
 </script>
 
 <style lang="less" scoped>
@@ -328,15 +318,15 @@
     padding-bottom: 22px;
   }
   :deep(.pub-btn) {
-    // width: 200px;
-    width: 100%;
-    height: 80px;
-    color: @themecolor2;
+    width: 200px;
+    // width: 100%;
+    height: 50px;
+    color: #fff;
+    background-color: @themecolor2;
     font-size: 25px;
-    &:hover {
-      color: #fff;
-      background-color: @themecolor2;
-      border: none;
-    }
+    // &:hover {
+    //   color: @themecolor2;
+    //   border: none;
+    // }
   }
 </style>

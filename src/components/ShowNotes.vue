@@ -52,6 +52,7 @@
       noteWidth: 200
     }
   );
+  const noteWidthString = props.noteWidth + 'px';
   const notes = ref<note[]>([]);
   const length = ref();
   const initColumns = computed(() => {
@@ -205,7 +206,7 @@
     }
   }
   .note {
-    width: 200px;
+    width: v-bind(noteWidthString);
     display: flex;
     position: relative;
     flex-direction: column;
@@ -215,6 +216,7 @@
     background-color: #fff;
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
     border-radius: 8px;
+    margin-right: 10px;
     overflow: hidden;
     cursor: pointer;
     &:hover::before {

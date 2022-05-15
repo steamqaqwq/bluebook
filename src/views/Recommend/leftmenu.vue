@@ -1,9 +1,10 @@
 <template>
   <div class="navmenu">
     <el-menu default-active="0">
-      <el-menu-item v-for="(item, index) in navs" :key="item" :index="index.toString()">
-        <el-icon><icon-menu /></el-icon>
-        <template #title>{{ item }}</template>
+      <el-menu-item v-for="(item, index) in navs" :key="item.id" :index="index.toString()">
+        <!-- <el-icon><icon-menu /></el-icon> -->
+        <span class="iconfont text-xl mr-1" :class="[item.icon]"></span>
+        <template #title>{{ item.title }}</template>
       </el-menu-item>
     </el-menu>
   </div>
@@ -29,16 +30,32 @@
     // padding:10px;
     :deep(.el-menu) {
       border-right: none;
+      border-radius: 15px;
+      padding: 10px 0;
+      background: linear-gradient(to bottom, rgb(213, 204, 204), @themecolor3);
       .el-menu-item {
+        color: black;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
       }
+    }
+    .is-active {
+      background-color: #fff;
     }
     @media (max-width: @md) {
       :deep(.el-menu) {
         display: flex;
+        border-radius: 0;
+        background: none;
+        padding: 0;
       }
+      max-width: initial;
+      width: 125%;
       margin-left: 0;
       overflow: initial;
+
+      .is-active {
+        background: linear-gradient(to bottom, rgb(213, 204, 204), @themecolor3);
+      }
     }
   }
 </style>

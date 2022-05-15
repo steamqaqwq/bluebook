@@ -6,18 +6,21 @@ export const useUserStore = defineStore({
   state: () => {
     return {
       username: '',
-      avatar: ''
+      avatar: '',
+      userid:''
     };
   },
   actions: {
-    updateUser(username, avatar) {
+    updateUser(username, avatar,userid) {
       this.username = username;
       this.avatar = avatar;
+      this.userid = userid;
       // useRouter().push({path:'/'})
     },
     logout(){
       this.username= '';
       this.avatar =  '';
+      this.userid = '';
       removeToken();
       location.reload()
     }

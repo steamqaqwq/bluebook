@@ -7,7 +7,9 @@
       <div class="user_avatar">
         <div>{{ $store.username }}</div>
         <div class="avatar">
-          <img :src="$store.avatar" alt="" />
+          <router-link :to="{ name: 'my', params: { userid: $store.userid } }">
+            <img :src="$store.avatar" alt="" />
+          </router-link>
           <div class="user_fun">
             <ul>
               <li @click="$store.logout()">退出账号</li>
