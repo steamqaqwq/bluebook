@@ -18,10 +18,16 @@
 
 <script setup lang="ts">
   import CreatorTitle from '@/components/CreatorTitle.vue';
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
+  import request from '@/utils/request';
   const navs = ['全部笔记', '已发布', '审核中', '未通过'];
   const curIndex = ref(0);
   const notes = ref([]);
+  onMounted(() => {
+    request.get('/Myblog').then((res) => {
+      console.log('myblog', res);
+    });
+  });
 </script>
 
 <style lang="less" scoped>

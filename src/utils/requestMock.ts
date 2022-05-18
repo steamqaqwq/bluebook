@@ -2,7 +2,7 @@ import axios from 'axios';
 // import { ElNotification , ElMessageBox, ElMessage, ElLoading } from 'element-plus'
 import store from '@/store';
 import { getToken } from '@/utils/auth';
-
+import {useRoute} from 'vue-router' 
 const service = axios.create({
   //   baseURL: 'http://localhost:9090',
   timeout: 5000 // request timeout
@@ -16,6 +16,8 @@ service.interceptors.request.use(
     if (getToken()) {
       // config.headers['token'] = getToken()
     }
+    let url = config.url;
+    console.log('url',url)
     // }
     return config;
   },

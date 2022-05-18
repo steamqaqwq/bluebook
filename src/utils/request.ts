@@ -11,12 +11,19 @@ const service = axios.create({
 
 // request interceptor
 service.interceptors.request.use(
-  config => {
+  (config:any) => {
     // store.state.isloading = true
     // if (store.getters.token) {
       if(getToken()){
-        // config.headers['token'] = getToken()
+         config.headers['Authorization'] = getToken()!
       }
+      let url:string = config.url;
+      if(!url.includes('login')){
+        config.headers['person'] = 'person'
+      }
+      // if(){
+
+      // }
     // }
     return config
   },

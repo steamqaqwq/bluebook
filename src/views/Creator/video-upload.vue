@@ -3,7 +3,7 @@
     <div class="title">上传视频</div>
     <div class="content">
       <div class="upload_video">
-        <el-upload class="upload-demo" :limit="1" :show-file-list="true" drag action="" :before-upload="handleBeforeUpload" :auto-upload="false">
+        <el-upload class="upload-demo" :limit="1" :show-file-list="true" drag action="" :before-upload="handleBeforeUpload" :auto-upload="false" :file-list="fileList">
           <el-icon class="el-icon--upload"><upload-filled /></el-icon>
           <div class="el-upload__text">拖拽视频或<em>点击上传</em></div>
           <!-- <template #tip>
@@ -35,10 +35,12 @@
 
         <div class="textarea_btns_fun">
           <div class="fun_face">
+            <el-button type="primary" @click="insertEmoji(textArea, ' #')">#话题</el-button>
             <el-button type="primary" @click="isShowFaces = !isShowFaces">添加表情</el-button>
             <div class="faces" v-show="isShowFaces">
               <Picker :data="emojiIndex" set="apple" @select="showEmoji" class="faces_picker" :style="{ height: '180px' }" :showPreview="false" :i18n="i18n" :showSearch="false" color="#818cf8" />
             </div>
+            <el-progress class="progress" type="circle" :percentage="progressConfig.progressPercent" />
           </div>
         </div>
         <el-button class="pub-btn text-black w-20" @click="submitUpload"> 点击发布 </el-button>
@@ -51,6 +53,7 @@
   import { UploadFilled } from '@element-plus/icons-vue';
   import { ref, reactive, toRaw, onMounted } from 'vue';
   import { Plus } from '@element-plus/icons-vue';
+  import { ElMessage, ElNotification } from 'element-plus';
   import request from '@/utils/request';
   import type { UploadProps, UploadUserFile, UploadInstance, UploadRequestHandler } from 'element-plus';
   //表情相关
@@ -128,13 +131,11 @@
     title: string;
     description: string;
     tags: string[];
-    file: File | any;
   }
   const formdata: formdataType = reactive({
     title: '',
     description: '',
-    tags: [],
-    file: ''
+    tags: []
   });
   // const fileList = ref<{ name: string; url: string }[]>([]);
   const dialogImageUrl = ref('');
@@ -159,18 +160,45 @@
       }
     };
     progressConfig.progressFlag = true;
+
     let form = new FormData();
     form.append('blogTheme', formdata.title);
     form.append('blogTalk', formdata.description);
     form.append('tag.tagNameArray', JSON.stringify(getTags()));
-    form.append('file', formdata.file);
+    fileList.value.forEach((item) => {
+      form.append('files', item['raw']!);
+    });
     // 上传
     request({
       url: '/upload/image',
       method: 'POST',
-      data: form
-    }).then((res) => {
-      console.log('上传', res);
+      data: form,
+      headers: {
+        type: 'video'
+      },
+      onUploadProgress: (progressEvent) => {
+        // progressEvent.loaded:已上传文件大小
+        // progressEvent.total:被上传文件的总大小
+
+        progressConfig.progressPercent = Number((progressEvent.loaded / progressEvent.total).toFixed(2));
+      }
+    }).then((res: any) => {
+      if (res.code == 200) {
+        progressConfig.progressPercent = 100;
+        ElNotification({
+          title: '上传通知',
+          message: res.msg,
+          type: 'success',
+          offset: 200
+        });
+      } else {
+        ElNotification({
+          title: '上传通知',
+          message: res.msg,
+          type: 'error',
+          offset: 200
+        });
+      }
     });
   }
   const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
@@ -182,7 +210,7 @@
     dialogVisible.value = true;
   };
   const handleBeforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
-    formdata.file = rawFile;
+    fileList.value.push(rawFile);
     // (fileList as any).push({ name: rawFile.name, raw: rawFile });
     // console.log('fileList', toRaw(fileList));
   };
@@ -193,7 +221,7 @@
     padding: 20px;
     box-sizing: border-box;
     min-height: 800px;
-    min-width: 1000px;
+    min-width: 600px;
     width: auto;
     border-radius: 8px;
     background-color: #fff;
@@ -287,9 +315,11 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+    position: relative;
     margin: 10px 0 20px;
+    width: 100%;
     .fun_face {
-      position: relative;
+      // position: relative;
       display: block;
       .faces_picker {
         height: 180px;
@@ -324,9 +354,10 @@
     color: #fff;
     background-color: @themecolor2;
     font-size: 25px;
-    // &:hover {
-    //   color: @themecolor2;
-    //   border: none;
-    // }
+  }
+  .progress {
+    position: absolute;
+    right: 10%;
+    bottom: -90px;
   }
 </style>

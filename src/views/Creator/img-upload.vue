@@ -16,6 +16,8 @@
 
       <div class="textarea_btns_fun">
         <div class="fun_face">
+          <el-button type="primary" @click="insertEmoji(textArea, ' #')">#话题</el-button>
+
           <el-button type="primary" @click="isShowFaces = !isShowFaces">添加表情</el-button>
 
           <div class="faces" v-show="isShowFaces">
@@ -33,18 +35,18 @@
       <div class="upload_tips">
         <div class="tip">
           <p class="tip_title">图片大小</p>
-          <p>支持时长5分钟以内，</p>
-          <p>最大10GB的视频文件</p>
+          <p>图片大小最大10M</p>
+          <p></p>
         </div>
         <div class="tip">
           <p class="tip_title">图片格式</p>
-          <p>目前仅支持.jpg</p>
+          <p>仅支持.jpg .jpeg</p>
         </div>
         <div class="tip">
           <p class="tip_title">图片数量</p>
-          <p>支持最多9张图片上传</p>
+          <p>支持最多9张图片同时上传</p>
         </div>
-        <!-- <el-progress type="circle" :percentage="progressConfig.progressPercent" /> -->
+        <el-progress class="progress" type="circle" :percentage="progressConfig.progressPercent" />
       </div>
     </div>
   </div>
@@ -54,6 +56,7 @@
   import { UploadFilled } from '@element-plus/icons-vue';
   import { ref, reactive, toRaw, onMounted } from 'vue';
   import { Plus } from '@element-plus/icons-vue';
+  import { ElMessage, ElNotification } from 'element-plus';
   import request from '@/utils/request';
   import type { UploadProps, UploadUserFile, UploadInstance, UploadRequestHandler } from 'element-plus';
   //表情相关
@@ -86,6 +89,7 @@
   function showEmoji(emoji) {
     insertEmoji(textArea.value, emoji.native);
   }
+
   const textArea = ref();
   function insertEmoji(textArea, emoji: string) {
     if (window.getSelection()) {
@@ -146,12 +150,13 @@
   }
   const uploadRef = ref<UploadInstance>();
   function submitUpload() {
+    progressConfig.progressPercent = 0;
     const config = {
       //axios 进度条事件
       onUploadProgress: (progressEvent) => {
         // progressEvent.loaded:已上传文件大小
         // progressEvent.total:被上传文件的总大小
-        progressConfig.progressPercent = Number(((progressEvent.loaded / progressEvent.total) * 90).toFixed(2));
+        progressConfig.progressPercent = Number((progressEvent.loaded / progressEvent.total).toFixed(2));
       }
     };
     progressConfig.progressFlag = true;
@@ -165,9 +170,33 @@
     request({
       url: '/upload/image',
       method: 'POST',
-      data: form
-    }).then((res) => {
-      console.log('上传', res);
+      data: form,
+      headers: {
+        type: 'image'
+      },
+      onUploadProgress: (progressEvent) => {
+        // progressEvent.loaded:已上传文件大小
+        // progressEvent.total:被上传文件的总大小
+
+        progressConfig.progressPercent = Number((progressEvent.loaded / progressEvent.total).toFixed(2));
+      }
+    }).then((res: any) => {
+      if (res.code == 200) {
+        progressConfig.progressPercent = 100;
+        ElNotification({
+          title: '上传通知',
+          message: res.msg,
+          type: 'success',
+          offset: 200
+        });
+      } else {
+        ElNotification({
+          title: '上传通知',
+          message: res.msg,
+          type: 'error',
+          offset: 200
+        });
+      }
     });
   }
   const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
@@ -205,7 +234,7 @@
     padding: 20px;
     box-sizing: border-box;
     min-height: 650px;
-    min-width: 1000px;
+    min-width: 500px;
     width: auto;
     border-radius: 8px;
     background-color: #fff;
@@ -252,7 +281,19 @@
       margin-top: 40px;
       display: flex;
       flex-direction: row;
+      width: 100%;
+
       justify-content: space-between;
+      @media (max-width: @lg_p) {
+        flex-direction: column;
+        align-items: center;
+        .tip {
+          margin-top: 20px !important;
+          width: 100% !important;
+          transition: all 0.5s;
+          margin: 0 auto;
+        }
+      }
       .tip {
         display: flex;
         flex-direction: column;
@@ -335,11 +376,29 @@
   :deep(.pub-btn) {
     width: 200px;
     height: 80px;
-    color: @themecolor2;
+    // color: @themecolor2;
+    background-color: @themecolor2;
+    color: #fff;
     &:hover {
       color: #fff;
       background-color: @themecolor2;
       border: none;
+    }
+  }
+  .progress {
+    position: absolute;
+    right: 20%;
+    top: 50%;
+    transform: translateY(-50%);
+    @media (max-width: @lg_p) {
+      right: 20%;
+      top: 74%;
+    }
+    @media (max-width: @lg_m) {
+      right: 5%;
+    }
+    @media (max-width: @md_p) {
+      right: 5%;
     }
   }
 </style>

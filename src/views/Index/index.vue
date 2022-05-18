@@ -15,7 +15,7 @@
         <Search class="search-1"></Search>
       </div>
       <div class="usermsg">
-        <router-link to="/search" class="search-2 mr-5"><span class="iconfont icon-search relative hover:text-indigo-500 text-2xl"></span></router-link>
+        <router-link to="/search" class="search-2 mr-5"><span @click="expandSearch" class="iconfont icon-search relative hover:text-indigo-500 text-2xl"></span></router-link>
         <div class="avatar" @click="jumpNewWindow('my')">
           <img :src="$store.avatar" alt="" />
         </div>
@@ -101,7 +101,7 @@
 
     window.open(routeUrl.href, '_blank');
   }
-
+  function expandSearch() {}
   onMounted(() => {
     //获取个人信息
     requestMock.get('/api/mymsg', { headers: { token: getToken()! } }).then((res: any) => {

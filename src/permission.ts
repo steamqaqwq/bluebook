@@ -29,7 +29,7 @@ router.beforeEach(async(to, from, next) => {
   } else {
     // 未登录
     // 测试放行 
-    next()
+    // next()
     if (whiteList.indexOf(to.path) !== -1) {
       // 非白名单直接过
       next()

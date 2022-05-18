@@ -103,8 +103,7 @@
         params: {
           phonenumber: formdata.username,
           verify: formdata.password
-        },
-        headers: { person: 'person' }
+        }
       });
     } else if (loginType == LoginType.password) {
       promise = request({
@@ -113,8 +112,7 @@
         params: {
           phonenumber: formdata.username,
           password: formdata.password
-        },
-        headers: { person: 'person' }
+        }
       });
     }
     promise.then((res) => {
