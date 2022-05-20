@@ -198,9 +198,13 @@
       // width: 50%;
       box-sizing: border-box;
       margin-right: 30px;
-      margin-top: 25px;
+      margin-top: 10px;
+
       min-height: 600px;
       width: 600px;
+      @media (max-width: @md) {
+        margin-right: 0;
+      }
       .center_nav {
         width: 100%;
         padding: 20px 10px;

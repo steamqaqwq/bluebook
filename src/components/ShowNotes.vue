@@ -1,6 +1,6 @@
 <template>
   <div class="main_box" v-if="notesList.length">
-    <div class="column" v-for="notes in notesList">
+    <div class="column" v-for="(notes, index) in notesList" :key="index">
       <div
         class="note"
         v-for="note in notes"
@@ -15,7 +15,7 @@
         "
       >
         <div class="note_cover" :class="{ animation: isanimate }">
-          <img src="@/assets/images/imgLoading.png" @load="loadImage(note.cover, $event)" @alt="" />
+          <img src="/public/imgLoading.png" @load="loadImage(note.cover, $event)" @error="" @alt="" />
         </div>
         <div class="video_icon" v-show="note.isVideo"><span class="iconfont icon-videofill text-xl text-white"></span></div>
         <div class="note_title">{{ note.title }}</div>
@@ -40,6 +40,7 @@
   import request from '@/utils/requestMock';
   import { onMounted, ref, reactive, watch, watchEffect, nextTick, computed } from 'vue';
   import useColumns from '@/hooks/useColumns';
+
   const props = withDefaults(
     defineProps<{
       maxColumns: number;
@@ -243,7 +244,9 @@
 
   .note_cover {
     width: 100%;
-    // min-height
+    min-height: 250px;
+    height: auto;
+    position: relative;
     filter: blur(v-bind(blurSet));
     //
     // animation:
@@ -254,6 +257,21 @@
       height: auto;
       max-height: 300px;
     }
+    // &::before {
+    //   display: block;
+    //   content: '';
+    //   position: absolute;
+    //   width: 100%;
+    //   height: 250px;
+    //   transform: translateX(-100%);
+    //   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    //   animation: loading 1.5s infinite;
+    // }
+    // @keyframes loading {
+    //   100% {
+    //     transform: translateX(100%);
+    //   }
+    // }
   }
   .animation {
     animation: flash 3s ease-in-out infinite;

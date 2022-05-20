@@ -13,6 +13,9 @@ const localEnabled: boolean = process.env.NODE_ENV === 'development' || false;
 const prodEnabled: boolean = process.env.NODE_ENV === 'production' || false;
 //setup增强
 import VueSetupExtend from 'vite-plugin-vue-setup-extend';
+// 自动记录引入资源， vite->webpack
+import OptimizationPersist from 'vite-plugin-optimize-persist';
+import PkgConfig from 'vite-plugin-package-config';
 
 const path = require('path');
 // https://vitejs.dev/config/
@@ -37,7 +40,10 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()]
     }),
     //setup增强
-    VueSetupExtend()
+    VueSetupExtend(),
+    //vite -> webpack
+    PkgConfig(),
+    OptimizationPersist()
   ],
   resolve: {
     alias: {
@@ -62,5 +68,8 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/baiduapi/, '')
       }
     }
+  },
+  optimizeDeps: {
+    include: ['vue', '@element-plus/icons-vue', 'pinia', 'axios', 'vue-router']
   }
 });
