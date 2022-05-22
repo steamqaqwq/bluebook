@@ -14,6 +14,8 @@
       <div class="search">
         <Search class="search-1"></Search>
       </div>
+      <toggleBtn></toggleBtn>
+
       <div class="usermsg">
         <router-link to="/search" class="search-2 mr-5"><span @click="expandSearch" class="iconfont icon-search relative hover:text-indigo-500 text-2xl"></span></router-link>
         <div class="avatar" @click="jumpNewWindow('my')">
@@ -44,7 +46,7 @@
   import requestMock from '@/utils/requestMock';
   import request from '@/utils/request';
   import { useUserStore } from '@/store/user';
-
+  import toggleBtn from '@/components/ToggleTheme.vue';
   const { route, href, isActive, isExactActive, navigate } = useLink((RouterLink as any).props);
   const $router = useRouter();
   const $store = useUserStore();
@@ -111,7 +113,6 @@
       let avatar = res.avatar ? res.avatar : '@/assets/images/defaultAvatar.jpg';
       let id = res.userid;
       useUserStore().updateUser(username, avatar, id);
-
       // 获取IP地址信息 修改navList信息
       let ip = (window as any).returnCitySN.cip;
       // ak  F4oiQviHpdsR3rIuEafCWmPInZgIok4P
@@ -139,7 +140,7 @@
     height: 80px;
     border-bottom: 1px solid #eee;
     position: relative;
-
+    background-color: #fff;
     .search {
       position: absolute;
       left: 63%;
@@ -205,6 +206,8 @@
       transform: initial;
       li {
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0); // 去除手机
+        z-index: 3;
+        position: relative;
         a {
           display: block;
           width: 120px;
@@ -226,7 +229,6 @@
         position: absolute;
         left: 10px;
         bottom: 10px;
-        z-index: -1;
         transition: all ease 0.4s;
         animation: 2s ease-in-out waves infinite;
       }

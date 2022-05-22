@@ -24,7 +24,6 @@
       <el-form-item label="地区">
         <el-cascader size="large" :options="options" v-model="selectedOptions" @change="handleChange"> </el-cascader>
       </el-form-item>
-
       <el-form-item>
         <button class="updateBtn" @click="updateData">更新</button>
         <button class="updateBtn mt-5" @click="resetData">重置</button>
@@ -40,6 +39,7 @@
   const options = provinceAndCityDataPlus;
   const selectedOptions = ref([]);
   const avatarinput = ref();
+  const props = defineProps(['userMsg']);
   const formdata = ref({
     name: 'XXu',
     id: '234234324',

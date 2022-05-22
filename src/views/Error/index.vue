@@ -2,7 +2,7 @@
   <div class="error select-none">
     <h1 class="select-none mt-20">404</h1>
     <p>您访问的页面不存在！</p>
-
+    <p><toggleBtn></toggleBtn></p>
     <router-link to="/" class="button" href="#"><i class="icon-home"></i> 回到首页 </router-link>
   </div>
 </template>
@@ -10,7 +10,7 @@
 <script setup lang="ts">
   import { onMounted } from 'vue';
   import request from '@/utils/request';
-
+  import toggleBtn from '@/components/ToggleTheme.vue';
   onMounted(() => {
     // console.log((window as any).returnCitySN);
     // 请求获取ip

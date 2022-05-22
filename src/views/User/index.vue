@@ -6,14 +6,17 @@
         <div class="user_avatar">
           <img src="@/assets/images/defaultAvatar.jpg" alt="" />
         </div>
-        <div class="user_name text-2xl">XXu</div>
-        <div class="user_id text-xs text-gray-400">id:234023098</div>
+        <div class="user_name text-2xl relative">
+          {{ userMsg.personName || 'XXu' }}
+          <span class="iconfont sex absolute" :class="{ 'text-blue-400': userMsg.sex == 0, 'icon-sexm': userMsg.sex == 0, 'text-red-400': userMsg.sex == 1, 'icon-sexw': userMsg.sex == 1 }"></span>
+        </div>
+        <div class="user_id text-xs text-gray-400">id:{{ userMsg.personId || 234023098 }}</div>
         <div class="user_status" v-for="(item, index) in statusData" :key="item.title" @click="openStatusDetail(index)">
           <p>{{ item.nums }}</p>
           <p class="text-gray-400 text-sm xiawu">{{ item.title }}</p>
         </div>
         <div class="brief text-xl text-gray-700">个人简介</div>
-        <div class="my_brief text-gray-500 xiawu">暂时没有简介~</div>
+        <div class="my_brief text-gray-500 xiawu">{{ userMsg.briefInfor ? userMsg.briefInfor : '暂时没有简介~' }}</div>
       </div>
       <div class="center">
         <div class="center_nav">
@@ -41,7 +44,7 @@
       <AttentionFans @close="closeList"></AttentionFans>
     </div>
     <el-dialog title="提示" v-model="dialogVisible" width="30%" destroy-on-close center>
-      <p><span class="iconfont icon-Note text-2xl"></span> 当前发布笔记数 2</p>
+      <p><span class="iconfont icon-Note text-2xl"></span> 当前发布笔记数 {{ 2 }}</p>
       <p><span class="iconfont icon-thumb-up text-2xl"></span> 当前获得点赞数 0</p>
       <p><span class="iconfont icon-6Collection_01 text-2xl"></span> 当前获得收藏数 2</p>
       <template #footer>
@@ -57,6 +60,7 @@
   import Header from '@/components/header.vue';
   import request from '@/utils/request';
   import { ref, reactive, onMounted, computed, watch } from 'vue';
+  import { useRoute } from 'vue-router';
   import MyNotes from './MyNotes.vue';
   import MyFavs from './MyFavs.vue';
   import MyThumbs from './MyThumbs.vue';
@@ -67,6 +71,59 @@
     { nums: 3, title: '粉丝' },
     { nums: 3, title: '获赞与收藏' }
   ];
+  const map = {
+    sex: 0
+  };
+  interface userMsg {
+    avatar: string;
+    birth: any;
+    briefInfor: string | null;
+    career?: string;
+    createBy: string;
+    createTime?: any;
+    fansSum: number;
+    followSum: number;
+    location: string;
+    personId: number;
+    personName: string;
+    phonenumber: string | number;
+    sex: string | number;
+    // updateBy: '';
+    // updateTime: '2022-05-04T17:05:32.000+08:00';
+  }
+  const userMsg: any = reactive({
+    // avatar: string;
+    // birth: any;
+    // briefInfor: string | null;
+    // career?: string;
+    // createBy: string;
+    // createTime?: any;
+    // fansSum: number;
+    // followSum: number;
+    // location: string;
+    // personId: number;
+    // personName: string;
+    // phonenumber: string | number;
+    // sex: string | number;
+  });
+
+  onMounted(() => {
+    function transformData(object) {
+      let newObj = {};
+      object.forEach((key) => {});
+    }
+    // todo
+    // useRoute().params.userid
+    request
+      .get('http://localhost:8080/person/information', {
+        params: { personId: 3 }
+      })
+      .then((res: any) => {
+        console.log('myMsg', res);
+        userMsg.value = res.map;
+      });
+  });
+
   const navs = ['笔记', '收藏', '赞过'];
   // 当前显示的组件
   // const curNav = ref(0);

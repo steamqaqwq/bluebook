@@ -9,3 +9,9 @@ interface note {
   isFav?: boolean;
   isVideo?: boolean;
 }
+
+
+declare interface Window {
+  AMap: any
+  initAMap: any
+}

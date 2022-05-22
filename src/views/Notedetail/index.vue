@@ -75,7 +75,8 @@
   import carousel from '@/components/carousel.vue';
   import avatar from '@/components/Avatar.vue';
   import Comments from './comment.vue';
-  import request from '@/utils/requestMock';
+  // import request from '@/utils/requestMock';
+  import request from '@/utils/request';
   const isVideo = ref(false);
   const my_input = ref();
   const imgs = ref(['https://ci.xiaohongshu.com/4c8bd876-2fa0-215d-c274-95696cbf84ff?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/7b6b921c-6307-e883-3e39-e8460444a13c?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/c676f40e-190f-2c98-ff7c-1c2e3667f596?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/f92ebc99-242c-62b4-b8be-bbcba01be146?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/8319245c-8f87-14e5-4f7a-72ffa6c2eaba?imageView2/2/w/1080/format/jpg']);
@@ -83,8 +84,12 @@
   const content = `🔹感谢欧拉好猫品牌邀请，使用后真诚分享作为在广州生活的我，家里已经有辆汽油车 还需要一辆适合我这个宝妈的代步车价钱 不能太高，又要有实用性 所以我选择了开欧拉好猫回\n家颜值与实力并存，推荐~ #适合女生的车 #春日里的欧拉好猫\n\n#打蛋器 #家居 #新手烘焙 #买了不后悔的家电 #在家做甜品 #好物分享 #烘培 #我的烘培日记 #打蛋器 #电动打蛋器 #手持打蛋器 #打蛋器 #让生活更美好的小家电 #家居好物 #厨房好物 #视频分享好物 #好物推荐 #博世家电
   `;
   onMounted(() => {
-    request.get('/api/comments').then((res: any) => {
-      comments.value = res.comments;
+    // request.get('/api/comments').then((res: any) => {
+    //   comments.value = res.comments;
+    // });
+    request.get('/blog/26').then((res: any) => {
+      comments.value = res.data.comment;
+      console.log(res.data);
     });
   });
 

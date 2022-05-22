@@ -11,6 +11,10 @@ import './mock';
 import App from './App.vue';
 import iconFont from '@/components/iconFont.vue';
 
+// 手机端控制台
+// import Vconsole from 'vconsole';
+// var vConsole = new Vconsole();
+
 // const pinia = createPinia();
 const app = createApp(App);
 app.component('iconSvg', iconFont); // 注册全局图标

@@ -1,7 +1,8 @@
-import { createWebHistory, createRouter } from 'vue-router';
+import { createWebHistory, createRouter,RouterView  } from 'vue-router';
 import Index from '@/views/Index/index.vue';
 import Login from '@/views/Login/index.vue';
 import errorpage from '@/views/Error/index.vue';
+import {h} from 'vue'
 export const constantRoutes = [
   {
     path: '/login',
@@ -67,11 +68,27 @@ export const constantRoutes = [
       {
         path: '/notedetail/:id',
         name: 'notedetail',
-        component: () => import('@/views/Notedetail/index.vue'),
+        component:import('@/views/Notedetail/index.vue') ,
         meta: {
-          title: '接受参数'
-        }
-      }
+          title: '笔记详情',
+          index: 2
+        },
+      },
+      // {
+      //   path: '/notedetail',
+      //   name: 'notedetail',
+      //   component: { render: () => h(RouterView) },
+      //   meta: {
+      //     title: '笔记详情'
+      //   },
+      //   children: [
+      //     {
+      //       name:'notedetailid',
+      //       path: ':id',
+      //      component: () => import('@/views/Notedetail/index.vue') 
+      //     }
+      //   ],
+      // }
     ]
   }
 ];

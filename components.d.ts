@@ -20,10 +20,12 @@ declare module 'vue' {
     ElInput: typeof import('element-plus/es')['ElInput']
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
+    ElOption: typeof import('element-plus/es')['ElOption']
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElProgress: typeof import('element-plus/es')['ElProgress']
     ElRadio: typeof import('element-plus/es')['ElRadio']
     ElRow: typeof import('element-plus/es')['ElRow']
+    ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     Header: typeof import('./src/components/header.vue')['default']
@@ -33,6 +35,7 @@ declare module 'vue' {
     Search: typeof import('./src/components/search.vue')['default']
     ShowNotes: typeof import('./src/components/ShowNotes.vue')['default']
     ShowNotesBackup: typeof import('./src/components/ShowNotesBackup.vue')['default']
+    ToggleTheme: typeof import('./src/components/ToggleTheme.vue')['default']
   }
 }
 

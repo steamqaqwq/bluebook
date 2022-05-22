@@ -3,10 +3,12 @@
     <div class="title">上传图片</div>
     <div class="content">
       <div class="upload_img">
-        <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" style="float: left" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :auto-upload="false">
+        <!-- <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" style="float: left" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :auto-upload="false">
+          <el-icon><Plus /></el-icon>
+        </el-upload> -->
+        <el-upload action="http://localhost:8080/upload/image" drag multiple list-type="picture-card" ref="uploadRef" style="float: left" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9">
           <el-icon><Plus /></el-icon>
         </el-upload>
-
         <el-dialog v-model="dialogVisible">
           <img w-full :src="dialogImageUrl" alt="Preview Image" />
         </el-dialog>
@@ -24,6 +26,7 @@
             <Picker :data="emojiIndex" set="apple" @select="showEmoji" class="faces_picker" :style="{ height: '180px' }" :showPreview="false" :i18n="i18n" :showSearch="false" color="#818cf8" />
           </div>
         </div>
+        <el-progress class="progress" type="circle" :percentage="progressConfig.progressPercent" />
       </div>
 
       <!-- <div class="preview_imgs" style="width: 100%; height: 500px; display: flex; flex-direction: row; flex-wrap: wrap">
@@ -31,6 +34,11 @@
           <img :src="imig.url" alt="" class="w-20 h-20" />
         </div>
       </div> -->
+      <div style="width: 200px">
+        <el-select v-model="formdata.pos" allow-create filterable default-first-option class="m-2" placeholder="填写相关地区详情">
+          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </div>
       <el-button class="pub-btn text-black w-20" @click="submitUpload"> 点击发布 </el-button>
       <div class="upload_tips">
         <div class="tip">
@@ -46,7 +54,6 @@
           <p class="tip_title">图片数量</p>
           <p>支持最多9张图片同时上传</p>
         </div>
-        <el-progress class="progress" type="circle" :percentage="progressConfig.progressPercent" />
       </div>
     </div>
   </div>
@@ -103,8 +110,84 @@
       }, 0);
     }
   }
+
+  // 位置选择
+  const options = ref([
+    {
+      value: '0',
+      label: '不显示位置'
+    }
+  ]);
   onMounted(() => {
     textArea.value = document.querySelector('textArea');
+    let ip = (window as any).returnCitySN.cip;
+    // ak  F4oiQviHpdsR3rIuEafCWmPInZgIok4P
+    // ip 183.236.187.196
+    console.log('ip', ip);
+    request.get(`http://localhost:3000/baiduapi/location/ip?ak=F4oiQviHpdsR3rIuEafCWmPInZgIok4P&ip=${ip}&coor=bd09ll`).then((res: any) => {
+      // console.log('ip-res', res);
+      options.value.push({ value: res.content.address_detail.city, label: res.content.address_detail.city });
+      formdata.x = res.content.point.x;
+      formdata.y = res.content.point.y;
+    });
+    // 高德地图
+    // let AMap = window.AMap;
+    // let mapObj = new AMap.Map('iCenter');
+    // console.log(mapObj);
+
+    // mapObj.plugin('AMap.Geolocation', function () {
+    //   let geolocation = new AMap.Geolocation({
+    //     enableHighAccuracy: true, //是否使用高精度定位，默认:true
+    //     timeout: 10000, //超过10秒后停止定位，默认：无穷大
+    //     maximumAge: 0, //定位结果缓存0毫秒，默认：0
+    //     convert: true, //自动偏移坐标，偏移后的坐标为高德坐标，默认：true
+    //     showButton: true, //显示定位按钮，默认：true
+    //     buttonPosition: 'LB', //定位按钮停靠位置，默认：'LB'，左下角
+    //     buttonOffset: new AMap.Pixel(10, 20), //定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+    //     showMarker: true, //定位成功后在定位到的位置显示点标记，默认：true
+    //     showCircle: true, //定位成功后用圆圈表示定位精度范围，默认：true
+    //     panToLocation: true, //定位成功后将定位到的位置作为地图中心点，默认：true
+    //     zoomToAccuracy: true //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+    //   });
+    //   mapObj.addControl(geolocation);
+    //   console.log('getPositino', geolocation.getCurrentPosition());
+    //   AMap.event.addListener(geolocation, 'complete', (res: any) => {
+    //     console.log(res, '成功');
+    //     var ress = '经纬度：' + res.position + '\n精度范围：' + res.accuracy + '米\n定位结果的来源：' + res.location_type + '\n状态信息：' + res.info + '\n地址：' + res.formattedAddress + '\n地址信息：' + JSON.stringify(res.addressComponent, null, 4);
+    //     console.log('当前位置信息' + ress);
+    //     document.querySelector('#p')!.innerHTML = ress;
+    //   }); //返回定位信息
+    //   AMap.event.addListener(geolocation, 'error', (res) => {
+    //     console.log(res, '出错');
+    //   }); //返回定位出错信息
+    // });
+    // function aMapSearchNearBy(centerPoint, city) {
+    //   AMap.service(['AMap.PlaceSearch'], function () {
+    //     var placeSearch = new AMap.PlaceSearch({
+    //       pageSize: 20, // 每页10条
+    //       pageIndex: 1, // 获取第一页
+    //       city: city // 指定城市名(如果你获取不到城市名称，这个参数也可以不传，注释掉)
+    //     });
+
+    //     // 第一个参数是关键字，这里传入的空表示不需要根据关键字过滤
+    //     // 第二个参数是经纬度，数组类型
+    //     // 第三个参数是半径，周边的范围
+    //     // 第四个参数为回调函数
+    //     placeSearch.searchNearBy('', centerPoint, 200, function (status, result) {
+    //       console.log('status', status);
+    //       if (result.info === 'OK') {
+    //         console.log('result', result);
+    //         var locationList = result.poiList.pois; // 周边地标建筑列表
+    //         // 生成地址列表html　　　　　　　　　 createLocationHtml(locationList);
+    //       } else {
+    //         console.log('获取位置信息失败!');
+    //       }
+    //     });
+    //   });
+    // }
+    // aMapSearchNearBy([110.348442, 21.277466], '');
+    //高德地图相关结束
+    formdata.pos = options.value[0].value;
   });
   //表情相关结束
   const fileList = ref<UploadUserFile[]>([
@@ -131,10 +214,14 @@
     return tags;
   };
   const fileRawList = ref<{ raw: File }[]>([]);
+  //表单数据
   const formdata = reactive({
     title: '',
     description: '',
-    tags: ['rap', '篮球', '唱跳']
+    tags: [],
+    pos: '',
+    x: '',
+    y: ''
   });
   // const fileList = ref<{ name: string; url: string }[]>([]);
   const dialogImageUrl = ref('');
@@ -163,6 +250,9 @@
     let form = new FormData();
     form.append('blogTheme', formdata.title);
     form.append('blogTalk', formdata.description);
+    form.append('locationName', formdata.pos);
+    form.append('x', formdata.x);
+    form.append('y', formdata.x);
     form.append('tag.tagNameArray', JSON.stringify(getTags()));
     fileList.value.forEach((item) => {
       form.append('files', item['raw']!);
@@ -262,12 +352,12 @@
     justify-content: flex-start;
     .upload_img {
       // width: 100%;
-      .upload-demo,
-      :deep(.el-upload),
-      :deep(.el-upload-dragger) {
-        // width: 100%;
-        // height: 400px;
-      }
+      // .upload-demo,
+      // :deep(.el-upload),
+      // :deep(.el-upload-dragger) {
+      //   // width: 100%;
+      //   // height: 400px;
+      // }
       :deep(.el-upload-dragger) {
         display: flex;
         height: 100%;
@@ -282,7 +372,6 @@
       display: flex;
       flex-direction: row;
       width: 100%;
-
       justify-content: space-between;
       @media (max-width: @lg_p) {
         flex-direction: column;
@@ -344,6 +433,8 @@
     justify-content: flex-start;
     align-items: center;
     margin: 10px 0 20px;
+    position: relative;
+
     .fun_face {
       position: relative;
       display: block;
@@ -389,16 +480,10 @@
     position: absolute;
     right: 20%;
     top: 50%;
-    transform: translateY(-50%);
-    @media (max-width: @lg_p) {
-      right: 20%;
-      top: 74%;
-    }
-    @media (max-width: @lg_m) {
-      right: 5%;
-    }
-    @media (max-width: @md_p) {
-      right: 5%;
+    transform: translateY(47%);
+    @media (min-width: @lg) {
+      right: 16%;
+      transform: translateY(-142%);
     }
   }
 </style>

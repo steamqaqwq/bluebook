@@ -23,6 +23,7 @@
     "mockjs": "^1.1.0",
     "pinia": "^2.0.12",
     "pinia-plugin-persist": "^1.0.0",
+    "vconsole": "^3.14.6",
     "vue": "^3.2.25",
     "vue-router": "^4.0.14"
   },
@@ -66,15 +67,19 @@
         "element-plus/es/components/input/style/css",
         "element-plus/es/components/menu-item/style/css",
         "element-plus/es/components/menu/style/css",
+        "element-plus/es/components/option/style/css",
+        "element-plus/es/components/pagination/style/css",
         "element-plus/es/components/progress/style/css",
         "element-plus/es/components/radio/style/css",
         "element-plus/es/components/row/style/css",
+        "element-plus/es/components/select/style/css",
         "element-plus/es/components/sub-menu/style/css",
         "element-plus/es/components/upload/style/css",
         "emoji-mart-vue-fast/src",
         "js-cookie",
         "mockjs",
-        "pinia-plugin-persist"
+        "pinia-plugin-persist",
+        "vconsole"
       ]
     }
   }

@@ -1,37 +1,36 @@
 <template>
   <div class="main_box" v-if="notesList.length">
     <div class="column" v-for="(notes, index) in notesList" :key="index">
-      <div
-        class="note"
-        v-for="note in notes"
-        :key="note.id"
-        @click="
-          $router.push({
+      <template v-for="note in notes" :key="note.id">
+        <router-link
+          :to="{
             name: 'notedetail',
             params: {
               id: note.id
             }
-          })
-        "
-      >
-        <div class="note_cover" :class="{ animation: isanimate }">
-          <img src="/public/imgLoading.png" @load="loadImage(note.cover, $event)" @error="" @alt="" />
-        </div>
-        <div class="video_icon" v-show="note.isVideo"><span class="iconfont icon-videofill text-xl text-white"></span></div>
-        <div class="note_title">{{ note.title }}</div>
-        <div class="note_usermsg">
-          <div class="useravatar">
-            <img :src="note.avatar" alt="" />
-          </div>
-          <div class="username text-sm text-gray-400">{{ note.username }}</div>
-          <div class="fav">
-            <div class="icon">
-              <span class="iconfont icon-xihuan1"></span>
+          }"
+        >
+          <div class="note">
+            <div class="note_cover" :class="{ animation: isanimate }">
+              <img src="/public/imgLoading.png" @load="loadImage(note.cover, $event)" @error="" @alt="" />
             </div>
-            <div class="favnums text-xs">{{ note.favs }}</div>
+            <div class="video_icon" v-show="note.isVideo"><span class="iconfont icon-videofill text-xl text-white"></span></div>
+            <div class="note_title">{{ note.title }}</div>
+            <div class="note_usermsg">
+              <div class="useravatar">
+                <img :src="note.avatar" alt="" />
+              </div>
+              <div class="username text-sm text-gray-400">{{ note.username }}</div>
+              <div class="fav">
+                <div class="icon">
+                  <span class="iconfont icon-xihuan1"></span>
+                </div>
+                <div class="favnums text-xs">{{ note.favs }}</div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </router-link>
+      </template>
     </div>
   </div>
 </template>
@@ -201,10 +200,10 @@
     display: flex;
     justify-content: space-evenly;
     width: 100%;
-    .column {
-      // flex: 1;
-      // margin-left: 20px;
-    }
+    // .column {
+    //   // flex: 1;
+    //   // margin-left: 20px;
+    // }
   }
   .note {
     width: v-bind(noteWidthString);

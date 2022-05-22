@@ -13,6 +13,17 @@
   font-family: xiawu;
   src: url('../fonts/LXGWWenKai-Regular.ttf');
 }
+
+:root {
+  --theme1:hsl(0, 0%, 10%);
+  --theme2:hsl(0, 0%, 90%);
+}
+.dark-theme {
+  filter: invert(1) hue-rotate(180deg);
+  img {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}
 .xiawu {
   font-family:xiawu;
 }
@@ -32,5 +43,5 @@ ul {
 }
 a {
   text-decoration-line: none;
-  color: #000;
+  // color: #000;
 }

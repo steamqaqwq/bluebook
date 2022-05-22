@@ -1,18 +1,18 @@
 <template>
   <div class="comments-list">
-    <div class="comment-item" v-for="(comment, index) in comments" :key="comment.personId">
+    <div class="comment-item" v-for="(comment, index) in comments" :key="comment.id">
       <div class="comment-title">
         <avatar width="50px" height="50px"></avatar>
-        <div class="comment-author">{{ comment.personName }}</div>
+        <div class="comment-author">{{ comment.author }}</div>
       </div>
-      <div class="comment-content">{{ comment.commentContent }}</div>
+      <div class="comment-content">{{ comment.content }}</div>
       <div class="comment-status">
-        <span class="time">{{ timeFormat(comment.createTime) }}</span>
-        <span class="ml-5 mr-5"><span class="thumbs iconfont icon-xihuan1"></span> {{ comment.commentLikes }} </span>
-        <span class="reply-btn" @click="reply(comment.personId, comment.personName, comment.personId)">回复</span>
+        <span class="time">{{ timeFormat(comment.date) }}</span>
+        <span class="ml-5 mr-5"><span class="thumbs iconfont icon-xihuan1"></span> {{ comment.favs }} </span>
+        <span class="reply-btn" @click="reply(comment.id, comment.author, comment.id)">回复</span>
       </div>
-      <reply-list ref="reply_list" :replies="comment.replyList" :postid="comment.personId" @reply="reply"></reply-list>
-      <replybox v-if="showreply && comment.personId == curReplyId" :user="curReplyUser" class="ml-10 border-none"></replybox>
+      <reply-list ref="reply_list" :replies="comment.children" :postid="comment.id" @reply="reply"></reply-list>
+      <replybox v-if="showreply && comment.id == curReplyId" :user="curReplyUser" class="ml-10 border-none"></replybox>
     </div>
   </div>
 </template>

@@ -16,8 +16,7 @@ service.interceptors.request.use(
     if (getToken()) {
       // config.headers['token'] = getToken()
     }
-    let url = config.url;
-    console.log('url',url)
+ 
     // }
     return config;
   },

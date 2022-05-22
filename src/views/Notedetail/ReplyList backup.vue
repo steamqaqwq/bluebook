@@ -4,22 +4,17 @@
       <div class="reply-title">
         <avatar style="" class="mr-5" width="30px" height="30px"></avatar>
         <div>
-          <span class="comment-author"
-            >{{ replycomment.personName || '无名氏' }}
-            <span v-if="replycomment.replyType == 0" class="text-xs"
-              >&nbsp回复 <a href="#" class="text-blue-400">@{{ getReplyName(replycomment.hisId) }}</a></span
-            >:</span
-          >
-          <span class="ml-5 text-sm">{{ replycomment.replyContent || '评论的啥啊' }}</span>
+          <span class="comment-author">{{ replycomment.author }}:</span>
+          <span class="ml-5 text-sm">{{ replycomment.content }}</span>
         </div>
       </div>
       <div class="comment-status">
         <span class="time">{{ timeFormat(replycomment.date) }}</span>
-        <span class="ml-5 mr-5"><span class="thumbs iconfont icon-xihuan1"></span> {{ replycomment.replyLikes || 55 }} </span>
-        <span class="reply-btn" @click="emit('reply', replycomment.personId, replycomment.personName, postid)">回复</span>
+        <span class="ml-5 mr-5"><span class="thumbs iconfont icon-xihuan1"></span> {{ replycomment.favs }} </span>
+        <span class="reply-btn" @click="emit('reply', replycomment.id, replycomment.author, postid)">回复</span>
       </div>
     </div>
-    <div class="cursor-pointer text-blue-700" @click="isShowmore = true" v-if="!isShowmore && replies.length - pageStatus.showPageNums > 0">还有{{ replies.length - pageStatus.showPageNums }}条回复 显示更多</div>
+    <div class="cursor-pointer text-blue-700" @click="isShowmore = true" v-if="!isShowmore">还有{{ replies.length - pageStatus.showPageNums }}条回复 显示更多</div>
     <el-pagination layout="prev, pager, next" v-if="isShowmore" :total="replies.length" @current-change="pageChange" :current-page="pageStatus.currentPage" hide-on-single-page> </el-pagination>
     <!-- <replybox v-if="showreply" :user="curReplyUser"></replybox> -->
   </div>
@@ -37,17 +32,6 @@
 
   dayjs.extend(relativeTime);
   dayjs.locale('zh-cn');
-
-  // 通过id获取回复人名字
-  function getReplyName(personId) {
-    let reply = props.replies.filter((x) => {
-      console.log('newId', personId, x.myId);
-      return x.myId == personId;
-    });
-    // console.log('reply', reply);
-    return reply[0] ? reply[0].personName : '无效回复人';
-  }
-
   //显示更多
   const isShowmore = ref(false);
   // 分页
