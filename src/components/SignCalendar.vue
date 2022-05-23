@@ -5,7 +5,7 @@
         <p :class="data.isSelected ? 'is-selected' : ''">
           {{ data.day.split('-')[2] }}
           <!-- {{ !data.isSelected ? '签' : data.day.split('-')[2] }} -->
-          <span :class="{ 'sign-have': data.isSelected }"> </span>
+          <span :class="{ 'sign-have': data.isSelected }" v-if="isToday(data.day.split('-')[2])"> </span>
         </p>
       </template>
     </el-calendar>
@@ -16,10 +16,16 @@
   import { ref } from 'vue';
   import dayjs, { Dayjs } from 'dayjs';
   const value = ref();
+  const curDay = dayjs().date();
+  const isToday = (day) => {
+    console.log('today', dayjs().date());
+    return true;
+  };
   //   Dayjs.
 </script>
 
 <style lang="less" scoped>
+  // 签到图标
   .sign-have {
     position: absolute;
     width: 25px;
@@ -51,6 +57,19 @@
   }
 
   ::v-deep .el-calendar-table {
+    &:not(.is-range) {
+      //使不是本月的日期不可点击，不会跳转到其他月份
+      td.next {
+        pointer-events: none;
+      }
+      td.prev {
+        pointer-events: none;
+      }
+      //td{
+      //    pointer-events: none;
+      //}
+    }
+
     thead {
       th {
         // 修改头部星期部分

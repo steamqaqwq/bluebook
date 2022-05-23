@@ -15,11 +15,13 @@
   import LeftNav from './leftmenu.vue';
   import mainShow from './mainshow.vue';
   import ShowNotes from '@/components/ShowNotes.vue';
+  import request from '@/utils/request';
 
   // 获取外盒子
   let outerwidth = ref<number>();
   const notesElement = ref();
   const timer = ref();
+  const notes = ref();
   onMounted(() => {
     outerwidth.value = notesElement.value.clientWidth;
     // alert(outer_width.value);
@@ -45,6 +47,14 @@
         });
       }, 300)
     );
+
+    request.get('/blog/blogRecommend').then((res: any) => {
+      console.log('blogs', res);
+      // 去除无效图片链接
+      let list = res.list.filter((item) => item.blogImage.includes('http'));
+      console.log('list', list);
+      notes.value = list;
+    });
   });
 </script>
 

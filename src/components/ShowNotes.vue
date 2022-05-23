@@ -36,16 +36,18 @@
 </template>
 
 <script setup lang="ts">
-  import request from '@/utils/requestMock';
+  import requestMock from '@/utils/requestMock';
+  import request from '@/utils/request';
   import { onMounted, ref, reactive, watch, watchEffect, nextTick, computed } from 'vue';
   import useColumns from '@/hooks/useColumns';
-
+  import { throttle, debounce } from '@/utils/debounce';
   const props = withDefaults(
     defineProps<{
       maxColumns: number;
       outerWidth: number;
       noteWidth?: number;
       timeout?: number;
+      notesList?;
     }>(),
     {
       timeout: 200,
@@ -63,20 +65,40 @@
   const lastchild = ref<Element>(); //记录当前最后一个子元素
 
   onMounted(() => {
-    // clearInterval(timer)
-    request({
-      url: '/notes/getnotes',
-      method: 'get'
-    })
+    // 创建交叉观测者
+    const io = new IntersectionObserver((config) => {
+      // intersectionRatio 触发观测者显示的比例
+      // io.disconnect() 讲该观测者失效
+      //不观察box
+      // 观测到最后一个元素
+      if (config[0].intersectionRatio > 0) {
+        io.unobserve(lastchild.value!);
+        requestMock('/notes/getnewnotes')
+          .then((res: any) => {
+            // console.log(notes.value);
+            notes.value = notes.value.concat(res.newnotes);
+          })
+          .then(() => {
+            lastchild.value = getLastChild();
+            io.observe(lastchild.value);
+          });
+      }
+    });
+    Promise.resolve()
+      .then(() => {
+        if (props.notesList) {
+          notes.value = props.notesList;
+        } else {
+          requestMock({
+            url: '/notes/getnotes',
+            method: 'get'
+          }).then((res) => {
+            notes.value = (res as any).notes;
+          });
+        }
+      })
       .then((res) => {
-        notes.value = (res as any).notes;
-        // if (!initColumns.value) {
-        //   initColumns.value = useColumns(props.maxColumns, props.outerWidth, props.noteWidth).initColumns;
-        //   if (initColumns.value > props.maxColumns) {
-        //     initColumns.value = props.maxColumns;
-        //   }
-        // }
-        // console.log(notes.value[0], notes.value[-1]);
+        // notes.value = (res as any).notes;
         length.value = notes.value.length;
         // const initPoint = notes.value.length;
         // 需求 如 [1,2,3,4,5,6,7] 拆分为按3列 [1,4,7],[2,5],[3,6]
@@ -84,8 +106,10 @@
         splitNotes(notes.value);
       })
       .then((res) => {
-        lastchild.value = getLastChild();
-        io.observe(lastchild.value);
+        setTimeout(() => {
+          lastchild.value = getLastChild();
+          io.observe(lastchild.value);
+        }, 200);
       });
     //分割数组
     const splitNotes = (notes) => {
@@ -106,40 +130,9 @@
       }, 0);
     };
 
-    // 基础上加？ 取出最短一列 从最短一列开始加
-    // 重新分组?easy -> 加在原来的数组 在分割一次 性能差？
-    // 分割新数组
-    // const splitNewNotes = (notes) => {
-    //   notes.value.reduce((pre: number, cur) => {
-    //     if (pre == initColumns.value) {
-    //       pre = 0;
-    //     }
-    //     if (notesList.value[pre]) {
-    //       notesList.value[pre].push(cur);
-    //     } else {
-    //       notesList.value[pre] = [];
-    //       notesList.value[pre].push(cur);
-    //     }
-    //     return ++pre;
-    //   }, 0);
-    // };
-    //
-    // var timer;
-    // window.addEventListener('resize', () => {
-    //   clearTimeout(timer);
-    //   timer = setTimeout(() => {
-    //     nextTick(() => {
-    //       let columns = Math.floor(props.outerWidth / props.noteWidth);
-    //       // console.log('resize_columns', props.outerWidth);
-    //       initColumns.value = columns > props.maxColumns ? props.maxColumns : columns;
-    //     });
-
-    //     //获取列数
-    //   }, 200);
-    // });
-    // 监听列数变化重新分列
+    // 监听列数变化 笔记变化 再分列
     watch(initColumns, (old, cur) => {
-      splitNotes(notes.value);
+      throttle(splitNotes(notes.value), 500);
     });
     watch(notes, (old, cur) => {
       splitNotes(notes.value);
@@ -149,27 +142,6 @@
         lastchild.value = getLastChild();
       }
     });
-    //  watch(props.outerWidth, (old, cur) => {
-    //   splitNotes(notes.value);
-    // });
-    // watchEffect(() => {});
-    const io = new IntersectionObserver((config) => {
-      // intersectionRatio 触发观测者显示的比例
-      // io.disconnect() 讲该观测者失效
-      //不观察box
-      // 观测到最后一个元素
-      if (config[0].intersectionRatio > 0) {
-        io.unobserve(lastchild.value!);
-        request('/notes/getnewnotes')
-          .then((res) => {
-            notes.value = notes.value.concat((res as any).newnotes);
-          })
-          .then(() => {
-            lastchild.value = getLastChild();
-            io.observe(lastchild.value);
-          });
-      }
-    });
 
     //获取最多子元素的一列 检测最后一个子元素
     const getLastChild = () => {
@@ -177,7 +149,8 @@
       let lastchild = parentEle!.lastElementChild!;
       // console.log('lastchild', lastchild);
       // 将最后一个子元素背景设置为黑 方便观测
-      (lastchild as HTMLElement).style.backgroundColor = 'black';
+      console.log('lastchild', lastchild);
+      (lastchild as HTMLElement).style.color = 'purple';
       return lastchild;
     };
   });
