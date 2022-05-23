@@ -4,7 +4,9 @@
       <router-link target="_blank" :to="{ path: '/' }">
         <div class="logo"></div>
       </router-link>
+
       <div class="user_avatar">
+        <div><toggleBtn></toggleBtn></div>
         <div>{{ $store.username }}</div>
         <div class="avatar">
           <router-link :to="{ name: 'my', params: { userid: $store.userid } }">
@@ -24,6 +26,7 @@
 
 <script setup lang="ts">
   import { useUserStore } from '@/store/user';
+  import toggleBtn from '@/components/ToggleTheme.vue';
   const $store = useUserStore();
 </script>
 
@@ -34,6 +37,7 @@
     line-height: 80px;
     // border-bottom: 1px solid #eee;
     box-shadow: 1px 2px 1px 0px #eee;
+    background-color: #fff;
     .inner-header {
       margin: 0 auto;
       padding: 0 10px;

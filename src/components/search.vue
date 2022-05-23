@@ -32,10 +32,17 @@
 <style lang="less" scoped>
   .search {
     position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    font-family: xiawu;
     .search_input {
       margin: 5px 0;
       padding: 1px 10px;
       width: 150px;
+      min-height: 30px;
+      height: 100%;
       z-index: 100;
       border-radius: 3px;
       border: 1px solid #888;
@@ -49,11 +56,14 @@
         width: 200px;
       }
       @media (min-width: @lg) {
-        width: 250px;
+        width: 180px;
         height: 40px;
         &:focus {
-          width: 300px;
+          width: 280px;
         }
+      }
+      @media (min-width: @lg_p) {
+        width: 250px;
       }
     }
 
@@ -61,6 +71,7 @@
       position: absolute;
       right: 10px;
       top: 50%;
+      z-index: 999;
       transform: translateY(-50%);
       cursor: pointer;
       &:hover {

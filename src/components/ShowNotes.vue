@@ -206,6 +206,7 @@
     // }
   }
   .note {
+    font-family: xiawu;
     width: v-bind(noteWidthString);
     display: flex;
     position: relative;

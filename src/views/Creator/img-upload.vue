@@ -6,7 +6,7 @@
         <!-- <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" style="float: left" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :auto-upload="false">
           <el-icon><Plus /></el-icon>
         </el-upload> -->
-        <el-upload action="http://localhost:8080/upload/image" drag multiple list-type="picture-card" ref="uploadRef" style="float: left" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9">
+        <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" style="float: left" :before-upload="handleBeforeUpload" :http-request="uploadImage" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :on-exceed="exceedTips">
           <el-icon><Plus /></el-icon>
         </el-upload>
         <el-dialog v-model="dialogVisible">
@@ -26,12 +26,12 @@
             <Picker :data="emojiIndex" set="apple" @select="showEmoji" class="faces_picker" :style="{ height: '180px' }" :showPreview="false" :i18n="i18n" :showSearch="false" color="#818cf8" />
           </div>
         </div>
-        <el-progress class="progress" type="circle" :percentage="progressConfig.progressPercent" />
+        <el-progress v-if="false" class="progress" type="circle" :percentage="progressConfig.progressPercent" />
       </div>
 
       <!-- <div class="preview_imgs" style="width: 100%; height: 500px; display: flex; flex-direction: row; flex-wrap: wrap">
         <div class="preview_item w-20 h-20" v-for="img in fileList" :key="img.url">
-          <img :src="imig.url" alt="" class="w-20 h-20" />
+          <img :src="img.url" alt="" class="w-20 h-20" />
         </div>
       </div> -->
       <div style="width: 200px">
@@ -221,7 +221,8 @@
     tags: [],
     pos: '',
     x: '',
-    y: ''
+    y: '',
+    imagesId: ''
   });
   // const fileList = ref<{ name: string; url: string }[]>([]);
   const dialogImageUrl = ref('');
@@ -236,6 +237,31 @@
     console.log('上传次数');
   }
   const uploadRef = ref<UploadInstance>();
+
+  function uploadImage() {
+    let form = new FormData();
+    fileList.value.forEach((item) => {
+      form.append('files', item['raw']!);
+    });
+    return request({
+      url: '/upload/image',
+      method: 'POST',
+      data: form,
+      onUploadProgress: (progressEvent) => {
+        // progressEvent.loaded:已上传文件大小
+        // progressEvent.total:被上传文件的总大小
+        progressConfig.progressPercent = Number((progressEvent.loaded / progressEvent.total).toFixed(2));
+      }
+    }).then((res: any) => {
+      formdata.imagesId = res.blog_image;
+    });
+  }
+  function exceedTips() {
+    ElMessage({
+      type: 'error',
+      message: '最多同时上传9张图'
+    });
+  }
   function submitUpload() {
     progressConfig.progressPercent = 0;
     const config = {
@@ -248,22 +274,21 @@
     };
     progressConfig.progressFlag = true;
     let form = new FormData();
-    form.append('blogTheme', formdata.title);
-    form.append('blogTalk', formdata.description);
-    form.append('locationName', formdata.pos);
-    form.append('x', formdata.x);
-    form.append('y', formdata.x);
-    form.append('tag.tagNameArray', JSON.stringify(getTags()));
-    fileList.value.forEach((item) => {
-      form.append('files', item['raw']!);
-    });
+    form.append('blogTheme', formdata.title); //标题
+    form.append('blogTalk', formdata.description); //详情
+    form.append('locationName', formdata.pos); //地点
+    form.append('nearby.x', formdata.x); //经度
+    form.append('nearby.y', formdata.y); //维度
+    form.append('tag.tagNameArray', JSON.stringify(getTags())); //标签
+    form.append('flag', 'image'); // 类型
+    form.append('blogImage', formdata.imagesId);
+    // fileList.value.forEach((item) => {
+    //   form.append('files', item['raw']!);
+    // });
     request({
-      url: '/upload/image',
+      url: '/upload/uploadBlog',
       method: 'POST',
       data: form,
-      headers: {
-        type: 'image'
-      },
       onUploadProgress: (progressEvent) => {
         // progressEvent.loaded:已上传文件大小
         // progressEvent.total:被上传文件的总大小
@@ -294,12 +319,11 @@
   };
   const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
     // console.log('uploadfile', uploadFile);
-    // dialogImageUrl.value = uploadFile.raw!;
+    dialogImageUrl.value = uploadFile.url!;
     dialogVisible.value = true;
   };
   const handleBeforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
-    previewImage(rawFile);
-
+    // previewImage(rawFile);
     // (fileList as any).push({ name: rawFile.name, raw: rawFile });
     // console.log('fileList', toRaw(fileList));
   };
@@ -443,7 +467,7 @@
         position: absolute;
         top: 40px;
         left: 0;
-        z-index: 0;
+        z-index: 2;
         &::before {
           position: absolute;
           content: '';

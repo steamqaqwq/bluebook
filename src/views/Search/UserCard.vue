@@ -4,7 +4,7 @@
       <div class="avatar mr-5">
         <img :src="item.avatar_src" alt="" />
       </div>
-      <div class="username text-xl text-black ml-10">{{ item.username }}</div>
+      <div class="username text-xl text-black">{{ item.username }}</div>
       <div class="follow_btn"><button>关注</button></div>
     </div>
     <div class="user_desc">
@@ -35,7 +35,9 @@
     height: 200px;
     padding: 20px;
     border-radius: 4px;
-    background-color: #6365f159;
+    background-color: #d7d8f559;
+    box-shadow: -1px 2px 2px 2px #b6bae2;
+    font-family: xiawu;
     text-align: left;
 
     .user_avatar {
@@ -45,7 +47,7 @@
       align-items: center;
       height: 80px;
       .username {
-        margin-left: 10px;
+        // margin-left: 10px;
       }
       .avatar {
         height: 50px;

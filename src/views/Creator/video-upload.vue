@@ -3,7 +3,7 @@
     <div class="title">上传视频</div>
     <div class="content">
       <div class="upload_video">
-        <el-upload class="upload-demo" :limit="1" :show-file-list="true" drag action="" :before-upload="handleBeforeUpload" :auto-upload="false" :file-list="fileList">
+        <el-upload class="upload-demo" :limit="1" :show-file-list="true" drag action="#" :before-upload="handleBeforeUpload" :http-request="uploadVideo" :file-list="fileList">
           <el-icon class="el-icon--upload"><upload-filled /></el-icon>
           <div class="el-upload__text">拖拽视频或<em>点击上传</em></div>
           <!-- <template #tip>
@@ -42,6 +42,11 @@
             </div>
             <el-progress class="progress" type="circle" :percentage="progressConfig.progressPercent" />
           </div>
+        </div>
+        <div style="width: 200px">
+          <el-select v-model="formdata.pos" allow-create filterable default-first-option class="m-2" placeholder="填写相关地区详情">
+            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
         </div>
         <el-button class="pub-btn text-black w-20" @click="submitUpload"> 点击发布 </el-button>
       </div>
@@ -99,10 +104,29 @@
       }, 0);
     }
   }
+  // 位置选择
+  const options = ref([
+    {
+      value: '0',
+      label: '不显示位置'
+    }
+  ]);
   onMounted(() => {
     textArea.value = document.querySelector('textArea');
+    let ip = (window as any).returnCitySN.cip;
+    // ak  F4oiQviHpdsR3rIuEafCWmPInZgIok4P
+    // ip 183.236.187.196
+    request.get(`http://localhost:3000/baiduapi/location/ip?ak=F4oiQviHpdsR3rIuEafCWmPInZgIok4P&ip=${ip}&coor=bd09ll`).then((res: any) => {
+      // console.log('ip-res', res);
+      options.value.push({ value: res.content.address_detail.city, label: res.content.address_detail.city });
+      formdata.x = res.content.point.x;
+      formdata.y = res.content.point.y;
+    });
+    formdata.pos = options.value[0].value;
   });
   //表情相关结束
+
+  // 文件列表
   const fileList = ref<UploadUserFile[]>([
     // {
     //   name: 'food.jpeg',
@@ -127,18 +151,22 @@
     return tags;
   };
   const file = ref<{ raw: File }>();
-  interface formdataType {
-    title: string;
-    description: string;
-    tags: string[];
-  }
-  const formdata: formdataType = reactive({
+  // interface formdataType {
+  //   title: string;
+  //   description: string;
+  //   tags: string[];
+  // }
+  const formdata = reactive({
     title: '',
     description: '',
-    tags: []
+    tags: [],
+    pos: '',
+    x: '',
+    y: '',
+    videoid: ''
   });
   // const fileList = ref<{ name: string; url: string }[]>([]);
-  const dialogImageUrl = ref('');
+
   const dialogVisible = ref(false);
 
   // 进度条 与手动上传
@@ -150,6 +178,31 @@
     console.log('上传次数');
   }
   const uploadRef = ref<UploadInstance>();
+  function uploadVideo() {
+    let form = new FormData();
+    fileList.value.forEach((item) => {
+      form.append('video', item['raw']!);
+    });
+    form.append('type', 'video');
+    return request({
+      url: '/upload/video',
+      method: 'POST',
+      data: form,
+      onUploadProgress: (progressEvent) => {
+        // progressEvent.loaded:已上传文件大小
+        // progressEvent.total:被上传文件的总大小
+        console.log(progressEvent);
+        if (progressEvent.lengthComputable) {
+          progressConfig.progressPercent = Number((progressEvent.loaded / progressEvent.total).toFixed(2));
+        }
+      }
+    }).then((res: any) => {
+      if (res.code == 200) {
+        progressConfig.progressPercent = 100;
+        formdata.videoid = res.videoName;
+      }
+    });
+  }
   function submitUpload() {
     const config = {
       //axios 进度条事件
@@ -162,29 +215,29 @@
     progressConfig.progressFlag = true;
 
     let form = new FormData();
-    form.append('blogTheme', formdata.title);
-    form.append('blogTalk', formdata.description);
-    form.append('tag.tagNameArray', JSON.stringify(getTags()));
-    fileList.value.forEach((item) => {
-      form.append('files', item['raw']!);
-    });
+    form.append('blogTheme', formdata.title); //标题
+    form.append('blogTalk', formdata.description); //详情
+    form.append('locationName', formdata.pos); //地点
+    form.append('nearby.x', formdata.x); //经度
+    form.append('nearby.y', formdata.y); //维度
+    form.append('tag.tagNameArray', JSON.stringify(getTags())); //标签
+    form.append('flag', 'video'); // 类型
+    form.append('blogImage', formdata.videoid);
+    // fileList.value.forEach((item) => {
+    //   form.append('files', item['raw']!);
+    // });
     // 上传
     request({
-      url: '/upload/image',
+      url: '/upload/uploadBlog',
       method: 'POST',
-      data: form,
-      headers: {
-        type: 'video'
-      },
-      onUploadProgress: (progressEvent) => {
-        // progressEvent.loaded:已上传文件大小
-        // progressEvent.total:被上传文件的总大小
-
-        progressConfig.progressPercent = Number((progressEvent.loaded / progressEvent.total).toFixed(2));
-      }
+      data: form
+      // onUploadProgress: (progressEvent) => {
+      //   // progressEvent.loaded:已上传文件大小
+      //   // progressEvent.total:被上传文件的总大小
+      //   progressConfig.progressPercent = Number((progressEvent.loaded / progressEvent.total).toFixed(2));
+      // }
     }).then((res: any) => {
       if (res.code == 200) {
-        progressConfig.progressPercent = 100;
         ElNotification({
           title: '上传通知',
           message: res.msg,
@@ -210,7 +263,7 @@
     dialogVisible.value = true;
   };
   const handleBeforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
-    fileList.value.push(rawFile);
+    // fileList.value.push(rawFile);
     // (fileList as any).push({ name: rawFile.name, raw: rawFile });
     // console.log('fileList', toRaw(fileList));
   };

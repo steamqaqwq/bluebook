@@ -3,9 +3,12 @@
   <div class="wrapper">
     <div class="main-content">
       <div class="left">
-        <div class="user_avatar">
-          <img src="@/assets/images/defaultAvatar.jpg" alt="" />
+        <div class="user_avatar_outer">
+          <div class="user_avatar">
+            <img src="@/assets/images/defaultAvatar.jpg" alt="" />
+          </div>
         </div>
+
         <div class="user_name text-2xl relative">
           {{ userMsg.personName || 'XXu' }}
           <span class="iconfont sex absolute" :class="{ 'text-blue-400': userMsg.sex == 0, 'icon-sexm': userMsg.sex == 0, 'text-red-400': userMsg.sex == 1, 'icon-sexw': userMsg.sex == 1 }"></span>
@@ -38,6 +41,9 @@
         <div class="other">
           <img src="@/assets/images/抗疫精神.jpg" alt="" />
         </div>
+        <div class="calendar">
+          <Calendar></Calendar>
+        </div>
       </div>
     </div>
     <div class="attention-fans-container">
@@ -66,6 +72,7 @@
   import MyThumbs from './MyThumbs.vue';
   import MySetting from './MySetting.vue';
   import AttentionFans from './AttentionFans.vue';
+  import Calendar from '@/components/SignCalendar.vue';
   const statusData = [
     { nums: 0, title: '关注' },
     { nums: 3, title: '粉丝' },
@@ -221,13 +228,23 @@
       @media (max-width: @md) {
         display: none;
       }
+
+      .user_avatar_outer {
+        background: #fff;
+        border-radius: 50%;
+        height: 90px;
+        width: 90px;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #000;
+      }
       .user_avatar {
         height: 80px;
         width: 80px;
         overflow: hidden;
-        border: 1px solid #ccc;
         border-radius: 50%;
-        margin-bottom: 5px;
         cursor: pointer;
         img {
           height: 100%;
@@ -284,7 +301,7 @@
     .right {
       width: 25%;
       // overflow: hidden;
-      max-height: 300px;
+      max-height: 800px;
       display: flex;
       flex-direction: column;
       align-items: center;

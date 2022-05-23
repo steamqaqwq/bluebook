@@ -1,6 +1,9 @@
 <template>
   <div class="search_box">
     <div class="outer_box">
+      <div class="search_plus">
+        <search width="100%"></search>
+      </div>
       <div class="filter_nav">
         <div class="filter_item" :class="{ active: index == curIndex }" v-for="(item, index) in navs" @click="changeType(item.type, index)">{{ item.title }}</div>
       </div>
@@ -65,6 +68,13 @@
         // margin-right: initial;
         padding: 10px;
       }
+    }
+    .search_plus {
+      margin-top: 20px;
+      // width: 500px;
+      // width: 500px;
+      width: 100%;
+      height: 50px;
     }
     // overflow: hidden;
     .filter_nav {

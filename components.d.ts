@@ -10,6 +10,7 @@ declare module 'vue' {
     Carousel: typeof import('./src/components/carousel.vue')['default']
     CreatorTitle: typeof import('./src/components/CreatorTitle.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElCalendar: typeof import('element-plus/es')['ElCalendar']
     ElCascader: typeof import('element-plus/es')['ElCascader']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElDialog: typeof import('element-plus/es')['ElDialog']
@@ -35,6 +36,8 @@ declare module 'vue' {
     Search: typeof import('./src/components/search.vue')['default']
     ShowNotes: typeof import('./src/components/ShowNotes.vue')['default']
     ShowNotesBackup: typeof import('./src/components/ShowNotesBackup.vue')['default']
+    SignCalendar: typeof import('./src/components/SignCalendar.vue')['default']
+    SignCandar: typeof import('./src/components/SignCandar.vue')['default']
     ToggleTheme: typeof import('./src/components/ToggleTheme.vue')['default']
   }
 }

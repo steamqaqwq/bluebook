@@ -1,34 +1,29 @@
 <template>
-  <div class="toggle-btn" :class="{ dark: isDark }">
-    <input ref="" id="dark-mode theme" class="toggle" type="checkbox" name="Dark mode" role="switch" :value="isDark" @change="toggle" />
+  <div class="toggle-btn" :class="{ light: !isDark, dark: isDark }">
+    <input ref="" id="dark-mode theme" class="toggle" type="checkbox" name="Dark mode" role="switch" :value="isDark" :checked="isDark" @change="toggle" />
   </div>
 </template>
 
 <script setup lang="ts">
   import { ref, computed, onMounted, nextTick, watchEffect } from 'vue';
   const isDark = ref(false);
-  // const theme = computed(() => {
-  //   return isDark.value ? '--theme1' : 'hsl(0, 0%, 90%)';
-  // });
-  // const theme2 = computed(() => {
-  //   return isDark.value ? 'hsl(0, 0%, 90%)' : 'hsl(0, 0%, 10%)';
-  // });
   function toggle() {
     isDark.value = !isDark.value;
+    localStorage.setItem('theme', isDark.value ? 'dark' : 'light');
   }
   const htmlDom = ref();
   onMounted(() => {
-    // htmlDom.value = document.getElementsByTagName('html')[0].className = 'dark-theme';
-    htmlDom.value = document.getElementsByTagName('html')[0];
-    // document.body.removeAttribute("class","body-class");
+    // htmlDom.value = document.querySelector('html');
+    // console.log(htmlDom.value);
+    if (localStorage.getItem('theme')) {
+      isDark.value = localStorage.getItem('theme') == 'dark' ? true : false;
+    }
   });
   watchEffect(() => {
     if (isDark.value) {
-      // nextTick(() => {
-      document.body.className = 'dark-theme';
-      // });
+      document.querySelector('html')!.classList.add('dark-theme');
     } else {
-      document.body.removeAttribute('class');
+      document.querySelector('html')!.classList.remove('dark-theme');
     }
   });
 </script>
@@ -43,13 +38,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    @media (max-width: md) {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
   }
 
   .toggle {
     position: relative;
   }
-  .toggle:before,
-  .toggle:after {
+  .light .toggle:before,
+  .light .toggle:after {
     background: #fff;
   }
 

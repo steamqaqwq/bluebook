@@ -40,7 +40,7 @@
             <el-row>
               <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="User" />
             </el-row>
-            <el-row> <el-input v-model="formdata.password" type="password" class="w-50 m-2 login-input" placeholder="密码" :prefix-icon="Lock" /></el-row>
+            <el-row> <el-input v-model="formdata.password" type="password" class="w-50 m-2 login-input" placeholder="密码" :prefix-icon="Lock" @keydown.enter="login(curLoginType)" /></el-row>
             <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
           </template>
           <!-- </keep-alive> -->
