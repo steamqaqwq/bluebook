@@ -146,7 +146,7 @@
       left: 63%;
       top: 50%;
       transform: translateY(-50%);
-
+      z-index: 2;
       @media (max-width: @lg_m) {
         .search-1 {
           display: none;
@@ -278,12 +278,21 @@
       }
       .nav_active {
         color: @themecolor2 !important;
-        border-bottom: 2px solid @themecolor2;
+        // border-bottom: 2px solid @themecolor2;
       }
       .navlist {
         li {
           .active {
             color: @themecolor2;
+            &:after {
+              content: '';
+              border-bottom: 4px solid;
+              position: absolute;
+              bottom: 0;
+              width: 60%;
+              left: 50%;
+              transform: translateX(-50%);
+            }
           }
         }
       }

@@ -14,9 +14,9 @@
         </div>
       </div>
       <div class="comment-status">
-        <span class="time">{{ timeFormat(replycomment.date) }}</span>
+        <span class="time">{{ getFormatTime(replycomment.createTime) }}</span>
         <span class="ml-5 mr-5"><span class="thumbs iconfont icon-xihuan1"></span> {{ replycomment.replyLikes || 55 }} </span>
-        <span class="reply-btn" @click="emit('reply', replycomment.personId, replycomment.personName, postid)">回复</span>
+        <span class="reply-btn" @click="emit('reply', replycomment.personId, replycomment.personName, postid, postindex)">回复</span>
       </div>
     </div>
     <div class="cursor-pointer text-blue-700" @click="isShowmore = true" v-if="!isShowmore && replies.length - pageStatus.showPageNums > 0">还有{{ replies.length - pageStatus.showPageNums }}条回复 显示更多</div>
@@ -28,15 +28,10 @@
 <script setup lang="ts">
   import { ref, reactive, computed } from 'vue';
   import avatar from '@/components/Avatar.vue';
-  import dayjs from 'dayjs';
-  import relativeTime from 'dayjs/plugin/relativeTime'; //使用dayjs 插件 fromnow
-  import 'dayjs/locale/zh-cn'; // 导入本地化语言
   import replybox from './replybox.vue';
-  const props = defineProps(['replies', 'postid']);
+  import getFormatTime from '@/utils/getFormatTime';
+  const props = defineProps(['replies', 'postid', 'postindex']);
   const emit = defineEmits(['reply']);
-
-  dayjs.extend(relativeTime);
-  dayjs.locale('zh-cn');
 
   // 通过id获取回复人名字
   function getReplyName(personId) {
@@ -65,40 +60,6 @@
   function pageChange(curpage) {
     pageStatus.currentPage = curpage;
   }
-  // // 回复
-  // const showreply = ref(false);
-  // const curReplyUser = reactive({
-  //   userid: 0,
-  //   username: ''
-  // });
-  // function reply(id: number, username: string) {
-  //   showreply.value = true;
-  //   curReplyUser.userid = id;
-  //   curReplyUser.username = username;
-  // }
-
-  // 格式化时间
-  const timeFormat = (time) => {
-    let time_: number = time;
-    if (String(time).length <= 10) {
-      time_ = time_ * 1000;
-    }
-    const timegap = Date.now() - time_;
-    /*
-        1秒 1000
-        1分钟 1000 * 60 60000
-        1小时 1000 * 60 * 60 3600000
-        1天 1000 * 60 * 60 * 24 86400000
-        1个月 1000 * 60 * 60 * 24 * 30 2592000000
-        1年 1000 * 60 * 60 * 24 * 365 31536000000
-      */
-    const times = [31536000000, 2592000000, 86400000, 3600000, 60000, 1000];
-    if (timegap > times[1] && timegap < times[0]) {
-      return dayjs(time_).format('MM-DD');
-    } else {
-      return dayjs(time_).fromNow();
-    }
-  };
 </script>
 
 <style lang="less" scoped>

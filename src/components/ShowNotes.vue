@@ -132,7 +132,7 @@
 
     // 监听列数变化 笔记变化 再分列
     watch(initColumns, (old, cur) => {
-      throttle(splitNotes(notes.value), 500);
+      splitNotes(notes.value);
     });
     watch(notes, (old, cur) => {
       splitNotes(notes.value);

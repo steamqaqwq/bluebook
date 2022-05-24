@@ -246,6 +246,7 @@
     return request({
       url: '/upload/image',
       method: 'POST',
+      headers: {},
       data: form,
       onUploadProgress: (progressEvent) => {
         // progressEvent.loaded:已上传文件大小

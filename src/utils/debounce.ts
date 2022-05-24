@@ -5,6 +5,7 @@
  * @returns 
  */
 export function debounce(fn:any, time = 300):any {
+    console.log('debounce',time)
     let timeout: number | null = null;
     return function () {
         timeout && clearTimeout(timeout);
@@ -18,7 +19,7 @@ export function debounce(fn:any, time = 300):any {
  * @param time 间隔时间
  * @returns 
  */
-export function throttle(fn: () => void, time = 300) {
+export function throttle(fn, time = 300) {
     let canRun: boolean = true;
     return function () {
         if (!canRun) return;

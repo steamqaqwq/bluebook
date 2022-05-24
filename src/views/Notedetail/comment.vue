@@ -7,12 +7,13 @@
       </div>
       <div class="comment-content">{{ comment.commentContent }}</div>
       <div class="comment-status">
-        <span class="time">{{ timeFormat(comment.createTime) }}</span>
+        <span class="time">{{ getFormatTime(comment.createTime) }}</span>
         <span class="ml-5 mr-5"><span class="thumbs iconfont icon-xihuan1"></span> {{ comment.commentLikes }} </span>
-        <span class="reply-btn" @click="reply(comment.personId, comment.personName, comment.personId)">回复</span>
+        <span class="reply-btn" @click="reply(comment.personId, comment.personName, comment.personId, index)">回复</span>
       </div>
-      <reply-list ref="reply_list" :replies="comment.replyList" :postid="comment.personId" @reply="reply"></reply-list>
-      <replybox v-if="showreply && comment.personId == curReplyId" :user="curReplyUser" class="ml-10 border-none"></replybox>
+      <reply-list ref="reply_list" :replies="comment.replyList" :postid="comment.personId" @reply="reply" :postindex="index"></reply-list>
+      <!-- 回复框显示条件 1.点击回复 2.回复的楼主ID一致 3.回复的是当前贴index一致 -->
+      <replybox v-if="showreply && comment.personId == curReplyId && index == curReplyIndex" :user="curReplyUser" class="ml-10 border-none"></replybox>
     </div>
   </div>
 </template>
@@ -20,15 +21,12 @@
 <script setup lang="ts">
   import { ref, reactive, computed, onMounted } from 'vue';
   import avatar from '@/components/Avatar.vue';
-  import dayjs from 'dayjs';
-  import relativeTime from 'dayjs/plugin/relativeTime'; //使用dayjs 插件 fromnow
-  import 'dayjs/locale/zh-cn'; // 导入本地化语言
   import ReplyList from './ReplyList.vue';
   import replybox from './replybox.vue';
+  import getFormatTime from '@/utils/getFormatTime';
+
   const props = defineProps(['comments']);
   const reply_list = ref([]);
-  dayjs.extend(relativeTime);
-  dayjs.locale('zh-cn');
 
   //显示更多
   const isShowmore = ref(false);
@@ -48,12 +46,15 @@
   }
   // 回复
   const showreply = ref(false);
-  const curReplyId = ref(0);
+  const curReplyId = ref(0); // 当前贴的楼主
+  const curReplyIndex = ref(0); // 当前贴的index
   const curReplyUser = reactive({
     userid: 0,
     username: ''
   });
-  function reply(id: number, username: string, postid: number) {
+  function reply(id: number, username: string, postid: number, postindex: number) {
+    showreply.value = false;
+    console.log('postindex', postindex);
     //初始化 清空当前
     curReplyUser.userid = 0;
     curReplyUser.username = '';
@@ -63,31 +64,8 @@
     curReplyUser.userid = id;
     curReplyUser.username = username;
     curReplyId.value = postid;
+    curReplyIndex.value = postindex;
   }
-  // 格式化时间
-  const timeFormat = (time) => {
-    let time_: number = time;
-    // 统一时间以毫秒为单位
-    if (String(time).length <= 10) {
-      time_ = time_ * 1000;
-    }
-    // 时间差值
-    const timegap = Date.now() - time_;
-    /*
-        1秒 1000
-        1分钟 1000 * 60 60000
-        1小时 1000 * 60 * 60 3600000
-        1天 1000 * 60 * 60 * 24 86400000
-        1个月 1000 * 60 * 60 * 24 * 30 2592000000
-        1年 1000 * 60 * 60 * 24 * 365 31536000000
-      */
-    const times = [31536000000, 2592000000, 86400000, 3600000, 60000, 1000];
-    if (timegap > times[1] && timegap < times[0]) {
-      return dayjs(time_).format('MM-DD');
-    } else {
-      return dayjs(time_).fromNow();
-    }
-  };
 </script>
 
 <style lang="less">

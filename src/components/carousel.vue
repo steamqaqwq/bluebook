@@ -11,13 +11,13 @@
         </ul>
       </div>
       <div class="change-pic">
-        <div @click="throttle(changepic(1), 500)" class="picbtn left-btn iconfont icon-left-f absolute left-0 top-1/2 text-gray-300 text-3xl"></div>
-        <div @click="throttle(changepic(2), 500)" class="picbtn right-btn iconfont icon-right-f absolute right-0 top-1/2 text-gray-300 text-3xl"></div>
+        <div @click="debounce(changepic(1), 500)" class="picbtn left-btn iconfont icon-left-f absolute left-0 top-1/2 text-gray-300 text-3xl"></div>
+        <div @click="debounce(changepic(2), 500)" class="picbtn right-btn iconfont icon-right-f absolute right-0 top-1/2 text-gray-300 text-3xl"></div>
       </div>
       <div class="pages absolute bottom-2 right-20 text-white">{{ curIndex }} / {{ imgs.length }}</div>
     </div>
     <div class="small-pic">
-      <div v-for="(imgurl, index) in imgs" class="item" :class="{ active: index + 1 == curIndex }" @click="throttle(changepic(3, index + 1))">
+      <div v-for="(imgurl, index) in imgs" class="item" :class="{ active: index + 1 == curIndex }" @click="throttle(changepic(3, index + 1), 500)">
         <div class="img">
           <img :src="imgurl" alt="" />
         </div>
@@ -28,39 +28,40 @@
 
 <script setup lang="ts">
   import { defineProps, ref, reactive, watch, computed } from 'vue';
+  import { throttle, debounce } from '@/utils/debounce';
   const props = defineProps<{
     imgs: string[];
   }>();
   const curIndex = ref(1);
   const lastIndex = ref(0);
   // 处理节流
-  function throttle(func, wait = 200, type = true) {
-    let previous;
-    let timeout;
-    if (type) {
-      previous = 0;
-    } else {
-      timeout;
-    }
-    return function () {
-      let args = arguments;
-      if (type) {
-        let now = Date.now();
-        if (now - previous > wait) {
-          console.log('shdfklh');
-          func();
-          previous = now;
-        }
-      } else {
-        if (!timeout) {
-          timeout = setTimeout(() => {
-            timeout = null;
-            func();
-          }, wait);
-        }
-      }
-    };
-  }
+  // function throttle(func, wait = 200, type = true) {
+  //   let previous;
+  //   let timeout;
+  //   if (type) {
+  //     previous = 0;
+  //   } else {
+  //     timeout;
+  //   }
+  //   return function () {
+  //     let args = arguments;
+  //     if (type) {
+  //       let now = Date.now();
+  //       if (now - previous > wait) {
+  //         console.log('shdfklh');
+  //         func();
+  //         previous = now;
+  //       }
+  //     } else {
+  //       if (!timeout) {
+  //         timeout = setTimeout(() => {
+  //           timeout = null;
+  //           func();
+  //         }, wait);
+  //       }
+  //     }
+  //   };
+  // }
 
   // let timer; // 1. 防抖动的 timer
 
