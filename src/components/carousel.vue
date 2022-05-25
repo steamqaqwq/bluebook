@@ -11,13 +11,13 @@
         </ul>
       </div>
       <div class="change-pic">
-        <div @click="debounce(changepic(1), 500)" class="picbtn left-btn iconfont icon-left-f absolute left-0 top-1/2 text-gray-300 text-3xl"></div>
-        <div @click="debounce(changepic(2), 500)" class="picbtn right-btn iconfont icon-right-f absolute right-0 top-1/2 text-gray-300 text-3xl"></div>
+        <div @click="changepic(1)" class="picbtn left-btn iconfont icon-left-f absolute left-0 top-1/2 text-gray-300 text-3xl"></div>
+        <div @click="changepic(2)" class="picbtn right-btn iconfont icon-right-f absolute right-0 top-1/2 text-gray-300 text-3xl"></div>
       </div>
       <div class="pages absolute bottom-2 right-20 text-white">{{ curIndex }} / {{ imgs.length }}</div>
     </div>
     <div class="small-pic">
-      <div v-for="(imgurl, index) in imgs" class="item" :class="{ active: index + 1 == curIndex }" @click="throttle(changepic(3, index + 1), 500)">
+      <div v-for="(imgurl, index) in imgs" class="item" :class="{ active: index + 1 == curIndex }" @click="changepic(3, index + 1)">
         <div class="img">
           <img :src="imgurl" alt="" />
         </div>
@@ -34,71 +34,32 @@
   }>();
   const curIndex = ref(1);
   const lastIndex = ref(0);
-  // 处理节流
-  // function throttle(func, wait = 200, type = true) {
-  //   let previous;
-  //   let timeout;
-  //   if (type) {
-  //     previous = 0;
-  //   } else {
-  //     timeout;
-  //   }
-  //   return function () {
-  //     let args = arguments;
-  //     if (type) {
-  //       let now = Date.now();
-  //       if (now - previous > wait) {
-  //         console.log('shdfklh');
-  //         func();
-  //         previous = now;
-  //       }
-  //     } else {
-  //       if (!timeout) {
-  //         timeout = setTimeout(() => {
-  //           timeout = null;
-  //           func();
-  //         }, wait);
-  //       }
-  //     }
-  //   };
-  // }
-
-  // let timer; // 1. 防抖动的 timer
-
-  // function debounce(fn, delay) {
-  //   // 记录上一次的延时器
-  //   var timer = null;
-  //   var delay = delay || 200;
-  //   return function () {
-  //     var args = arguments;
-  //     // 清除上一次延时器
-  //     clearTimeout(timer);
-  //     timer = setTimeout(function () {
-  //       fn();
-  //     }, delay);
-  //   };
-  // }
-  const changepic = (num: number, index = 0) => {
-    lastIndex.value = curIndex.value;
-    if (num == 1) {
-      // 上一张
-      if (curIndex.value == 1) {
-        curIndex.value = props.imgs.length;
+  const changepic = throttle(
+    (num: number, index = 0): any => {
+      lastIndex.value = curIndex.value;
+      if (num == 1) {
+        // 上一张
+        if (curIndex.value == 1) {
+          curIndex.value = props.imgs.length;
+        } else {
+          curIndex.value--;
+        }
+      } else if (num == 2) {
+        // 下一张
+        if (curIndex.value == props.imgs.length) {
+          curIndex.value = 1;
+        } else {
+          curIndex.value++;
+        }
       } else {
-        curIndex.value--;
+        //直接选定图片
+        curIndex.value = index;
       }
-    } else if (num == 2) {
-      // 下一张
-      if (curIndex.value == props.imgs.length) {
-        curIndex.value = 1;
-      } else {
-        curIndex.value++;
-      }
-    } else {
-      //直接选定图片
-      curIndex.value = index;
-    }
-  };
+    },
+    800,
+    true
+  );
+
   watch(curIndex, (old, cur) => {});
 
   // 处理动画方向

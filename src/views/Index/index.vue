@@ -122,7 +122,7 @@
       })
         .then((res: any) => res.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           let city = data.content.address_detail.city;
           city = city.replace('市', '');
           navList.value[2].title = city;
