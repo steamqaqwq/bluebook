@@ -1,58 +1,64 @@
 <template>
   <div class="img_upload">
     <div class="title">上传图片</div>
-    <div class="content">
-      <div class="upload_img">
-        <!-- <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" style="float: left" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :auto-upload="false">
+    <div class="main_content">
+      <div class="img_upload_left">
+        <div class="content">
+          <div class="upload_img">
+            <!-- <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" style="float: left" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :auto-upload="false">
           <el-icon><Plus /></el-icon>
         </el-upload> -->
-        <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" style="float: left" :before-upload="handleBeforeUpload" :http-request="uploadImage" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :on-exceed="exceedTips">
-          <el-icon><Plus /></el-icon>
-        </el-upload>
-        <el-dialog v-model="dialogVisible">
-          <img w-full :src="dialogImageUrl" alt="Preview Image" />
-        </el-dialog>
-      </div>
-      <el-input class="input_title" type="text" placeholder="填写标题，能获得更多赞哦~" v-model="formdata.title" />
-      <el-input type="textarea" class="input_textarea" show-word-limit maxlength="1000" @input="getTags" placeholder="填写相关信息，让更多人看见你吧！" name="" id="" resize="none" :autosize="{ minRows: 5 }" v-model="formdata.description"> </el-input>
-
-      <div class="textarea_btns_fun">
-        <div class="fun_face">
-          <el-button type="primary" @click="insertEmoji(textArea, ' #')">#话题</el-button>
-
-          <el-button type="primary" @click="isShowFaces = !isShowFaces">添加表情</el-button>
-
-          <div class="faces" v-show="isShowFaces">
-            <Picker :data="emojiIndex" set="apple" @select="showEmoji" class="faces_picker" :style="{ height: '180px' }" :showPreview="false" :i18n="i18n" :showSearch="false" color="#818cf8" />
+            <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" style="float: left" :before-upload="handleBeforeUpload" :http-request="uploadImage" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :on-exceed="exceedTips">
+              <el-icon><Plus /></el-icon>
+            </el-upload>
+            <el-dialog v-model="dialogVisible">
+              <img w-full :src="dialogImageUrl" alt="Preview Image" />
+            </el-dialog>
           </div>
-        </div>
-        <el-progress v-if="false" class="progress" type="circle" :percentage="progressConfig.progressPercent" />
-      </div>
+          <el-input class="input_title" type="text" placeholder="填写标题，能获得更多赞哦~" v-model="formdata.title" />
+          <el-input type="textarea" class="input_textarea" show-word-limit maxlength="1000" @input="getTags" placeholder="填写相关信息，让更多人看见你吧！" name="" id="" resize="none" :autosize="{ minRows: 5 }" v-model="formdata.description"> </el-input>
 
-      <!-- <div class="preview_imgs" style="width: 100%; height: 500px; display: flex; flex-direction: row; flex-wrap: wrap">
+          <div class="textarea_btns_fun">
+            <div class="fun_face">
+              <el-button type="primary" @click="insertEmoji(textArea, ' #')">#话题</el-button>
+
+              <el-button type="primary" @click="isShowFaces = !isShowFaces">添加表情</el-button>
+
+              <div class="faces" v-show="isShowFaces">
+                <Picker :data="emojiIndex" set="apple" @select="showEmoji" class="faces_picker" :style="{ height: '180px' }" :showPreview="false" :i18n="i18n" :showSearch="false" color="#818cf8" />
+              </div>
+            </div>
+            <el-progress v-if="false" class="progress" type="circle" :percentage="progressConfig.progressPercent" />
+          </div>
+
+          <!-- <div class="preview_imgs" style="width: 100%; height: 500px; display: flex; flex-direction: row; flex-wrap: wrap">
         <div class="preview_item w-20 h-20" v-for="img in fileList" :key="img.url">
           <img :src="img.url" alt="" class="w-20 h-20" />
         </div>
       </div> -->
-      <div style="width: 200px">
-        <el-select v-model="formdata.pos" allow-create filterable default-first-option class="m-2" placeholder="填写相关地区详情">
-          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
+          <div style="width: 200px">
+            <el-select v-model="formdata.pos" allow-create filterable default-first-option class="m-2" placeholder="填写相关地区详情">
+              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+            </el-select>
+          </div>
+          <el-button class="pub-btn text-black w-20" @click="submitUpload"> 点击发布 </el-button>
+        </div>
       </div>
-      <el-button class="pub-btn text-black w-20" @click="submitUpload"> 点击发布 </el-button>
-      <div class="upload_tips">
-        <div class="tip">
-          <p class="tip_title">图片大小</p>
-          <p>图片大小最大10M</p>
-          <p></p>
-        </div>
-        <div class="tip">
-          <p class="tip_title">图片格式</p>
-          <p>仅支持.jpg .jpeg</p>
-        </div>
-        <div class="tip">
-          <p class="tip_title">图片数量</p>
-          <p>支持最多9张图片同时上传</p>
+      <div class="img_upload_right">
+        <div class="upload_tips">
+          <div class="tip">
+            <p class="tip_title">图片大小</p>
+            <p>图片大小最大10M</p>
+            <p></p>
+          </div>
+          <div class="tip">
+            <p class="tip_title">图片格式</p>
+            <p>仅支持.jpg .jpeg</p>
+          </div>
+          <div class="tip">
+            <p class="tip_title">图片数量</p>
+            <p>支持最多9张图片同时上传</p>
+          </div>
         </div>
       </div>
     </div>
@@ -348,12 +354,13 @@
   .img_upload {
     padding: 20px;
     box-sizing: border-box;
-    min-height: 650px;
-    min-width: 500px;
+    min-height: 700px;
+    // min-width: 500px;
     width: auto;
     border-radius: 8px;
     background-color: #fff;
-
+    // display: flex;
+    // flex-direction: row;
     .title {
       font-size: 28px;
       font-weight: 400;
@@ -390,41 +397,6 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-      }
-    }
-    .upload_tips {
-      margin-top: 40px;
-      display: flex;
-      flex-direction: row;
-      width: 100%;
-      justify-content: space-between;
-      @media (max-width: @lg_p) {
-        flex-direction: column;
-        align-items: center;
-        .tip {
-          margin-top: 20px !important;
-          width: 100% !important;
-          transition: all 0.5s;
-          margin: 0 auto;
-        }
-      }
-      .tip {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        border-radius: 5px;
-        border: 1px solid #eee;
-        // min-width: 300px;
-        width: 30%;
-        box-sizing: border-box;
-        padding: 20px;
-        .tip_title {
-          color: black;
-        }
-        p {
-          color: gray;
-        }
       }
     }
   }
@@ -509,6 +481,57 @@
     @media (min-width: @lg) {
       right: 16%;
       transform: translateY(-142%);
+    }
+  }
+
+  .main_content {
+    display: flex;
+    flex-direction: row;
+    .img_upload_left {
+      margin-right: 20px;
+      flex: 6;
+    }
+    .img_upload_right {
+      flex: 2;
+      margin-right: 100px;
+    }
+  }
+  .upload_tips {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    // justify-content: space-between;
+    // @media (max-width: @lg_p) {
+    //   flex-direction: column;
+    //   align-items: center;
+    //   .tip {
+    //     margin-top: 20px !important;
+    //     width: 100% !important;
+    //     transition: all 0.5s;
+    //     margin: 0 auto;
+    //   }
+    // }
+    .tip {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: 5px;
+      border: 1px solid #eee;
+      // min-width: 300px;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 20px;
+      margin-bottom: 20px;
+      min-width: 130px;
+      .tip_title {
+        color: black;
+      }
+      p {
+        color: gray;
+      }
     }
   }
 </style>

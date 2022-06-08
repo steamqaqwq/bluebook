@@ -4,31 +4,33 @@
       <img src="@/assets/images/defaultAvatar.jpg" alt="" />
     </div>
     <input type="file" hidden style="" ref="avatarinput" accept="image/jpg, image/png" @change="unloadAvatorChange" />
-    <el-form>
-      <el-form-item label="名字">
-        <el-input v-model="formdata.name" placeholder=""></el-input>
-      </el-form-item>
-      <el-form-item label="ID号">
-        <el-input disabled v-model="formdata.id"></el-input>
-      </el-form-item>
-      <el-form-item label="简介">
-        <el-input v-model="formdata.brief"></el-input>
-      </el-form-item>
-      <el-form-item label="性别">
-        <el-radio v-model="formdata.sex" label="男">男</el-radio>
-        <el-radio v-model="formdata.sex" label="女">女</el-radio>
-      </el-form-item>
-      <el-form-item label="生日">
-        <el-date-picker v-model="formdata.birthday" type="date" placeholder="选择日期"> </el-date-picker>
-      </el-form-item>
-      <el-form-item label="地区">
-        <el-cascader size="large" :options="options" v-model="selectedOptions" @change="handleChange"> </el-cascader>
-      </el-form-item>
-      <el-form-item>
-        <button class="updateBtn" @click="updateData">更新</button>
-        <button class="updateBtn mt-5" @click="resetData">重置</button>
-      </el-form-item>
-    </el-form>
+    <div class="form">
+      <el-form>
+        <el-form-item label="名字">
+          <el-input v-model="formdata.name" placeholder=""></el-input>
+        </el-form-item>
+        <el-form-item label="ID号">
+          <el-input disabled v-model="formdata.id"></el-input>
+        </el-form-item>
+        <el-form-item label="简介">
+          <el-input v-model="formdata.brief"></el-input>
+        </el-form-item>
+        <el-form-item label="性别">
+          <el-radio v-model="formdata.sex" label="男">男</el-radio>
+          <el-radio v-model="formdata.sex" label="女">女</el-radio>
+        </el-form-item>
+        <el-form-item label="生日">
+          <el-date-picker v-model="formdata.birthday" type="date" placeholder="选择日期"> </el-date-picker>
+        </el-form-item>
+        <el-form-item label="地区">
+          <el-cascader size="large" :options="options" v-model="selectedOptions" @change="handleChange"> </el-cascader>
+        </el-form-item>
+        <el-form-item>
+          <button class="updateBtn" @click="updateData">更新</button>
+          <button class="updateBtn mt-5" @click="resetData">重置</button>
+        </el-form-item>
+      </el-form>
+    </div>
   </div>
 </template>
 
@@ -127,6 +129,19 @@
     &:hover {
       color: #fff;
       background-color: @themecolor;
+    }
+  }
+  .form {
+    width: 70%;
+    margin: 0 auto;
+    :deep(.el-input, .el-input__inner, .el-cascader) {
+      width: 100%;
+    }
+    :deep(.el-cascader) {
+      width: 100%;
+    }
+    input {
+      width: 100%;
     }
   }
 </style>

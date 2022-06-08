@@ -3,11 +3,16 @@
     <div class="person_msg">
       <div class="person_avatar">
         <img :src="useUserStore().avatar" alt="" />
+        <!-- <img :src="usermsg.avatar" alt="" /> -->
       </div>
       <div class="person_detail">
         <p class="person_name text-xl text-bold text-black">{{ useUserStore().username }}</p>
-        <p><span>0 </span>关注&nbsp;&nbsp;&nbsp;&nbsp; <span>0 </span>粉丝&nbsp;&nbsp;&nbsp;&nbsp; <span>0 </span>获赞&nbsp;&nbsp;&nbsp;&nbsp; ID号： 4359349073</p>
-        <p class="person_introduce">还没有简介</p>
+        <p>
+          <span>{{ usermsg.followSum }}</span
+          >关注&nbsp;&nbsp;&nbsp;&nbsp; <span>{{ usermsg.fansSum }}</span
+          >粉丝&nbsp;&nbsp;&nbsp;&nbsp; <span>0 </span>获赞&nbsp;&nbsp;&nbsp;&nbsp; ID号： {{ usermsg.identNumber || '1289373425' }}
+        </p>
+        <p class="person_introduce">{{ usermsg.briefInfor || '还没有简介' }}</p>
       </div>
     </div>
     <div class="content">
@@ -30,6 +35,8 @@
   import CreatorTitle from '@/components/CreatorTitle.vue';
   import request from '@/utils/request';
   import { useUserStore } from '@/store/user';
+  import useUserMsg from '@/hooks/useUserMsg';
+  const usermsg = useUserMsg().userInfo as any;
   const datas = [
     {
       title: '新增粉丝',
@@ -52,10 +59,10 @@
 
 <style lang="less" scoped>
   .home {
-    padding: 20px;
+    // padding: 20px;
     box-sizing: border-box;
     min-height: 650px;
-    min-width: 1000px;
+    // min-width: 1000px;
     width: auto;
     border-radius: 8px;
     // background-color: #fff;
@@ -70,8 +77,8 @@
     align-items: center;
     border-radius: 8px;
     .person_avatar {
-      width: 100px;
-      height: 100px;
+      min-width: 100px;
+      min-height: 100px;
       img {
         height: 100%;
         width: 100%;
@@ -107,13 +114,17 @@
     .data-view {
       .data-show > ul {
         width: 100%;
-        height: 200px;
+        // height: 200px;
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: space-evenly;
+        justify-content: flex-start;
+        flex-wrap: wrap;
         li {
           width: 22%;
+          margin-top: 20px;
+          margin-right: 20px;
+          min-width: 200px;
           padding: 2px 12px;
           background: #f4f7f9;
           height: 100px;
@@ -121,6 +132,9 @@
           flex-direction: column;
           justify-content: center;
           align-items: flex-start;
+          // @media (max-width:@){
+
+          // }
         }
       }
     }

@@ -15,7 +15,7 @@
         <el-icon><tickets /></el-icon>
         <template #title>笔记管理</template>
       </el-menu-item>
-      <el-sub-menu index="2">
+      <!-- <el-sub-menu index="2">
         <template #title>
           <span style="margin-right: 0.5rem; margin-left: 0.25rem" class="iconfont icon-data text-xl"></span>
           <span class="text-xl">数据看板</span>
@@ -27,7 +27,7 @@
         <el-menu-item index="2-2"
           ><el-icon><icon-menu /></el-icon> <template #title>粉丝数据</template>
         </el-menu-item>
-      </el-sub-menu>
+      </el-sub-menu> -->
     </el-menu>
   </div>
 </template>

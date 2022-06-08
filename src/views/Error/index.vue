@@ -2,7 +2,7 @@
   <div class="error select-none">
     <h1 class="select-none mt-20">404</h1>
     <p>您访问的页面不存在！</p>
-    <p><toggleBtn></toggleBtn></p>
+    <!-- <p><toggleBtn></toggleBtn></p> -->
     <router-link to="/" class="button" href="#"><i class="icon-home"></i> 回到首页 </router-link>
   </div>
 </template>
@@ -14,13 +14,13 @@
   onMounted(() => {
     // console.log((window as any).returnCitySN);
     // 请求获取ip
-    let ip = (window as any).returnCitySN.cip;
+    // let ip = (window as any).returnCitySN.cip;
     // ak  F4oiQviHpdsR3rIuEafCWmPInZgIok4P
     // ip 183.236.187.196
-    request.get(`http://localhost:3000/baiduapi/location/ip?ak=F4oiQviHpdsR3rIuEafCWmPInZgIok4P&ip=${ip}&coor=bd09ll`).then((res) => {
-      console.log('ip-res', res);
-      console.log('ip', ip);
-    });
+    // request.get(`http://localhost:3000/baiduapi/location/ip?ak=F4oiQviHpdsR3rIuEafCWmPInZgIok4P&ip=${ip}&coor=bd09ll`).then((res) => {
+    //   console.log('ip-res', res);
+    //   console.log('ip', ip);
+    // });
   });
 </script>
 

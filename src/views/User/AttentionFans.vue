@@ -88,7 +88,7 @@
     background-color: #fff;
     box-sizing: border-box;
     padding: 20px;
-    box-shadow: 0px 0px 7px 1px #818cf8;
+    box-shadow: 0px 11px 5px 1px #a8affd;
     overflow-y: scroll;
     &::-webkit-scrollbar {
       width: 7px;
