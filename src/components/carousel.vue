@@ -83,8 +83,9 @@
       width: 100%;
       height: 100%;
       ul {
-        width: 100%;
+        width: 80%;
         height: 100%;
+        margin: 0 auto;
         position: relative;
         overflow: hidden;
         li {
@@ -96,7 +97,7 @@
           img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
           }
         }
       }

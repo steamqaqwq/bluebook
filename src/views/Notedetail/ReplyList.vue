@@ -1,12 +1,12 @@
 <template>
-  <div class="comment-reply-list" v-if="replies.length">
+  <div class="comment-reply-list" v-if="replies">
     <div class="comment-reply-item" :class="{ hide_post: index > pageStatus.pageSize - 4 && !isShowmore }" v-for="(replycomment, index) in replies.slice((pageStatus.currentPage - 1) * pageStatus.pageSize, pageStatus.currentPage * pageStatus.pageSize)">
       <div class="reply-title">
         <avatar style="" class="mr-5" width="30px" height="30px"></avatar>
         <div>
           <span class="comment-author"
             >{{ replycomment.personName || '无名氏' }}
-            <span v-if="replycomment.replyType == 0" class="text-xs"
+            <span v-if="replycomment.replyType == 0 && !replycomment.hisId" class="text-xs"
               >&nbsp回复 <a href="#" class="text-blue-400">@{{ getReplyName(replycomment.hisId) }}</a></span
             >:</span
           >
@@ -16,7 +16,7 @@
       <div class="comment-status">
         <span class="time">{{ getFormatTime(replycomment.createTime) }}</span>
         <span class="ml-5 mr-5"><span class="thumbs iconfont icon-xihuan1"></span> {{ replycomment.replyLikes || 55 }} </span>
-        <span class="reply-btn" @click="emit('reply', replycomment.personId, replycomment.personName, postid, postindex)">回复</span>
+        <span class="reply-btn" @click="emit('reply', replycomment.personId, replycomment.personName, postid, postindex, replycomment.replyId)">回复</span>
       </div>
     </div>
     <div class="cursor-pointer text-blue-700" @click="isShowmore = true" v-if="!isShowmore && replies.length - pageStatus.showPageNums > 0">还有{{ replies.length - pageStatus.showPageNums }}条回复 显示更多</div>
@@ -39,6 +39,7 @@
       console.log('newId', personId, x.myId);
       return x.myId == personId;
     });
+
     // console.log('reply', reply);
     return reply[0] ? reply[0].personName : '无效回复人';
   }

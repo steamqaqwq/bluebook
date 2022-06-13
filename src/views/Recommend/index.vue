@@ -5,7 +5,7 @@
     </div>
     <div class="showItems" ref="notesElement">
       <!-- <main-show></main-show> -->
-      <show-notes :max-columns="6" :outer-width="outerwidth!"></show-notes>
+      <show-notes v-if="notes" :max-columns="6" :outer-width="outerwidth!" :notesListProp="notes"></show-notes>
     </div>
   </div>
 </template>
@@ -65,6 +65,7 @@
     display: flex;
     flex-direction: row;
     width: 100%;
+    min-height: 100vh;
   }
   .leftNav {
     position: relative;

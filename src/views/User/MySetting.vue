@@ -1,33 +1,35 @@
 <template>
   <div class="setting">
     <div class="avatar" @click="uploadAvatar">
-      <img src="@/assets/images/defaultAvatar.jpg" alt="" />
+      <!-- <img v-if="usermsg" src="@/assets/images/defaultAvatar.jpg" alt="" /> -->
+      <!-- <img :src="usermsg.avatar" alt="" /> -->
+      <Avatar :src="usermsg.avatar" width="80px" height="80px"></Avatar>
     </div>
     <input type="file" hidden style="" ref="avatarinput" accept="image/jpg, image/png" @change="unloadAvatorChange" />
     <div class="form">
       <el-form>
         <el-form-item label="名字">
-          <el-input v-model="formdata.name" placeholder=""></el-input>
+          <el-input v-model="formdata.personName" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="ID号">
-          <el-input disabled v-model="formdata.id"></el-input>
+          <el-input disabled v-model="formdata.identNumber"></el-input>
         </el-form-item>
         <el-form-item label="简介">
-          <el-input v-model="formdata.brief"></el-input>
+          <el-input v-model="formdata.briefInfor"></el-input>
         </el-form-item>
         <el-form-item label="性别">
-          <el-radio v-model="formdata.sex" label="男">男</el-radio>
-          <el-radio v-model="formdata.sex" label="女">女</el-radio>
+          <el-radio v-model="formdata.sex" label="0">男</el-radio>
+          <el-radio v-model="formdata.sex" label="1">女</el-radio>
         </el-form-item>
         <el-form-item label="生日">
-          <el-date-picker v-model="formdata.birthday" type="date" placeholder="选择日期"> </el-date-picker>
+          <el-date-picker v-model="formdata.createTime" type="date" placeholder="选择日期"> </el-date-picker>
         </el-form-item>
         <el-form-item label="地区">
           <el-cascader size="large" :options="options" v-model="selectedOptions" @change="handleChange"> </el-cascader>
         </el-form-item>
         <el-form-item>
-          <button class="updateBtn" @click="updateData">更新</button>
-          <button class="updateBtn mt-5" @click="resetData">重置</button>
+          <button type="button" class="updateBtn" @click="updateData">更新</button>
+          <button type="button" class="updateBtn mt-5" @click="resetData">重置</button>
         </el-form-item>
       </el-form>
     </div>
@@ -35,36 +37,43 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive, onMounted } from 'vue';
-  import request from '@/utils/requestMock';
-  import { provinceAndCityDataPlus } from 'element-china-area-data';
+  import { ref, reactive, onMounted, inject } from 'vue';
+  import request from '@/utils/request';
+  import Avatar from '@/components/avatar.vue';
+  import { provinceAndCityDataPlus, CodeToText } from 'element-china-area-data';
   const options = provinceAndCityDataPlus;
   const selectedOptions = ref([]);
   const avatarinput = ref();
   const props = defineProps(['userMsg']);
+  const usermsg: any = inject('usermsg');
+  // console.log('message', message.value);
   const formdata = ref({
-    name: 'XXu',
-    id: '234234324',
-    brief: '',
-    sex: '男',
-    birthday: '',
-    job: '',
-    region: ''
+    personName: usermsg.value.personName,
+    identNumber: usermsg.value.identNumber || 123123123,
+    briefInfor: usermsg.value.briefInfor,
+    sex: usermsg.value.sex,
+    createTime: usermsg.value.createTime || '',
+    career: usermsg.value.career || '',
+    location: usermsg.value.location || ''
   });
   const formdataInit = {
-    name: 'XXu',
-    id: '234234324',
-    brief: '',
-    sex: '男',
-    birthday: '',
-    job: '',
-    region: ''
+    personName: usermsg.value.personName,
+    identNumber: usermsg.value.identNumber || 123123123,
+    briefInfor: usermsg.value.briefInfor,
+    sex: usermsg.value.sex,
+    createTime: usermsg.value.createTime || '',
+    career: usermsg.value.career || '',
+    location: usermsg.value.location || ''
   };
   function handleChange(v) {
-    console.log(v);
+    let newstr = '';
+    selectedOptions.value.forEach((item) => {
+      newstr += CodeToText[item];
+    });
+    formdata.value.location = newstr;
   }
   function updateData() {
-    console.log();
+    request.post('/person/update', formdata.value);
   }
   function resetData() {
     formdata.value = formdataInit;
@@ -77,7 +86,7 @@
   // 头像上传事件 unloadAvatorChange
   function unloadAvatorChange() {}
   onMounted(() => {
-    // request.get('/user/msg');
+    request.get('/user/msg');
   });
 </script>
 
@@ -91,7 +100,6 @@
       height: 80px;
       width: 80px;
       margin: 10px auto;
-      border: 1px solid #eee;
       position: relative;
       cursor: pointer;
 

@@ -1,7 +1,8 @@
 <template>
   <div class="main_box" v-if="notesList.length">
     <div class="column" v-for="(notes, index) in notesList" :key="index">
-      <template v-for="note in notes" :key="note.id">
+      <!-- 假数据 -->
+      <!-- <template v-for="note in notes" :key="note.id">
         <router-link
           :to="{
             name: 'notedetail',
@@ -30,6 +31,40 @@
             </div>
           </div>
         </router-link>
+      </template> -->
+
+      <!-- 真实数据 -->
+      <template v-for="note in notes" :key="note['blogId']">
+        <router-link
+          :to="{
+            name: 'notedetail',
+            params: {
+              id: note['blogId']
+            }
+          }"
+        >
+          <div class="note">
+            <div class="note_cover" :class="{ animation: isanimate }">
+              <!-- <img src="/public/imgLoading.png" @load="loadImage(note.blogImage, $event)" @error="errImage(note.blogImage, $event)" @alt="" /> -->
+              <img :src="note.blogImage" @load="loadImage(note.blogImage, $event)" @error="errImage(note.blogImage, $event)" @alt="" />
+            </div>
+            <div class="video_icon" v-show="(note.videoOrImage || 0) == 1"><span class="iconfont icon-videofill text-xl text-white"></span></div>
+            <div class="note_title">{{ note.blogTheme }}</div>
+            <div class="note_usermsg">
+              <div class="useravatar" v-if="note['person']">
+                <img v-if="note['person']['avatar']" :src="note.person.avatar" @error="errmsg($event)" alt="" />
+                <img v-else src="@/assets/images/defaultAvatar.jpg" />
+              </div>
+              <div class="username text-sm text-gray-400" v-if="note['person']">{{ note.person.personName || '无名氏' }}</div>
+              <div class="fav">
+                <div class="icon">
+                  <span class="iconfont icon-xihuan1"></span>
+                </div>
+                <div class="favnums text-xs">{{ note.likes || 0 }}</div>
+              </div>
+            </div>
+          </div>
+        </router-link>
       </template>
     </div>
   </div>
@@ -40,14 +75,16 @@
   import request from '@/utils/request';
   import { onMounted, ref, reactive, watch, watchEffect, nextTick, computed } from 'vue';
   import useColumns from '@/hooks/useColumns';
+  import Avatar from '@/components/avatar.vue';
   import { throttle, debounce } from '@/utils/debounce';
+
   const props = withDefaults(
     defineProps<{
       maxColumns: number;
       outerWidth: number;
       noteWidth?: number;
       timeout?: number;
-      notesList?;
+      notesListProp?;
     }>(),
     {
       timeout: 200,
@@ -55,7 +92,8 @@
     }
   );
   const noteWidthString = props.noteWidth + 'px';
-  const notes = ref<note[]>([]);
+  // const notes = ref<note[]>([]);
+  const notes = ref();
   const length = ref();
   const initColumns = computed(() => {
     let columns = Math.floor(props.outerWidth / props.noteWidth);
@@ -66,16 +104,21 @@
 
   onMounted(() => {
     // 创建交叉观测者
+    let preRatio = -1;
+
     const io = new IntersectionObserver((config) => {
       // intersectionRatio 触发观测者显示的比例
       // io.disconnect() 讲该观测者失效
       //不观察box
       // 观测到最后一个元素
-      if (config[0].intersectionRatio > 0) {
+      if (config[0].intersectionRatio > 0 && config[0].intersectionRatio != 1 && preRatio !== config[0].intersectionRatio) {
+        // console.log(preRatio, config[0].intersectionRatio);
+        preRatio = config[0].intersectionRatio;
         io.unobserve(lastchild.value!);
+        console.log(111);
         requestMock('/notes/getnewnotes')
           .then((res: any) => {
-            // console.log(notes.value);
+            console.log(notes.value);
             notes.value = notes.value.concat(res.newnotes);
           })
           .then(() => {
@@ -84,10 +127,11 @@
           });
       }
     });
+
     Promise.resolve()
       .then(() => {
-        if (props.notesList) {
-          notes.value = props.notesList;
+        if (props.notesListProp) {
+          notes.value = props.notesListProp;
         } else {
           requestMock({
             url: '/notes/getnotes',
@@ -139,13 +183,16 @@
     });
     watch(lastchild, (old, cur) => {
       if (!cur) {
-        lastchild.value = getLastChild();
+        throttle(() => {
+          lastchild.value = getLastChild();
+        }, 200);
       }
     });
 
     //获取最多子元素的一列 检测最后一个子元素
     const getLastChild = () => {
       let parentEle = document.querySelector('.column:first-child');
+      // if (!parentEle) return;
       let lastchild = parentEle!.lastElementChild!;
       // console.log('lastchild', lastchild);
       // 将最后一个子元素背景设置为黑 方便观测
@@ -155,28 +202,48 @@
     };
   });
 
-  const notesList = ref<note[][]>([]);
+  // const notesList = ref<note[][]>([]);
+  const notesList = ref<any>([]);
 
   // 加载图片处理
   // const showPic = ref(false);
   const blurSet = ref('7px');
   const isanimate = ref(true);
   const loadImage = (src, e) => {
+    //无限触发bug 解决
+
+    console.log('loadsrc', src);
+    // 处理后端数据格式错误
+    // if (!src) return;
+    // let srcList;
+    // if (src.includes('^')) {
+    //   srcList = src.split('^')[0];
+    // }
     isanimate.value = false;
-    e.path[0].src = src;
+    // // console.log('yr', e.path[0].src, srcList);
+    // e.path[0].src = srcList;
     blurSet.value = '0px';
   };
+  const errImage = (src, e) => {
+    // console.log('errsrc', src);
+    e.path[0].src = '/public/imgLoading.png';
+  };
+  function errmsg(e) {
+    // console.log('error', avatar);
+    e.path[0].src = new URL('../assets/images/defaultAvatar.jpg', import.meta.url).href;
+  }
 </script>
 
 <style lang="less" scoped>
   .main_box {
     display: flex;
-    justify-content: space-evenly;
+    // justify-content: space-evenly;
+    justify-content: flex-start;
     width: 100%;
-    // .column {
-    //   // flex: 1;
-    //   // margin-left: 20px;
-    // }
+    .column {
+      // flex: 1;
+      margin-left: 20px;
+    }
   }
   .note {
     font-family: xiawu;
@@ -217,7 +284,8 @@
 
   .note_cover {
     width: 100%;
-    min-height: 250px;
+    // min-height: 250px;
+    min-height: 100px;
     height: auto;
     position: relative;
     filter: blur(v-bind(blurSet));
@@ -280,6 +348,11 @@
       border-radius: 50%;
       width: 28px;
       height: 28px;
+      img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+      }
     }
     .username {
       margin-left: 2px;

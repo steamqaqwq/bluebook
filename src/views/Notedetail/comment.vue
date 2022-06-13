@@ -2,18 +2,18 @@
   <div class="comments-list">
     <div class="comment-item" v-for="(comment, index) in comments" :key="comment.personId">
       <div class="comment-title">
-        <avatar width="50px" height="50px"></avatar>
+        <avatar width="50px" height="50px" :src="comment.avatar"></avatar>
         <div class="comment-author">{{ comment.personName }}</div>
       </div>
       <div class="comment-content">{{ comment.commentContent }}</div>
       <div class="comment-status">
         <span class="time">{{ getFormatTime(comment.createTime) }}</span>
         <span class="ml-5 mr-5"><span class="thumbs iconfont icon-xihuan1"></span> {{ comment.commentLikes }} </span>
-        <span class="reply-btn" @click="reply(comment.personId, comment.personName, comment.personId, index)">回复</span>
+        <span class="reply-btn" @click="reply(comment.personId, comment.personName, comment.personId, index, comment.replyId)">回复1</span>
       </div>
-      <reply-list ref="reply_list" :replies="comment.replyList" :postid="comment.personId" @reply="reply" :postindex="index"></reply-list>
+      <reply-list ref="reply_list" v-model:replies="comment.replyList" :postid="comment.personId" @reply="reply" :postindex="index"></reply-list>
       <!-- 回复框显示条件 1.点击回复 2.回复的楼主ID一致 3.回复的是当前贴index一致 -->
-      <replybox v-if="showreply && comment.personId == curReplyId && index == curReplyIndex" :user="curReplyUser" class="ml-10 border-none"></replybox>
+      <replybox v-if="showreply && comment.personId == curReplyId && index == curReplyIndex" :user="curReplyUser" class="ml-10 border-none" :commentId="comment.commentId" :replyType="0"></replybox>
     </div>
   </div>
 </template>
@@ -24,7 +24,8 @@
   import ReplyList from './ReplyList.vue';
   import replybox from './replybox.vue';
   import getFormatTime from '@/utils/getFormatTime';
-
+  import request from '@/utils/request';
+  import { useNoteStore } from '@/store/note';
   const props = defineProps(['comments']);
   const reply_list = ref([]);
 
@@ -52,9 +53,12 @@
     userid: 0,
     username: ''
   });
-  function reply(id: number, username: string, postid: number, postindex: number) {
+  function reply(id: number, username: string, postid: number, postindex: number, ...args) {
+    console.log('username', username, postid, args[0]);
+    // 存储 对回复目标的ID  -- 回复对回复
+    useNoteStore().curReply.replygoalId = args[0];
     showreply.value = false;
-    console.log('postindex', postindex);
+    // console.log('postindex', postindex);
     //初始化 清空当前
     curReplyUser.userid = 0;
     curReplyUser.username = '';

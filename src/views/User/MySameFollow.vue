@@ -1,10 +1,9 @@
 <template>
-  <!-- <div class="">笔记班车</div> -->
   <div class="show_notes" ref="notesElement">
     <show-notes v-if="notes" :max-columns="2" :outer-width="outerwidth!" :noteWidth="200" :notesListProp="notes"></show-notes>
     <div v-else class="no_notes">
       <div class="bg"></div>
-      <div class="bg_tips">暂无任何笔记~</div>
+      <div class="bg_tips">暂无相同关注</div>
     </div>
   </div>
 </template>
@@ -19,7 +18,7 @@
   onMounted(() => {
     outerwidth.value = notesElement.value.clientWidth;
     // alert(outer_width.value);
-    request.get('/person/myblog').then((res: any) => {
+    request.get(`/follow/common/${4}`).then((res: any) => {
       console.log(res);
       if (res.code == 200) notes.value = res.blog;
     });

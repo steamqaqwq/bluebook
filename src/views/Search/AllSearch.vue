@@ -2,11 +2,11 @@
   <div class="allSearch">
     <div class="filter_list">
       <div class="normal_tags">
-        <div class="normal_tag" @click="curStatus.curNormalIndex = index" v-for="(item, index) in normal_tags" :class="{ active: index == curStatus.curNormalIndex }">
+        <div class="normal_tag" @click="toSort(index, item)" v-for="(item, index) in normal_tags" :class="{ active: index == curStatus.curNormalIndex }">
           {{ item }}
         </div>
       </div>
-      <div class="key_tags">
+      <div class="key_tags" v-if="false">
         <div class="key_tag" @click="curStatus.curKeyTag = index" v-for="(item, index) in key_tags" :class="{ active: index == curStatus.curKeyTag }">
           {{ item }}
         </div>
@@ -14,7 +14,8 @@
     </div>
 
     <div class="show_main" ref="outerbox">
-      <show-notes :max-columns="4" :outer-width="outerwidth" :note-width="200"></show-notes>
+      <show-notes v-if="notesList" :max-columns="4" :outer-width="outerwidth" :note-width="200" :notesListProp="notesList"></show-notes>
+      <div v-else>没有该记录</div>
     </div>
   </div>
 </template>
@@ -23,7 +24,8 @@
   import { ref, reactive, onMounted, computed, nextTick, onUnmounted } from 'vue';
   import request from '@/utils/request';
   import ShowNotes from '@/components/ShowNotes.vue';
-  const normal_tags = ref(['综合', '最热', '最新', '视频', '图文']);
+  const props = defineProps(['data']);
+  const normal_tags = ref(['最热', '最新', '视频', '图文']);
   const key_tags = ref(['全部', '蔬菜保鲜', '屯才清单', '蔬菜存储', '冰箱收纳', '生鲜保鲜']);
   const curStatus = reactive({
     curNormalIndex: 0,
@@ -31,12 +33,24 @@
   });
   const outerbox = ref<Element>();
   const outerwidth = ref(0);
+  const notesList = ref<any>([]);
+  const toSort = (index, tagName) => {
+    curStatus.curNormalIndex = index;
+    console.log('tagName', tagName);
+    switch (tagName) {
+      case '最新':
+        requestData('newest');
+      default:
+        requestData();
+    }
+  };
   onMounted(() => {
+    console.log('gg');
+    notesList.value = props.data.blog;
     // 请求数据
-    requestData();
+    // requestData();
     // 初始化
     outerwidth.value = outerbox.value!.clientWidth;
-
     console.log('outerbox', outerbox.value!.clientWidth);
     // console.log('outerbox', outerbox.value!.offsetWidth);
     var timer;
@@ -49,7 +63,40 @@
   });
 
   // 请求数据函数
-  function requestData() {}
+  async function requestData(tag = 'hot') {
+    console.log('进入reuqesData');
+    // let res = request({
+    //   method: 'POST',
+    //   url: `/tag/hot`,
+    //   params: {
+    //     tagName: props.data.key,
+    //     pageNum: 1,
+    //     pageSize: 10
+    //   }
+    // }).then((res: any) => {
+    //   notesList.value = res.blog;
+    //   console.log('res', res);
+    //   // res.value = res
+    // });
+    let key = await props.data.key;
+    console.log('key', key);
+    if (!key) return;
+    let res: any = await request({
+      method: 'POST',
+      url: `/tag/${tag}`,
+      params: {
+        tagName: key,
+        pageNum: 1,
+        pageSize: 10
+      }
+    });
+    if (tag == 'hot') {
+      notesList.value = res.blog;
+    } else if (tag == 'newest') {
+      notesList.value = res.list;
+    }
+    console.log('res', res);
+  }
 </script>
 
 <style lang="less" scoped>

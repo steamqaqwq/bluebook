@@ -1,6 +1,7 @@
 <template>
   <div class="my_avatar">
-    <img :src="src" alt="" />
+    <img v-if="src" :src="src" alt="" @error="errImage($event)" />
+    <img v-else src="@/assets/images/defaultAvatar.jpg" alt="" />
   </div>
 </template>
 
@@ -17,6 +18,9 @@
       src: '/src/assets/images/defaultAvatar.jpg'
     }
   );
+  const errImage = (e) => {
+    e.path[0].src = '/public/defaultAvatar.jpg';
+  };
   // 必须动态获取的才处理 错误示范 const url = new URL(xxx)
   //   function getSrc(src) {
   //     if (src) {

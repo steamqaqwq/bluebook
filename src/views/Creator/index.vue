@@ -14,6 +14,8 @@
   import Header from '@/components/header.vue';
   import leftmenu from './leftmenu.vue';
   import VideoUpload from './video-upload.vue';
+  import request from '@/utils/request';
+  import { onMounted } from 'vue';
 </script>
 
 <style lang="less" scoped>

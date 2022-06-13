@@ -6,8 +6,11 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive } from 'vue';
+  import request from '@/utils/request';
+  import { ref, reactive, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
+  import { useNoteStore } from '@/store/note';
+  const emit = defineEmits(['getData']);
   const props = withDefaults(
     defineProps<{
       width?: string;
@@ -18,13 +21,36 @@
     }
   );
   const $router = useRouter();
-  const search_v = ref('');
+  onMounted(() => {
+    // console.log('props.key', props.key);
+    if (search_v.value) {
+      toSearch();
+    }
+  });
+  const search_v = ref(useNoteStore().curSearchKey || '');
+  // const res = ref('')
   const toSearch = () => {
+    useNoteStore().curSearchKey = search_v.value;
     $router.push({
       name: 'search',
       query: {
         key: search_v.value
       }
+    });
+    request({
+      method: 'POST',
+      url: `/tag/hot`,
+      params: {
+        tagName: search_v.value,
+        pageNum: 1,
+        pageSize: 10
+      }
+    }).then((res: any) => {
+      emit('getData', {
+        key: search_v.value,
+        data: res
+      });
+      // res.value = res
     });
   };
 </script>

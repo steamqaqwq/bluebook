@@ -1,7 +1,7 @@
 <template>
   <!-- <div>附近</div> -->
   <div class="showItems" ref="notesElement">
-    <show-notes :max-columns="6" :outer-width="outerwidth!"></show-notes>
+    <show-notes v-if="notes" :max-columns="6" :outer-width="outerwidth!" :notesListProp="notes"></show-notes>
   </div>
 </template>
 
@@ -15,6 +15,7 @@
   const location = useLocation().location;
   const notesElement = ref();
   const outerwidth = useListenOuterboxWidth(notesElement).outerwidth;
+  const notes = ref();
   //获取
   onMounted(() => {
     // location 有请求数据 需要延迟
@@ -26,8 +27,9 @@
             latitude: location.point.y
           }
         })
-        .then((res) => {
-          console.log(res);
+        .then((res: any) => {
+          // console.log(res);
+          notes.value = res.list;
         });
     }, 100);
   });
@@ -35,7 +37,12 @@
 
 <style lang="less" scoped>
   .showItems {
+    position: relative;
+    margin-top: 40px;
+    padding: 0 200px;
+    display: flex;
+    flex-direction: row;
     width: 100%;
-    overflow: hidden;
+    min-height: 100vh;
   }
 </style>

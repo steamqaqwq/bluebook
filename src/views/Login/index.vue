@@ -27,7 +27,7 @@
           <template v-if="curLoginType == LoginType.message">
             <div class="text-xl font-bold text-left mb-5">短信登录</div>
             <el-row>
-              <el-input v-model.number="formdata.username" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="Iphone" />
+              <el-input v-model.number="formdata.username" name="mobile" auto-complete="on" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="Iphone" />
             </el-row>
             <el-row class="relative">
               <el-input :prefix-icon="Message" v-model="formdata.password" class="w-50 m-2 login-input" placeholder="验证码" />
@@ -38,7 +38,7 @@
           <template v-else-if="curLoginType == LoginType.password">
             <div class="text-xl font-bold text-left mb-5">手机密码登录</div>
             <el-row>
-              <el-input v-model="formdata.username" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="User" />
+              <el-input v-model="formdata.username" name="mobile" auto-complete="on" class="w-50 m-2 login-input" placeholder="手机号" :prefix-icon="User" />
             </el-row>
             <el-row> <el-input v-model="formdata.password" type="password" class="w-50 m-2 login-input" placeholder="密码" :prefix-icon="Lock" @keydown.enter="login(curLoginType)" /></el-row>
             <el-row> <button class="login-btn" @click="login(curLoginType)">登录</button></el-row>
@@ -59,6 +59,8 @@
   import { ElMessage } from 'element-plus';
   import { setToken } from '@/utils/auth';
   import request from '@/utils/request';
+  import { useUserStore } from '@/store/user';
+
   import anime from 'animejs';
   const $router = useRouter();
 
@@ -122,6 +124,15 @@
           type: 'success'
         });
         setToken(res.token);
+        //获取个人信息
+        request.get('/person/information').then((res: any) => {
+          if (res.code == 200) console.log('personmsg', res);
+          let data = res.map;
+          let username = data.personName || 'XXu';
+          let avatar = data.avatar || '@/assets/images/defaultAvatar.jpg';
+          let id = data.personId;
+          useUserStore().updateUser(username, avatar, id);
+        });
         $router.push({ path: '/' });
       } else {
         ElMessage({

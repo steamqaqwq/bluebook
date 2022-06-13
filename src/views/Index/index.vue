@@ -11,15 +11,24 @@
     </div>
 
     <div class="other-fun">
-      <div class="search">
-        <Search class="search-1"></Search>
+      <div class="search" ref="search">
+        <Search class="search-1" @click="showSearchList"></Search>
+        <Transition leave-active-class="animate__animated animate__fadeOut" enter-active-class="animate__animated animate__fadeIn">
+          <div class="searchList" v-show="isShowSearchList">
+            <div class="searchItem" v-for="(item, index) in history || searchList" :key="item.id" :class="{ active: curSearchIndex == index }" @mouseover="curSearchIndex = index" @mouseout="curSearchIndex = -1" @click="searchItemClick(item.content)">
+              {{ item.content }}
+              <span class="absolute iconfont icon-xihuan" style="right: 10%" @click="deleteSearch(item.id)"></span>
+            </div>
+          </div>
+        </Transition>
       </div>
+
       <toggleBtn></toggleBtn>
 
       <div class="usermsg">
         <router-link to="/search" class="search-2 mr-5"><span @click="expandSearch" class="iconfont icon-search relative hover:text-indigo-500 text-2xl"></span></router-link>
         <div class="avatar" @click="jumpNewWindow('my')">
-          <img :src="$store.avatar" alt="" />
+          <img :src="$store.avatar" alt="" @error="errImage($event)" />
         </div>
         <div class="username">{{ $store.username }}</div>
       </div>
@@ -50,7 +59,6 @@
   const { route, href, isActive, isExactActive, navigate } = useLink((RouterLink as any).props);
   const $router = useRouter();
   const $store = useUserStore();
-
   // 初始化列表
   const navList = ref(navlist);
   // 初始化标签
@@ -78,6 +86,55 @@
     hover.value = false;
     curIndex.value = initIndex.value;
   };
+
+  const errImage = (e) => {
+    // console.log('errsrc', src);
+    e.path[0].src = '/public/defaultAvatar.jpg';
+  };
+  //搜索相关
+  const searchList = ref([
+    { id: 1, content: '历史记录1' },
+    { id: 2, content: '历史记录2' },
+    { id: 3, content: '历史记录3' },
+    { id: 4, content: '历史记录4' },
+    { id: 5, content: '历史记录5' }
+  ]);
+  const isShowSearchList = ref(false);
+  const search = ref();
+  const curSearchIndex = ref(-1);
+  const history = ref<any>([]);
+  const showSearchList = () => {
+    isShowSearchList.value = true;
+    request.get('/search/window').then((res: any) => {
+      if (res.code == 200) {
+        history.value = res.history;
+      }
+      /**
+       * "map": {
+        "guess": [
+            "后端",
+            "篮球",
+            "前端",
+            "菜鸟"
+        ],
+        "history": []
+    }
+       */
+    });
+    // setTimeout(() => {
+    //   isShowSearchList.value = false;
+    // }, 3000);
+  };
+  const deleteSearch = (id) => {};
+  const searchItemClick = (searchkey) => {
+    isShowSearchList.value = false;
+    $router.push({
+      name: 'search',
+      query: {
+        key: searchkey
+      }
+    });
+  };
   //监听路由变化 修改当前索引
   onBeforeRouteUpdate((to) => {
     initIndex.value = to.meta.index as number;
@@ -104,15 +161,28 @@
     window.open(routeUrl.href, '_blank');
   }
   function expandSearch() {}
+
   onMounted(() => {
+    // 搜索相关 -添加全局点击事件
+    // 判断点击元素是否为search元素的子元素，不是隐藏
+    console.log('search', search.value);
+    document.addEventListener('click', (e) => {
+      if (search.value) {
+        let isSelf = (search.value as any).contains(e.target);
+        if (!isSelf) {
+          isShowSearchList.value = false;
+        }
+      }
+    });
+
     //获取个人信息
     requestMock.get('/api/mymsg', { headers: { token: getToken()! } }).then((res: any) => {
       // console.log(res);
-      res = res.data;
-      let username = res.username ? res.username : 'XXu';
-      let avatar = res.avatar ? res.avatar : '@/assets/images/defaultAvatar.jpg';
-      let id = res.userid;
-      useUserStore().updateUser(username, avatar, id);
+      // res = res.data;
+      // let username = res.username ? res.username : 'XXu';
+      // let avatar = res.avatar ? res.avatar : '@/assets/images/defaultAvatar.jpg';
+      // let id = res.userid;
+      // useUserStore().updateUser(username, avatar, id);
       // 获取IP地址信息 修改navList信息
       let ip = (window as any).returnCitySN.cip;
       // ak  F4oiQviHpdsR3rIuEafCWmPInZgIok4P
@@ -128,6 +198,16 @@
           navList.value[2].title = city;
         });
     });
+    // 获取个人资料--真
+    // request.get('/person/information').then((res: any) => {
+    //   if (res.code == 200) console.log('personmsg', res);
+    //   let data = res.map;
+    //   let username = data.personName || 'XXu';
+    //   let avatar = data.avatar || '@/assets/images/defaultAvatar.jpg';
+    //   let id = data.personId;
+    //   useUserStore().updateUser(username, avatar, id);
+    // });
+    // 获取搜索历史记录
   });
 </script>
 
@@ -154,6 +234,34 @@
       }
       @media (min-width: @lg_p) {
         // max-width:
+      }
+
+      .searchList {
+        position: absolute;
+        // width: 200px;
+        width: 260px;
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 10px;
+        box-sizing: border-box;
+        transform: translateY(10%);
+        border: 1px solid @themecolor;
+        z-index: 20;
+        .searchItem {
+          border-radius: 5px;
+          width: 100%;
+          height: 40px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          cursor: pointer;
+          display: flex;
+          padding-left: 10px;
+          align-items: center;
+        }
+        .active {
+          background-color: @bg_wrapper;
+        }
       }
     }
     .usermsg {

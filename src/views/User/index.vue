@@ -5,7 +5,9 @@
       <div class="left">
         <div class="user_avatar_outer">
           <div class="user_avatar">
-            <img src="@/assets/images/defaultAvatar.jpg" alt="" />
+            <!-- <img v-if="userMsg.avatar" :src="userMsg.avatar" alt="" />
+            <img v-else src="@/assets/images/defaultAvatar.jpg" alt="" /> -->
+            <Avatar width="80px" height="80px" :src="userMsg.avatar"></Avatar>
           </div>
         </div>
 
@@ -13,7 +15,7 @@
           {{ userMsg.personName || 'XXu' }}
           <span class="iconfont sex absolute" :class="{ 'text-blue-400': userMsg.sex == 0, 'icon-sexm': userMsg.sex == 0, 'text-red-400': userMsg.sex == 1, 'icon-sexw': userMsg.sex == 1 }"></span>
         </div>
-        <div class="user_id text-xs text-gray-400">id:{{ userMsg.personId || 234023098 }}</div>
+        <div class="user_id text-xs text-gray-400">id:{{ userMsg.identNumber || 234023098 }}</div>
         <div class="user_status" v-for="(item, index) in statusData" :key="item.title" @click="openStatusDetail(index)">
           <p>{{ item.nums }}</p>
           <p class="text-gray-400 text-sm xiawu">{{ item.title }}</p>
@@ -50,9 +52,9 @@
       <AttentionFans @close="closeList"></AttentionFans>
     </div>
     <el-dialog title="提示" v-model="dialogVisible" width="30%" destroy-on-close center>
-      <p><span class="iconfont icon-Note text-2xl"></span> 当前发布笔记数 {{ 2 }}</p>
-      <p><span class="iconfont icon-thumb-up text-2xl"></span> 当前获得点赞数 0</p>
-      <p><span class="iconfont icon-6Collection_01 text-2xl"></span> 当前获得收藏数 2</p>
+      <!-- <p><span class="iconfont icon-Note text-2xl"></span> 当前发布笔记数 {{ 2 }}</p></span> -->
+      <p><span class="iconfont icon-thumb-up text-2xl"></span> 当前获得点赞数 {{ statuslist[2] }}</p>
+      <p><span class="iconfont icon-6Collection_01 text-2xl"></span> 当前获得收藏数 {{ statuslist[1] }}</p>
       <template #footer>
         <span class="dialog-footer">
           <el-button type="primary" @click="dialogVisible = false">我知道了</el-button>
@@ -65,22 +67,27 @@
 <script setup lang="ts">
   import Header from '@/components/header.vue';
   import request from '@/utils/request';
-  import { ref, reactive, onMounted, computed, watch } from 'vue';
+  import { ref, reactive, onMounted, computed, watch, provide } from 'vue';
   import { useRoute } from 'vue-router';
+  import Avatar from '@/components/avatar.vue';
   import MyNotes from './MyNotes.vue';
   import MyFavs from './MyFavs.vue';
   import MyThumbs from './MyThumbs.vue';
   import MySetting from './MySetting.vue';
+  import MySameFollow from './MySameFollow.vue';
   import AttentionFans from './AttentionFans.vue';
   import Calendar from '@/components/SignCalendar.vue';
-  const statusData = [
+  const statusData = ref([
     { nums: 0, title: '关注' },
     { nums: 3, title: '粉丝' },
     { nums: 3, title: '获赞与收藏' }
-  ];
+  ]);
   const map = {
     sex: 0
   };
+
+  const statuslist = ref<any>([]);
+  const noteid = useRoute().params.id;
   interface userMsg {
     avatar: string;
     birth: any;
@@ -98,7 +105,7 @@
     // updateBy: '';
     // updateTime: '2022-05-04T17:05:32.000+08:00';
   }
-  const userMsg: any = reactive({
+  const userMsg: any = ref({
     // avatar: string;
     // birth: any;
     // briefInfor: string | null;
@@ -113,25 +120,36 @@
     // phonenumber: string | number;
     // sex: string | number;
   });
-
+  provide('usermsg', userMsg);
+  // provide('userid', userid);
   onMounted(() => {
     function transformData(object) {
       let newObj = {};
       object.forEach((key) => {});
     }
-    // todo
-    // useRoute().params.userid
+
     request
-      .get('http://localhost:8080/person/information', {
-        params: { personId: 3 }
+      .get('/person/information', {
+        params: { personId: useRoute().params.userid }
       })
       .then((res: any) => {
-        console.log('myMsg', res);
+        if (res.code != 200) return;
+        // console.log('myMsg', res);
         userMsg.value = res.map;
+        // 关注
+        statusData.value[0].nums = res.map.followSum || 0;
+        // 粉丝
+        statusData.value[1].nums = res.map.fansSum || 0;
       });
+    request.get('/statistics/bloglikecollect').then((res: any) => {
+      // 获赞与收藏
+      // res [1,1,0] 收藏点赞总数 收藏 点赞
+      statusData.value[2].nums = res.list[0];
+      statuslist.value = res.list;
+    });
   });
 
-  const navs = ['笔记', '收藏', '赞过'];
+  const navs = ['笔记', '收藏', '共同关注'];
   // 当前显示的组件
   // const curNav = ref(0);
   // 当前导航索引
@@ -145,8 +163,10 @@
         return MyNotes;
       case 1:
         return MyFavs;
+      // case 2:
+      //   return MyThumbs;
       case 2:
-        return MyThumbs;
+        return MySameFollow;
       case 'setting':
         return MySetting;
       default:
@@ -260,7 +280,7 @@
       }
       .my_brief {
         margin: 2px 20px 10px;
-        // text-align: left;
+        text-align: left;
         width: 80%;
         overflow: hidden;
         white-space: normal;

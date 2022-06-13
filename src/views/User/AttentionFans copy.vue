@@ -3,66 +3,46 @@
     <div class="close" @click="emit('close')"></div>
     <div class="title text-2xl jiangchengfont">我的好友</div>
     <div class="navs">
-      <div class="nav jiangchengfont" v-for="(nav, index) in navs" :class="{ active: curIndex == index }" @click="changeData(nav, index)">{{ nav }}</div>
+      <div class="nav jiangchengfont" v-for="(nav, index) in navs" @click="curIndex = index" :class="{ active: curIndex == index }">{{ nav }}</div>
     </div>
-    <div class="user-list" v-if="users.length">
-      <div class="user" v-for="user in users" :key="user.personId">
+    <div class="user-list">
+      <div class="user" v-for="user in users" :key="user.id">
         <div class="avatar">
-          <avatar :src="user.avatar"></avatar>
+          <img :src="user.avatar" alt="" />
         </div>
         <div class="user_brief">
-          <p class="username jiangchengfont">{{ user.personName }}</p>
-          <p class="userbrief truncate text-gray-400 text-xs">{{ user.briefInfor || '暂无简介' }}</p>
+          <p class="username jiangchengfont">{{ user.username }}</p>
+          <p class="userbrief truncate text-gray-400 text-xs">{{ user.description }}</p>
         </div>
-        <!-- <button class="followBtn" @click="follow(user.isFollow)" v-if="curIndex == 1">{{ user.isFollow ? '取消关注' : '关注' }}</button> -->
+        <button class="followBtn" @click="follow(user.isFollow)">{{ user.isFollow ? '取消关注' : '关注' }}</button>
       </div>
-    </div>
-    <div class="user-list" v-else>
-      <span>{{ curIndex == 0 ? '暂时关注的博主' : '暂无粉丝' }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { ref, reactive, onMounted } from 'vue';
-  import request from '@/utils/request';
+  import request from '@/utils/requestMock';
   import { ElMessageBox } from 'element-plus';
   import { ElMessage } from 'element-plus';
-  import avatar from '@/components/avatar.vue';
   const curIndex = ref(0);
   const navs = ['关注', '粉丝'];
   const emit = defineEmits(['close']);
-  const users = ref<any>([]);
+  const users = ref<
+    {
+      id: number;
+      avatar: string;
+      description: string;
+      username: string;
+      isFollow: any;
+    }[]
+  >([]);
   onMounted(() => {
-    // requestMock.get('/api/followlist').then((response: any) => {
-    //   console.log('/api/followlist', response);
-    //   users.value = response.data.users;
-    // });
-    requestBloger();
+    request.get('/api/followlist').then((response: any) => {
+      console.log('/api/followlist', response);
+      users.value = response.data.users;
+    });
   });
-
-  function requestBloger() {
-    request.get('/follow/bloger').then((res: any) => {
-      console.log('/api/followlist', res);
-      users.value = res.bloger;
-    });
-  }
-  function requestFans() {
-    request.get('/follow/fans').then((res: any) => {
-      console.log('/follow/fans', res);
-      users.value = res.fans;
-    });
-  }
-  // 切换up / 粉丝
-  function changeData(nav, index) {
-    curIndex.value = index;
-    //关注列表
-    if (index == 0) {
-      requestBloger();
-    } else if (index == 1) {
-      requestFans();
-    }
-  }
   // 点击关注/取关
   function follow(isFollow: boolean) {
     if (isFollow) {

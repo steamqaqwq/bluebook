@@ -1,30 +1,24 @@
 <template>
-  <div class="main" v-if="blogdata">
+  <div class="main">
     <div class="main_show">
-      <div v-if="blogdata.videoOrImage" class="video_show">
-        <video controls="true" :src="blogdata.firstFrame"></video>
+      <div v-if="isVideo" class="video_show">
+        <video controls="true" src="http://v.xiaohongshu.com/pre_post/01e2622d502039cc01837003804f849b35_259.mp4?sign=d37829fe289858d2d9f69dbf9c1c6186&t=62657400"></video>
       </div>
       <div v-else class="img_show">
-        <carousel :imgs="blogdata.blogImageArr"></carousel>
+        <carousel :imgs="imgs"></carousel>
       </div>
-      <div class="note_title text-2xl font-semibold">{{ blogdata.blogTheme }}</div>
+      <div class="note_title text-2xl font-semibold">烘培新手Or老手？快速教你打蛋器如何选？</div>
       <div class="note_text">
-        <p class="break-words text-left whitespace-pre-wrap">{{ blogdata.blogTalk }}</p>
+        <p class="break-words text-left whitespace-pre-wrap">{{ content }}</p>
       </div>
       <div class="signs"></div>
-      <div class="time_msg text-gray-500 text-xl mt-10">发布于 {{ timeFormatMini(blogdata.createTime) }}</div>
-      <div class="tags" v-if="blogdata.tags.length">
-        <div class="tag" v-for="tag in blogdata.tags">
-          {{ tag['tagName'] || '无效标签名' }}
-        </div>
-      </div>
-
+      <div class="time_msg text-gray-500 text-xl">发布于 2022-04-14 11:26</div>
       <div class="commends">
         <div class="title" id="comment">笔记评论</div>
         <div class="my_input">
           <avatar></avatar>
           <el-input type="textarea" show-word-limit resize="none" :rows="2" v-model="my_input" :input-style="{ width: '300px' }" placeholder="发一条想表达的评论.."></el-input>
-          <el-button type="primary" @click="reply">评论</el-button>
+          <el-button type="primary">评论</el-button>
         </div>
         <div>
           <Comments :comments="comments" v-if="comments.length"></Comments>
@@ -36,35 +30,32 @@
         <div class="title">笔记作者</div>
         <div class="author_msg">
           <div class="author_avatar">
-            <router-link :to="{ name: 'my', params: { userid: blogdata.person.personId } }">
-              <img :src="blogdata.person.avatar" alt="" />
-            </router-link>
+            <img src="https://sns-avatar-qc.xhscdn.com/avatar/5c1faef79b72b40001de57ba.jpg?imageView2/1/w/540/format/jpg" alt="" />
           </div>
-          <div class="author_name">{{ blogdata.person.personName }}</div>
+          <div class="author_name">作者名称</div>
         </div>
         <el-divider />
-        <!-- <div class="author_data">一些基本数据上</div> -->
+        <div class="author_data">一些基本数据上</div>
       </div>
       <div class="note_about"></div>
       <div class="fav_funcs">
         <p>
-          <!-- 显示当前状态 首先数据库(1次) -> 页面点赞 ->页面点赞的优先 ->取关 -->
-          <span class="span1 iconfont icon-thumb-up" :class="{ active: blogdata.likesIs }" @click="$store.love(blogdata, blogid)"></span>
-          <span class="span2">{{ blogdata.likes || 0 }}</span>
+          <span class="span1 iconfont icon-thumb-up" @click="love()"></span>
+          <span class="span2">0</span>
         </p>
         <p>
           <a href="#comment"> <span class="span1 iconfont icon-pinglun"></span></a>
-          <span class="span2">{{ blogdata.commentsSum || 0 }}</span>
+          <span class="span2">23</span>
         </p>
         <p>
-          <span class="span1 iconfont icon-6Collection_01" :class="{ active: blogdata.collectIs }" @click="$store.collection(blogdata, blogid)"></span>
-          <span class="span2">{{ blogdata.likes || 0 }}</span>
+          <span class="span1 iconfont icon-6Collection_01" @click="collection()"></span>
+          <span class="span2">8</span>
         </p>
       </div>
     </div>
     <div class="fav_funcs_fixed">
       <p>
-        <span class="span1 iconfont icon-thumb-up" @click="$store.love(blogdata, blogid)"></span>
+        <span class="span1 iconfont icon-thumb-up" @click="love()"></span>
         <span class="span2">0</span>
       </p>
       <p>
@@ -72,7 +63,7 @@
         <span class="span2">23</span>
       </p>
       <p>
-        <span class="span1 iconfont icon-6Collection_01" @click="$store.collection(blogdata, blogid)"></span>
+        <span class="span1 iconfont icon-6Collection_01" @click="collection()"></span>
         <span class="span2">8</span>
       </p>
     </div>
@@ -80,87 +71,31 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, reactive } from 'vue';
-  import { ElMessage } from 'element-plus';
-  import { useRoute, useRouter } from 'vue-router';
+  import { ref, onMounted } from 'vue';
   import carousel from '@/components/carousel.vue';
   import avatar from '@/components/Avatar.vue';
   import Comments from './comment.vue';
   // import request from '@/utils/requestMock';
   import request from '@/utils/request';
-  import { timeFormatMini } from '@/utils/getFormatTime';
-  import { useNoteStore } from '@/store/note';
-  import { useUserStore } from '@/store/user';
-  import replybox from './replybox.vue';
-  const $store = useNoteStore();
-  const curReplyUser = reactive({
-    userid: useUserStore().userid,
-    username: useUserStore().username
-  });
   const isVideo = ref(false);
   const my_input = ref();
   const imgs = ref(['https://ci.xiaohongshu.com/4c8bd876-2fa0-215d-c274-95696cbf84ff?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/7b6b921c-6307-e883-3e39-e8460444a13c?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/c676f40e-190f-2c98-ff7c-1c2e3667f596?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/f92ebc99-242c-62b4-b8be-bbcba01be146?imageView2/2/w/1080/format/jpg', 'https://ci.xiaohongshu.com/8319245c-8f87-14e5-4f7a-72ffa6c2eaba?imageView2/2/w/1080/format/jpg']);
-  const comments = ref<any>([]);
+  const comments = ref([]);
   const content = `🔹感谢欧拉好猫品牌邀请，使用后真诚分享作为在广州生活的我，家里已经有辆汽油车 还需要一辆适合我这个宝妈的代步车价钱 不能太高，又要有实用性 所以我选择了开欧拉好猫回\n家颜值与实力并存，推荐~ #适合女生的车 #春日里的欧拉好猫\n\n#打蛋器 #家居 #新手烘焙 #买了不后悔的家电 #在家做甜品 #好物分享 #烘培 #我的烘培日记 #打蛋器 #电动打蛋器 #手持打蛋器 #打蛋器 #让生活更美好的小家电 #家居好物 #厨房好物 #视频分享好物 #好物推荐 #博世家电
   `;
-  const blogid = useRoute().params.id;
-  const blogdata = ref();
-  function isActive() {}
-  const $router = useRouter();
-  const reply = async () => {
-    let res2: any = await useNoteStore().reply(
-      {
-        blogId: blogid,
-        commentContent: my_input.value
-      },
-      1
-    );
-    comments.value.unshift(res2.comment);
-    console.log('comments', comments.value);
-  };
-  // const comments = ref([])
   onMounted(() => {
-    console.log('onMounted', blogid);
     // request.get('/api/comments').then((res: any) => {
     //   comments.value = res.comments;
     // });
-    request.get(`/blog/${blogid}`).then((res: any) => {
-      // comments.value = res.data.comment;
-      console.log('res', res);
-      blogdata.value = res.data.blog as any;
-      comments.value = res.data.comment as any;
+    request.get('/blog/26').then((res: any) => {
+      comments.value = res.data.comment;
+      console.log(res.data);
     });
   });
 
   // 点赞 收藏
-  function love(blogdata, blogid) {
-    request.get(`/blog/likes?blogId=${blogid}`).then((res: any) => {
-      //  "msg": "进行点赞成功",
-      // "code": 200,
-      // "isLikes": true
-      if (res.code == 200) {
-        ElMessage({
-          message: res.msg,
-          type: 'success'
-        });
-        blogdata.likesIs = res.isLikes;
-      }
-    });
-  }
-  function collection(blogdata, blogid) {
-    request.get(`collect/likes?blogId=${blogid}`).then((res: any) => {
-      //  "msg": "进行点赞成功",
-      // "code": 200,
-      // "isLikes": true
-      if (res.code == 200) {
-        ElMessage({
-          message: res.msg,
-          type: 'success'
-        });
-        blogdata.collectIs = res.isCollects;
-      }
-    });
-  }
+  function love() {}
+  function collection() {}
 </script>
 
 <style lang="less" scoped>
@@ -214,17 +149,11 @@
           align-items: center;
           padding: 0 20px;
           .author_avatar {
-            width: 50px;
+            min-width: 50px;
             height: 50px;
             border-radius: 50%;
             overflow: hidden;
             margin-right: 20px;
-            a {
-              height: 50px;
-              border-radius: 50%;
-              overflow: hidden;
-              margin-right: 20px;
-            }
             img {
               width: 100%;
               height: 100%;
@@ -252,9 +181,6 @@
           // color: #eadfdf;
           // color: @themecolor2;
           color: #fff;
-        }
-        .active {
-          color: @themecolor2;
         }
         .span1 {
           font-size: 24px;
@@ -297,18 +223,6 @@
       overflow: hidden;
       outline: none;
       min-height: 400px;
-    }
-  }
-  .tags {
-    margin-top: 10px;
-    .tag {
-      display: inline-block;
-      margin-right: 10px;
-      border-radius: 5px;
-      padding: 2px 5px;
-      color: #fff;
-      background-color: @themecolor;
-      cursor: pointer;
     }
   }
   .commends {

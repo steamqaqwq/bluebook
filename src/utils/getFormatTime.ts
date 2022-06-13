@@ -39,3 +39,8 @@ dayjs.locale('zh-cn');
       return dayjs(time_).fromNow();
     }
   };
+  
+ export function timeFormatMini(time=new Date()) {
+  // let time = new Date()
+  return dayjs(time).format('YYYY-MM-DD HH:mm');
+ }

@@ -78,6 +78,7 @@
         "element-plus/es/components/row/style/css",
         "element-plus/es/components/select/style/css",
         "element-plus/es/components/sub-menu/style/css",
+        "element-plus/es/components/tooltip/style/css",
         "element-plus/es/components/upload/style/css",
         "element-plus/es/locale/lang/zh-cn",
         "emoji-mart-vue-fast/src",

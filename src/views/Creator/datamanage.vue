@@ -8,6 +8,11 @@
 
 <script setup lang="ts">
   import CreatorTitle from '@/components/CreatorTitle.vue';
+  import request from '@/utils/request';
+  import { ref, onMounted } from 'vue';
+  onMounted(() => {
+    request.get('/statistics/person').then((res: any) => {});
+  });
 </script>
 
 <style lang="less" scoped>

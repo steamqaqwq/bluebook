@@ -10,7 +10,8 @@
         <div>{{ $store.username }}</div>
         <div class="avatar">
           <router-link :to="{ name: 'my', params: { userid: $store.userid } }">
-            <img :src="$store.avatar" alt="" />
+            <!-- <img :src="$store.avatar" alt="" /> -->
+            <Avatar :src="$store.avatar" width="28px" height="28px"></Avatar>
           </router-link>
           <div class="user_fun">
             <ul>
@@ -27,6 +28,7 @@
 <script setup lang="ts">
   import { useUserStore } from '@/store/user';
   import toggleBtn from '@/components/ToggleTheme.vue';
+  import Avatar from '@/components/avatar.vue';
   const $store = useUserStore();
 </script>
 
