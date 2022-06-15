@@ -1,7 +1,7 @@
 <template>
   <div class="containerbox">
     <div class="leftNav">
-      <left-nav></left-nav>
+      <left-nav @updateData="updateData"></left-nav>
     </div>
     <div class="showItems" ref="notesElement">
       <!-- <main-show></main-show> -->
@@ -56,6 +56,9 @@
       notes.value = list;
     });
   });
+  function updateData(nav) {
+    console.log(nav);
+  }
 </script>
 
 <style lang="less" scoped>

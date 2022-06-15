@@ -2,7 +2,7 @@
   <div class="allSearch">
     <div class="filter_list">
       <div class="normal_tags">
-        <div class="normal_tag" @click="toSort(index, item)" v-for="(item, index) in normal_tags" :class="{ active: index == curStatus.curNormalIndex }">
+        <div class="normal_tag" @click="toSort(index, item)" v-for="(item, index) in normal_tags" :key="index" :class="{ active: index == curStatus.curNormalIndex }">
           {{ item }}
         </div>
       </div>
@@ -38,14 +38,23 @@
   const notesList = ref<any>([]);
   const toSort = (index, tagName) => {
     console.log('toSort', tagName);
-    curStatus.curNormalIndex = index;
-    console.log('tagName', tagName);
-    switch (tagName) {
-      case '最新':
-        requestData('newest');
-      default:
-        requestData();
+    // switch (tagName) {
+    //   case '最新':
+    //     console.log('最新');
+    //     requestData('newest');
+    //   case '最热':
+    //     console.log('最热');
+    // }
+    if (tagName == '最新') {
+      requestData('newest');
+    } else if (tagName == '最热') {
+      requestData();
+    } else if (tagName == '图文') {
+      requestData('image');
+    } else if (tagName == '视频') {
+      requestData('video');
     }
+    curStatus.curNormalIndex = index;
   };
   const notesElement = ref();
   const outerwidth = ref();
@@ -103,6 +112,23 @@
     //   // res.value = res
     // });
     // let key = await props.data.key;
+
+    if (tag == 'image') {
+      notesList.value = notesList.value.filter((item) => {
+        let type = item.videoOrImage ? 1 : 0;
+        return type == 0;
+      });
+      return;
+    } else if (tag == 'video') {
+      console.log('vvv');
+      let list = notesList.value.filter((item) => {
+        let type = item.videoOrImage ? 1 : 0;
+        return type == 1;
+      });
+      console.log(list);
+      notesList.value = list;
+      return;
+    }
     let key = useNoteStore().curSearchKey;
     console.log('key', key);
     if (!key) return;
@@ -115,12 +141,12 @@
         pageSize: 10
       }
     });
+
     if (tag == 'hot') {
       notesList.value = res.blog;
     } else if (tag == 'newest') {
       notesList.value = res.list;
     }
-    console.log('res', res);
   }
 </script>
 

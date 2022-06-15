@@ -4,29 +4,38 @@
       <div class="item" v-for="item in notes" :key="item.id">
         <div class="user_msg">
           <!-- <div class="avatar"> -->
-          <Avatar :src="item.person.avatar"></Avatar>
+          <router-link :to="{ name: 'my', params: { userid: item.person.personId } }">
+            <Avatar :src="item.person.avatar"></Avatar>
+          </router-link>
           <!-- </div> -->
           <div class="user_detail" v-if="item.person">
-            <p class="username text-2xl">{{ item.person.personName }}</p>
+            <router-link :to="{ name: 'my', params: { userid: item.person.personId } }">
+              <p class="username text-2xl">{{ item.person.personName }}</p>
+            </router-link>
             <p class="time text-gray-400">{{ timeFormat(item.createTime) || 2022 }}</p>
           </div>
           <span class="iconfont"></span>
         </div>
         <div class="content">
-          <img :src="item.blogImage" alt="" />
+          <router-link :to="{ name: 'notedetail', params: { id: item.blogId } }">
+            <img :src="item.blogImage" alt="" />
+          </router-link>
           <p class="text-xl mt-2">{{ item.blogTheme }}</p>
           <div class="status">
             <p>
-              <span class="span1 iconfont icon-thumb-up" @click="love(item.blogId)"></span>
-              <span class="span2">{{ item.likes || 0 }}</span>
+              <span class="span1 iconfont icon-thumb-up" :class="{ active: item.likesIs }" @click="useNoteStore().love(item, item.blogId)"></span>
+              <span class="span2">{{ item.likes + item.likesIs ? 1 : 0 || 0 }}</span>
             </p>
+            <router-link :to="{ name: 'notedetail', params: { id: item.blogId } }">
+              <p>
+                <span class="span1 iconfont icon-pinglun"></span>
+                <span class="span2">{{ item.comments_sum || 0 }}</span>
+              </p>
+            </router-link>
+
             <p>
-              <a href="#comment"> <span class="span1 iconfont icon-pinglun"></span></a>
-              <span class="span2">{{ item.comments_sum || 0 }}</span>
-            </p>
-            <p>
-              <span class="span1 iconfont icon-6Collection_01" @click="collection(item.blogId)"></span>
-              <span class="span2">{{ item.likes || 0 }}</span>
+              <span class="span1 iconfont icon-6Collection_01" :class="{ active: item.collectIs }" @click="useNoteStore().collection(item, item.blogId)"></span>
+              <span class="span2">{{ item.collectSum + item.collectIs ? 1 : 0 || 0 }}</span>
             </p>
           </div>
         </div>
@@ -41,6 +50,8 @@
   import timeFormat from '@/utils/getFormatTime';
   import Avatar from '@/components/avatar.vue';
   import { ElMessage } from 'element-plus';
+  import { useNoteStore } from '@/store/note';
+
   const notes = ref();
   onMounted(() => {
     request.get('/blog/blogRecommend').then((res: any) => {
@@ -78,6 +89,9 @@
 </script>
 
 <style lang="less" scoped>
+  .active {
+    color: @themecolor2;
+  }
   .my_favs {
     max-width: @lg;
     margin: 0 auto;

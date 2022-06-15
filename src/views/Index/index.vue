@@ -12,7 +12,7 @@
 
     <div class="other-fun">
       <div class="search" ref="search">
-        <Search class="search-1" @showSearchList="showSearchList"></Search>
+        <Search class="search-1" @showSearchList="showSearchList" v-if="isShowSearch()"></Search>
         <Transition leave-active-class="animate__animated animate__fadeOut" enter-active-class="animate__animated animate__fadeIn">
           <div class="searchList" v-show="isShowSearchList" v-if="history">
             <div class="searchItem" v-for="(item, index) in history" :key="item.index" :class="{ active: curSearchIndex == index }" @mouseover="curSearchIndex = index" @mouseout="curSearchIndex = -1" @click="searchItemClick(item)">
@@ -49,7 +49,7 @@
   import Search from '@/components/search.vue';
   import { navlist } from '../../api/index';
   import { RouterLink, useLink } from 'vue-router';
-  import { useRouter, onBeforeRouteUpdate } from 'vue-router';
+  import { useRouter, onBeforeRouteUpdate, useRoute } from 'vue-router';
   import { Plus } from '@element-plus/icons-vue';
   import { getToken } from '@/utils/auth';
   import requestMock from '@/utils/requestMock';
@@ -86,7 +86,12 @@
     hover.value = false;
     curIndex.value = initIndex.value;
   };
-
+  const isShowSearch = () => {
+    console.log('useRoute', useRoute());
+    if (useRoute().path.includes('search')) {
+      return false;
+    }
+  };
   const errImage = (e) => {
     // console.log('errsrc', src);
     e.path[0].src = '/public/defaultAvatar.jpg';

@@ -31,6 +31,7 @@ export const useNoteStore = defineStore({
           type: 'success'
         });
         blogdata.likesIs = res.isLikes;
+        blogdata.likes = res.likesSum
       }
     });
   },
@@ -47,6 +48,7 @@ export const useNoteStore = defineStore({
           type: 'success'
         });
         blogdata.collectIs = res.isCollects;
+        blogdata.collectSum =res.collectSum
       }
     });
   }, 

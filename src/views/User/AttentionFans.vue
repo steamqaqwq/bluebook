@@ -5,7 +5,7 @@
     <div class="navs">
       <div class="nav jiangchengfont" v-for="(nav, index) in navs" :class="{ active: curIndex == index }" @click="changeData(nav, index)">{{ nav }}</div>
     </div>
-    <div class="user-list" v-if="users.length">
+    <div class="user-list" v-if="users">
       <div class="user" v-for="user in users" :key="user.personId">
         <div class="avatar">
           <avatar :src="user.avatar"></avatar>

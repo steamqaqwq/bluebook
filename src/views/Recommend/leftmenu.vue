@@ -1,7 +1,7 @@
 <template>
   <div class="navmenu">
     <el-menu default-active="0">
-      <el-menu-item v-for="(item, index) in navs" :key="item.id" :index="index.toString()">
+      <el-menu-item v-for="(item, index) in navs" :key="item.id" :index="index.toString()" @click="emit('updateData', item.title)">
         <!-- <el-icon><icon-menu /></el-icon> -->
         <span class="iconfont text-xl mr-1" :class="[item.icon]"></span>
         <template #title>{{ item.title }}</template>
@@ -14,6 +14,7 @@
   import { navs } from '@/api/recommend';
   import { ref } from 'vue';
   import { Document, Menu as IconMenu, Location, Setting } from '@element-plus/icons-vue';
+  const emit = defineEmits(['updateData']);
 </script>
 
 <style lang="less" scoped>

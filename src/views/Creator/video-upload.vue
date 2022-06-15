@@ -221,7 +221,7 @@
     form.append('nearby.x', formdata.x); //经度
     form.append('nearby.y', formdata.y); //维度
     form.append('tag.tagNameArray', JSON.stringify(getTags())); //标签
-    form.append('flag', 'video'); // 类型
+    // form.append('flag', 'video'); // 类型
     form.append('blogImage', formdata.videoid);
     // fileList.value.forEach((item) => {
     //   form.append('files', item['raw']!);

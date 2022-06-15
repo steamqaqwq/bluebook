@@ -27,7 +27,7 @@
           <el-button type="primary" @click="reply">评论</el-button>
         </div>
         <div>
-          <Comments v-model:comments="comments" v-if="comments.length"></Comments>
+          <Comments v-model:comments="comments" v-if="comments"></Comments>
         </div>
       </div>
     </div>
@@ -37,7 +37,8 @@
         <div class="author_msg">
           <div class="author_avatar">
             <router-link :to="{ name: 'my', params: { userid: blogdata.person.personId } }">
-              <img :src="blogdata.person.avatar" alt="" />
+              <!-- <img :src="blogdata.person.avatar" alt="" /> -->
+              <avatar :src="blogdata.person.avatar"></avatar>
             </router-link>
           </div>
           <div class="author_name">{{ blogdata.person.personName }}</div>
@@ -50,7 +51,7 @@
         <p>
           <!-- 显示当前状态 首先数据库(1次) -> 页面点赞 ->页面点赞的优先 ->取关 -->
           <span class="span1 iconfont icon-thumb-up" :class="{ active: blogdata.likesIs }" @click="$store.love(blogdata, blogid)"></span>
-          <span class="span2">{{ blogdata.likes || 0 }}</span>
+          <span class="span2">{{ blogdata.likes + blogdata.likesIs ? 1 : 0 || 0 }}</span>
         </p>
         <p>
           <a href="#comment"> <span class="span1 iconfont icon-pinglun"></span></a>
@@ -58,7 +59,7 @@
         </p>
         <p>
           <span class="span1 iconfont icon-6Collection_01" :class="{ active: blogdata.collectIs }" @click="$store.collection(blogdata, blogid)"></span>
-          <span class="span2">{{ blogdata.likes || 0 }}</span>
+          <span class="span2">{{ blogdata.collectSum + blogdata.collectIs ? 1 : 0 || 0 }}</span>
         </p>
       </div>
     </div>

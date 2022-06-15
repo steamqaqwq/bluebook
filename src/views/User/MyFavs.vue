@@ -1,6 +1,6 @@
 <template>
   <div class="show_notes" ref="notesElement">
-    <show-notes v-if="notes.length" :max-columns="2" :outer-width="outerwidth!" :noteWidth="200" :notesListProp="notes"></show-notes>
+    <show-notes v-if="notes" :max-columns="2" :outer-width="outerwidth!" :noteWidth="200" :notesListProp="notes"></show-notes>
     <div v-else class="no_notes">
       <div class="bg"></div>
       <div class="bg_tips">暂无任何收藏</div>

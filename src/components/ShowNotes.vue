@@ -57,10 +57,15 @@
               </div>
               <div class="username text-sm text-gray-400" v-if="note['person']">{{ note.person.personName || '无名氏' }}</div>
               <div class="fav">
-                <div class="icon">
-                  <span class="iconfont icon-xihuan1"></span>
-                </div>
-                <div class="favnums text-xs">{{ note.likes || 0 }}</div>
+                <template v-if="note.nearby">
+                  <div class="favnums text-xs">{{ note.nearby.distance || 0 }}</div>
+                </template>
+                <template v-else>
+                  <div class="icon">
+                    <span class="iconfont icon-xihuan1"></span>
+                  </div>
+                  <div class="favnums text-xs">{{ note.likes || 0 }}</div>
+                </template>
               </div>
             </div>
           </div>
