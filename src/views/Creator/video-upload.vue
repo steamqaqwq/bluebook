@@ -187,15 +187,15 @@
     request({
       url: '/upload/video',
       method: 'POST',
-      data: form,
-      onUploadProgress: (progressEvent) => {
-        // progressEvent.loaded:已上传文件大小
-        // progressEvent.total:被上传文件的总大小
-        console.log(progressEvent);
-        if (progressEvent.lengthComputable) {
-          progressConfig.progressPercent = Number((progressEvent.loaded / progressEvent.total).toFixed(2));
-        }
-      }
+      data: form
+      // onUploadProgress: (progressEvent) => {
+      //   // progressEvent.loaded:已上传文件大小
+      //   // progressEvent.total:被上传文件的总大小
+      //   console.log(progressEvent);
+      //   if (progressEvent.lengthComputable) {
+      //     progressConfig.progressPercent = Number((progressEvent.loaded / progressEvent.total).toFixed(2));
+      //   }
+      // }
     }).then((res: any) => {
       if (res.code == 200) {
         progressConfig.progressPercent = 100;

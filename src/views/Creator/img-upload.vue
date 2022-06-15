@@ -253,12 +253,12 @@
       url: '/upload/image',
       method: 'POST',
       headers: {},
-      data: form,
-      onUploadProgress: (progressEvent) => {
-        // progressEvent.loaded:已上传文件大小
-        // progressEvent.total:被上传文件的总大小
-        progressConfig.progressPercent = Number((progressEvent.loaded / progressEvent.total).toFixed(2));
-      }
+      data: form
+      // onUploadProgress: (progressEvent) => {
+      //   // progressEvent.loaded:已上传文件大小
+      //   // progressEvent.total:被上传文件的总大小
+      //   progressConfig.progressPercent = Number((progressEvent.loaded / progressEvent.total).toFixed(2));
+      // }
     }).then((res: any) => {
       formdata.imagesId = res.blog_image;
     });

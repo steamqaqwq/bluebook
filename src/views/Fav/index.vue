@@ -2,7 +2,7 @@
   <div class="my_favs">
     <div class="item_box">
       <div class="item" v-for="item in notes" :key="item.id">
-        <div class="user_msg">
+        <div class="user_msg" v-if="item.person">
           <!-- <div class="avatar"> -->
           <router-link :to="{ name: 'my', params: { userid: item.person.personId } }">
             <Avatar :src="item.person.avatar"></Avatar>

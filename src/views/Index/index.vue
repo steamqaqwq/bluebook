@@ -286,6 +286,9 @@
         overflow: hidden;
         border-radius: 50%;
         cursor: pointer;
+        img {
+          object-fit: cover;
+        }
       }
       .username {
         user-select: none;

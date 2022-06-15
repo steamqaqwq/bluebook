@@ -87,7 +87,7 @@
   const dialogVisible = ref(false);
   const deleteNote = () => {
     dialogVisible.value = false;
-    request.delete(`/blog/delete/${curNoteid}`).then((res: any) => {
+    request.delete(`/blog/delete/${curNoteid.value}`).then((res: any) => {
       if (res.code == 200) {
         ElNotification({
           title: '删除成功',

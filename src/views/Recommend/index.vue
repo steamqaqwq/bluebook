@@ -57,7 +57,8 @@
     });
   });
   function updateData(nav) {
-    console.log(nav);
+    // let newlist = notes.value.filter(item=>{
+    // })
   }
 </script>
 
