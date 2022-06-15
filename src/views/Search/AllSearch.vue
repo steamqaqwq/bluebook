@@ -13,8 +13,8 @@
       </div>
     </div>
 
-    <div class="show_main" ref="outerbox">
-      <show-notes v-if="notesList" :max-columns="4" :outer-width="outerwidth" :note-width="200" :notesListProp="notesList"></show-notes>
+    <div class="show_main" ref="notesElement">
+      <show-notes v-if="notesList" :max-columns="3" :outer-width="outerwidth!" :note-width="200" :notesListProp="notesList"></show-notes>
       <div v-else>没有该记录</div>
     </div>
   </div>
@@ -24,17 +24,20 @@
   import { ref, reactive, onMounted, computed, nextTick, onUnmounted } from 'vue';
   import request from '@/utils/request';
   import ShowNotes from '@/components/ShowNotes.vue';
-  const props = defineProps(['data']);
+  import { useRouter, onBeforeRouteUpdate } from 'vue-router';
+  import useListenOuterboxWidth from '@/hooks/useListenOuterboxWidth';
+  import { debounce } from '@/utils/debounce';
+  import { useNoteStore } from '@/store/note';
+  const props = defineProps(['data', 'key']);
   const normal_tags = ref(['最热', '最新', '视频', '图文']);
   const key_tags = ref(['全部', '蔬菜保鲜', '屯才清单', '蔬菜存储', '冰箱收纳', '生鲜保鲜']);
   const curStatus = reactive({
     curNormalIndex: 0,
     curKeyTag: 0
   });
-  const outerbox = ref<Element>();
-  const outerwidth = ref(0);
   const notesList = ref<any>([]);
   const toSort = (index, tagName) => {
+    console.log('toSort', tagName);
     curStatus.curNormalIndex = index;
     console.log('tagName', tagName);
     switch (tagName) {
@@ -44,22 +47,43 @@
         requestData();
     }
   };
-  onMounted(() => {
-    console.log('gg');
+  const notesElement = ref();
+  const outerwidth = ref();
+  setTimeout(() => {
+    outerwidth.value = useListenOuterboxWidth(notesElement).outerwidth;
+  }, 100);
+
+  onBeforeRouteUpdate(() => {
+    console.log('该更新了');
     notesList.value = props.data.blog;
+  });
+  onMounted(() => {
+    notesList.value = props.data.blog;
+    let ele = document.querySelector('show_main');
+    notesElement.value = ele;
+    window.addEventListener(
+      'resize',
+      debounce(() => {
+        nextTick(() => {
+          // console.log('页面变化！！', notesElement.value);
+          if (notesElement.value.clientWidth) {
+            outerwidth.value = notesElement.value.clientWidth;
+          }
+        });
+      }, 300)
+    );
     // 请求数据
     // requestData();
     // 初始化
-    outerwidth.value = outerbox.value!.clientWidth;
-    console.log('outerbox', outerbox.value!.clientWidth);
-    // console.log('outerbox', outerbox.value!.offsetWidth);
-    var timer;
-    window.addEventListener('resize', () => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        outerwidth.value = outerbox.value!.clientWidth;
-      }, 200);
-    });
+    // outerwidth.value = outerbox.value!.clientWidth;
+    // console.log('outerbox', outerbox.value!.clientWidth);
+    // var timer;
+    // window.addEventListener('resize', () => {
+    //   clearTimeout(timer);
+    //   timer = setTimeout(() => {
+    //     outerwidth.value = outerbox.value!.clientWidth;
+    //   }, 200);
+    // });
   });
 
   // 请求数据函数
@@ -78,7 +102,8 @@
     //   console.log('res', res);
     //   // res.value = res
     // });
-    let key = await props.data.key;
+    // let key = await props.data.key;
+    let key = useNoteStore().curSearchKey;
     console.log('key', key);
     if (!key) return;
     let res: any = await request({
@@ -133,6 +158,8 @@
     // height: 580px;
     margin-top: 20px;
     margin-left: 10px;
+    width: 100%;
+    // min-height: 100vh;
     // overflow-x: auto;
   }
   .active {

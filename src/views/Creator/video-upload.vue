@@ -228,7 +228,7 @@
     // });
     // 上传
     request({
-      url: '/upload/uploadBlog',
+      url: `/upload/uploadBlog?flag=video`,
       method: 'POST',
       data: form
       // onUploadProgress: (progressEvent) => {

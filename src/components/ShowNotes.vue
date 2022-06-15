@@ -96,11 +96,13 @@
   const notes = ref();
   const length = ref();
   const initColumns = computed(() => {
+    console.log('propswdith', props.outerWidth);
     let columns = Math.floor(props.outerWidth / props.noteWidth);
+    if (!columns) return props.maxColumns;
     // console.log('resize_columns', props.outerWidth);
     return columns > props.maxColumns ? props.maxColumns : columns;
   });
-  const lastchild = ref<Element>(); //记录当前最后一个子元素
+  const lastchild = ref<any>(); //记录当前最后一个子元素
 
   onMounted(() => {
     // 创建交叉观测者
@@ -122,7 +124,8 @@
             notes.value = notes.value.concat(res.newnotes);
           })
           .then(() => {
-            lastchild.value = getLastChild();
+            getLastChild();
+            console.log('lastchild.value', lastchild.value);
             io.observe(lastchild.value);
           });
       }
@@ -151,7 +154,8 @@
       })
       .then((res) => {
         setTimeout(() => {
-          lastchild.value = getLastChild();
+          getLastChild();
+          // lastchild.value =
           io.observe(lastchild.value);
         }, 200);
       });
@@ -184,21 +188,25 @@
     watch(lastchild, (old, cur) => {
       if (!cur) {
         throttle(() => {
-          lastchild.value = getLastChild();
+          getLastChild();
+          // lastchild.value =
         }, 200);
       }
     });
 
     //获取最多子元素的一列 检测最后一个子元素
     const getLastChild = () => {
-      let parentEle = document.querySelector('.column:first-child');
-      // if (!parentEle) return;
-      let lastchild = parentEle!.lastElementChild!;
-      // console.log('lastchild', lastchild);
-      // 将最后一个子元素背景设置为黑 方便观测
-      console.log('lastchild', lastchild);
-      (lastchild as HTMLElement).style.color = 'purple';
-      return lastchild;
+      nextTick(() => {
+        let parentEle = document.querySelector('.column:first-child');
+        // if (!parentEle) return;
+        let curlastchild = parentEle!.lastElementChild!;
+        // console.log('lastchild', lastchild);
+        // 将最后一个子元素背景设置为黑 方便观测
+        console.log('lastchild', curlastchild);
+        (curlastchild as HTMLElement).style.color = 'purple';
+        // return lastchild;
+        lastchild.value = lastchild;
+      });
     };
   });
 

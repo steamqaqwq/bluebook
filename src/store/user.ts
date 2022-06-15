@@ -7,7 +7,8 @@ export const useUserStore = defineStore({
     return {
       username: '',
       avatar: '',
-      userid:''
+      userid:'', 
+      curPersonId:''
     };
   },
   actions: {

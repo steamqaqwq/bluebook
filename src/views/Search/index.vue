@@ -2,16 +2,24 @@
   <div class="search_box">
     <div class="outer_box">
       <div class="search_plus">
-        <search ref="searchElem" width="100%" @getData="getData"></search>
+        <search ref="searchElem" width="100%" @getData="getData" v-model:key="key"></search>
       </div>
       <div class="search_guess_history" v-if="searchTips && !key">
         <p class="text-2xl mt-5 mb-2">猜你想搜</p>
         <div class="search_guess" v-if="searchTips.guess">
-          <div class="item" v-for="item in searchTips.guess">{{ item }}</div>
+          <template v-for="item in searchTips.guess">
+            <router-link :to="{ name: 'search', query: { key: item } }"
+              ><div class="item">{{ item }}</div></router-link
+            >
+          </template>
         </div>
         <p class="text-2xl mt-5 mb-2">历史记录</p>
         <div class="search_history" v-if="searchTips.history.length">
-          <div class="item" v-for="item in searchTips.history">{{ item }}</div>
+          <template v-for="item in searchTips.history">
+            <router-link :to="{ name: 'search', query: { key: item } }"
+              ><div class="item">{{ item }}</div></router-link
+            >
+          </template>
         </div>
       </div>
       <template v-if="key">
@@ -36,9 +44,10 @@
   import UserSearch from './UserSearch.vue';
   import Rank from './Rank.vue';
   import request from '@/utils/request';
-  import { useRoute } from 'vue-router';
+  import { useRoute, onBeforeRouteUpdate } from 'vue-router';
   import { useNoteStore } from '@/store/note';
   import { ref, computed, onMounted } from 'vue';
+  // import {}
   const curType = ref('all');
   const curIndex = ref(0);
   const searchTips = ref();
@@ -51,6 +60,10 @@
     data.value = res.data;
     console.log('getData', res);
   };
+  onBeforeRouteUpdate((to) => {
+    // console.log('to', to.query);
+    key.value = to.query.key as string;
+  });
   onMounted(() => {
     //获取路由当前key
     // key.value = useRoute().query.key;
@@ -152,6 +165,7 @@
   }
   .main_show {
     width: 100%;
+    // min-width: 800px;
   }
   .ranks_show {
     // position: fixed;

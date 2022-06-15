@@ -9,11 +9,11 @@
       <div class="comment-status">
         <span class="time">{{ getFormatTime(comment.createTime) }}</span>
         <span class="ml-5 mr-5"><span class="thumbs iconfont icon-xihuan1"></span> {{ comment.commentLikes }} </span>
-        <span class="reply-btn" @click="reply(comment.personId, comment.personName, comment.personId, index, comment.replyId)">回复1</span>
+        <span class="reply-btn" @click="reply(comment.personId, comment.personName, comment.personId, index, comment.replyId, 1)">回复</span>
       </div>
       <reply-list ref="reply_list" v-model:replies="comment.replyList" :postid="comment.personId" @reply="reply" :postindex="index"></reply-list>
       <!-- 回复框显示条件 1.点击回复 2.回复的楼主ID一致 3.回复的是当前贴index一致 -->
-      <replybox v-if="showreply && comment.personId == curReplyId && index == curReplyIndex" :user="curReplyUser" class="ml-10 border-none" :commentId="comment.commentId" :replyType="0"></replybox>
+      <replybox v-if="showreply && comment.personId == curReplyId && index == curReplyIndex" @updateReplyList="updateReplyList" :user="curReplyUser" class="ml-10 border-none" :commentId="comment.commentId"></replybox>
     </div>
   </div>
 </template>
@@ -57,6 +57,7 @@
     console.log('username', username, postid, args[0]);
     // 存储 对回复目标的ID  -- 回复对回复
     useNoteStore().curReply.replygoalId = args[0];
+    useNoteStore().curReply.replyType = args[1];
     showreply.value = false;
     // console.log('postindex', postindex);
     //初始化 清空当前
@@ -70,6 +71,18 @@
     curReplyId.value = postid;
     curReplyIndex.value = postindex;
   }
+  // 更新回复列表
+  const updateReplyList = (reply) => {
+    console.log('reply', reply);
+
+    let commentId = reply.commentId;
+    //找出对应的评论
+    let comment = props.comments.filter((item) => item.commentId == commentId);
+    console.log('对应的评论', comment);
+
+    //加入到回复列表
+    comment[0].replyList.push(reply);
+  };
 </script>
 
 <style lang="less">

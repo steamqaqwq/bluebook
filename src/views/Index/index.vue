@@ -12,12 +12,12 @@
 
     <div class="other-fun">
       <div class="search" ref="search">
-        <Search class="search-1" @click="showSearchList"></Search>
+        <Search class="search-1" @showSearchList="showSearchList"></Search>
         <Transition leave-active-class="animate__animated animate__fadeOut" enter-active-class="animate__animated animate__fadeIn">
-          <div class="searchList" v-show="isShowSearchList">
-            <div class="searchItem" v-for="(item, index) in history || searchList" :key="item.id" :class="{ active: curSearchIndex == index }" @mouseover="curSearchIndex = index" @mouseout="curSearchIndex = -1" @click="searchItemClick(item.content)">
-              {{ item.content }}
-              <span class="absolute iconfont icon-xihuan" style="right: 10%" @click="deleteSearch(item.id)"></span>
+          <div class="searchList" v-show="isShowSearchList" v-if="history">
+            <div class="searchItem" v-for="(item, index) in history" :key="item.index" :class="{ active: curSearchIndex == index }" @mouseover="curSearchIndex = index" @mouseout="curSearchIndex = -1" @click="searchItemClick(item)">
+              {{ item }}
+              <!-- <span class="absolute iconfont icon-xihuan" style="right: 10%" @click="deleteSearch(item.id)"></span> -->
             </div>
           </div>
         </Transition>
@@ -107,7 +107,7 @@
     isShowSearchList.value = true;
     request.get('/search/window').then((res: any) => {
       if (res.code == 200) {
-        history.value = res.history;
+        history.value = res.map.history;
       }
       /**
        * "map": {

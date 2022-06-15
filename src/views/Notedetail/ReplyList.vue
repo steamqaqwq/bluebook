@@ -6,7 +6,7 @@
         <div>
           <span class="comment-author"
             >{{ replycomment.personName || '无名氏' }}
-            <span v-if="replycomment.replyType == 0 && !replycomment.hisId" class="text-xs"
+            <span v-if="replycomment.replyType == 1 && !replycomment.hisId" class="text-xs"
               >&nbsp回复 <a href="#" class="text-blue-400">@{{ getReplyName(replycomment.hisId) }}</a></span
             >:</span
           >
@@ -16,7 +16,7 @@
       <div class="comment-status">
         <span class="time">{{ getFormatTime(replycomment.createTime) }}</span>
         <span class="ml-5 mr-5"><span class="thumbs iconfont icon-xihuan1"></span> {{ replycomment.replyLikes || 55 }} </span>
-        <span class="reply-btn" @click="emit('reply', replycomment.personId, replycomment.personName, postid, postindex, replycomment.replyId)">回复</span>
+        <span class="reply-btn" @click="emit('reply', replycomment.personId, replycomment.personName, postid, postindex, replycomment.replyId, 0)">回复</span>
       </div>
     </div>
     <div class="cursor-pointer text-blue-700" @click="isShowmore = true" v-if="!isShowmore && replies.length - pageStatus.showPageNums > 0">还有{{ replies.length - pageStatus.showPageNums }}条回复 显示更多</div>

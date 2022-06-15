@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
-import {useRouter} from 'vue-router'
+import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import request from '@/utils/request';
+const $router = useRouter()
 export const useNoteStore = defineStore({
   id: 'note', // id必填，且需要唯一
   state: () => {
@@ -12,6 +13,7 @@ export const useNoteStore = defineStore({
         curSearchKey:'', 
         curReply:{
           replygoalId:0,
+          replyType:null
         }
     };
   },
@@ -49,28 +51,35 @@ export const useNoteStore = defineStore({
     });
   }, 
     search(key){
-      // request.get(`/collect/likes?blogId=${blogid}`).then((res:any)=>{
-
-      // })
+      $router.push({
+        path: '/search',
+        query: {
+          key:key
+        }
+      })
     },
     //评论相关
-    async reply(obj,type=0){
+
+    // 对主评论
+    mainReply(obj){
+      let form = new FormData();
+      form.append('blogId',obj.blogId)
+      form.append('commentContent',obj.commentContent)
+      return request({
+        url: '/comment/addComment',
+        method: 'POST',
+        data: form
+      })
+    },
+    // 对回复评论
+     reply(obj,type=0){
       let form = new FormData();
       // 对评论进行回复
       // console.log('relyType',type)
-      // console.log('replydata',obj)
-      if(type==1){
-        form.append('blogId',obj.blogId)
-        form.append('commentContent',obj.commentContent)
-        return request({
-          url: '/comment/addComment',
-          method: 'POST',
-          data: form
-        })
-      }
+      console.log('replydata',obj)
       form.append('commentId',obj.commentId)
       form.append('replyContent',obj.replyContent)
-      form.append('replyType',obj.replyType)
+      form.append('replyType',String(type))
       form.append('replygoalId',obj.replygoalId)
       // 正经回复
       return request({

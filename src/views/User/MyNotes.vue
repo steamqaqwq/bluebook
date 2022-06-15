@@ -12,14 +12,16 @@
 <script setup lang="ts">
   import ShowNotes from '@/components/ShowNotes.vue';
   import { onMounted, ref } from 'vue';
+  import { useUserStore } from '@/store/user';
   import request from '@/utils/request';
   const notesElement = ref();
   const notes = ref();
   let outerwidth = ref<number>();
   onMounted(() => {
+    console.log(111111111);
     outerwidth.value = notesElement.value.clientWidth;
     // alert(outer_width.value);
-    request.get('/person/myblog').then((res: any) => {
+    request.get(`/person/myblog?personId=${useUserStore().curPersonId}`).then((res: any) => {
       console.log(res);
       if (res.code == 200) notes.value = res.blog;
     });

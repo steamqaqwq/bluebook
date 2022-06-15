@@ -11,6 +11,7 @@
   import avatar from '@/components/Avatar.vue';
   import { useNoteStore } from '@/store/note';
   import { useUserStore } from '@/store/user';
+  const emit = defineEmits(['updateReplyList']);
 
   const my_input = ref();
   const input = ref();
@@ -21,7 +22,6 @@
         username: string;
       };
       commentId: string;
-      replyType: any;
     }>(),
     {
       //   placeholder: '回复一条有趣的评论'
@@ -30,10 +30,12 @@
   const reply = async () => {
     let res = await useNoteStore().reply({
       commentId: props.commentId,
-      replyType: props.replyType,
-      replygoalId: useNoteStore().curReply.replygoalId, //replyId
+      replyType: useNoteStore().curReply.replyType,
+      replygoalId: useNoteStore().curReply.replygoalId || -1, //replyId
       replyContent: my_input.value
     });
+    console.log('replyres', res);
+    emit('updateReplyList', (res as any).reply);
   };
   nextTick(() => {
     input.value.focus();

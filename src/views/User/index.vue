@@ -26,13 +26,13 @@
       <div class="center">
         <div class="center_nav">
           <div class="nav_item xiawu text-xl" :class="{ active: index == curIndex }" v-for="(nav, index) in navs" :key="index" @click="changeNav(index)">{{ nav }}</div>
-          <span class="iconfont icon-setting text-2xl text-blue-400 ml-auto cursor-pointer" @click="changeNav('setting')"></span>
+          <span v-if="isMySpace" class="iconfont icon-setting text-2xl text-blue-400 ml-auto cursor-pointer" @click="changeNav('setting')"></span>
         </div>
         <div class="center_main">
           <!-- 缓存组件 -->
-          <keep-alive>
-            <component :is="curNav"></component>
-          </keep-alive>
+          <!-- <keep-alive> -->
+          <component :is="curNav"></component>
+          <!-- </keep-alive> -->
         </div>
       </div>
       <div class="right">
@@ -68,12 +68,13 @@
   import Header from '@/components/header.vue';
   import request from '@/utils/request';
   import { ref, reactive, onMounted, computed, watch, provide } from 'vue';
-  import { useRoute } from 'vue-router';
+  import { useRoute, onBeforeRouteUpdate } from 'vue-router';
   import Avatar from '@/components/avatar.vue';
   import MyNotes from './MyNotes.vue';
   import MyFavs from './MyFavs.vue';
   import MyThumbs from './MyThumbs.vue';
   import MySetting from './MySetting.vue';
+  import { useUserStore } from '@/store/user';
   import MySameFollow from './MySameFollow.vue';
   import AttentionFans from './AttentionFans.vue';
   import Calendar from '@/components/SignCalendar.vue';
@@ -85,7 +86,15 @@
   const map = {
     sex: 0
   };
-
+  const isMySpace = computed(() => {
+    return useUserStore().curPersonId == useUserStore().userid;
+  });
+  //监听路由变化 修改当前索引
+  onBeforeRouteUpdate((to) => {
+    console.log('to', to);
+    useUserStore().curPersonId = to.params.userid as any;
+    window.location.reload();
+  });
   const statuslist = ref<any>([]);
   const noteid = useRoute().params.id;
   interface userMsg {
@@ -122,34 +131,8 @@
   });
   provide('usermsg', userMsg);
   // provide('userid', userid);
-  onMounted(() => {
-    function transformData(object) {
-      let newObj = {};
-      object.forEach((key) => {});
-    }
 
-    request
-      .get('/person/information', {
-        params: { personId: useRoute().params.userid }
-      })
-      .then((res: any) => {
-        if (res.code != 200) return;
-        // console.log('myMsg', res);
-        userMsg.value = res.map;
-        // 关注
-        statusData.value[0].nums = res.map.followSum || 0;
-        // 粉丝
-        statusData.value[1].nums = res.map.fansSum || 0;
-      });
-    request.get('/statistics/bloglikecollect').then((res: any) => {
-      // 获赞与收藏
-      // res [1,1,0] 收藏点赞总数 收藏 点赞
-      statusData.value[2].nums = res.list[0];
-      statuslist.value = res.list;
-    });
-  });
-
-  const navs = ['笔记', '收藏', '共同关注'];
+  const navs = ref(['笔记', '收藏', '共同关注']);
   // 当前显示的组件
   // const curNav = ref(0);
   // 当前导航索引
@@ -205,6 +188,36 @@
     } else {
       translateV.value = '110%';
     }
+  });
+
+  onMounted(() => {
+    function transformData(object) {
+      let newObj = {};
+      object.forEach((key) => {});
+    }
+    if (isMySpace.value) {
+      navs.value.pop();
+    }
+    useUserStore().curPersonId = useRoute().params.userid as any;
+    request
+      .get('/person/information', {
+        params: { personId: useRoute().params.userid }
+      })
+      .then((res: any) => {
+        if (res.code != 200) return;
+        // console.log('myMsg', res);
+        userMsg.value = res.map;
+        // 关注
+        statusData.value[0].nums = res.map.followSum || 0;
+        // 粉丝
+        statusData.value[1].nums = res.map.fansSum || 0;
+      });
+    request.get('/statistics/bloglikecollect').then((res: any) => {
+      // 获赞与收藏
+      // res [1,1,0] 收藏点赞总数 收藏 点赞
+      statusData.value[2].nums = res.list[0];
+      statuslist.value = res.list;
+    });
   });
 </script>
 

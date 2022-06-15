@@ -27,7 +27,7 @@
           <el-button type="primary" @click="reply">评论</el-button>
         </div>
         <div>
-          <Comments :comments="comments" v-if="comments.length"></Comments>
+          <Comments v-model:comments="comments" v-if="comments.length"></Comments>
         </div>
       </div>
     </div>
@@ -108,13 +108,10 @@
   function isActive() {}
   const $router = useRouter();
   const reply = async () => {
-    let res2: any = await useNoteStore().reply(
-      {
-        blogId: blogid,
-        commentContent: my_input.value
-      },
-      1
-    );
+    let res2: any = await useNoteStore().mainReply({
+      blogId: blogid,
+      commentContent: my_input.value
+    });
     comments.value.unshift(res2.comment);
     console.log('comments', comments.value);
   };
