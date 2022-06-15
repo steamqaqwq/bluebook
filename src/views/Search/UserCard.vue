@@ -1,31 +1,31 @@
 <template>
-  <div class="usercard">
+  <div class="usercard" v-if="item">
     <div class="user_avatar">
       <div class="avatar mr-5">
-        <img :src="item.avatar_src" alt="" />
+        <img :src="item.avatar" alt="" />
       </div>
-      <div class="username text-xl text-black">{{ item.username }}</div>
+      <div class="username text-xl text-black">{{ item.personName }}</div>
       <div class="follow_btn"><button>关注</button></div>
     </div>
     <div class="user_desc">
-      <p class="text-ms">小蓝书号：{{ item.userid }}</p>
-      <p class="text-ms">{{ item.notes }}笔记 {{ item.follows }}粉丝</p>
-      <p class="user_say text-ms text-gray-400 truncate max-w-sm">{{ item.user_desc ? item.user_desc : '此用户没有填写简介' }}</p>
+      <p class="text-ms">小蓝书号：{{ item.identNumber || 123123 }}</p>
+      <p class="text-ms">{{ item.blogSum }}笔记 {{ item.fansSum }}粉丝</p>
+      <p class="user_say text-ms text-gray-400 truncate max-w-sm">{{ item.briefInfor ? item.briefInfor : '此用户没有填写简介' }}</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  interface usermsg {
-    userid: number | string;
-    notes: number;
-    follows: number;
-    avatar_src: string;
-    user_desc: string;
-    username: string;
-  }
+  // interface usermsg {
+  //   userid: number | string;
+  //   notes: number;
+  //   follows: number;
+  //   avatar: string;
+  //   user_desc: string;
+  //   username: string;
+  // }
   const props = defineProps<{
-    item: usermsg;
+    item: any;
   }>();
 </script>
 

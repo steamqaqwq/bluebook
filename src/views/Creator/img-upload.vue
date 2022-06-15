@@ -295,13 +295,13 @@
     request({
       url: '/upload/uploadBlog',
       method: 'POST',
-      data: form,
-      onUploadProgress: (progressEvent) => {
-        // progressEvent.loaded:已上传文件大小
-        // progressEvent.total:被上传文件的总大小
+      data: form
+      // onUploadProgress: (progressEvent) => {
+      //   // progressEvent.loaded:已上传文件大小
+      //   // progressEvent.total:被上传文件的总大小
 
-        progressConfig.progressPercent = Number((progressEvent.loaded / progressEvent.total).toFixed(2));
-      }
+      //   progressConfig.progressPercent = Number((progressEvent.loaded / progressEvent.total).toFixed(2));
+      // }
     }).then((res: any) => {
       if (res.code == 200) {
         progressConfig.progressPercent = 100;

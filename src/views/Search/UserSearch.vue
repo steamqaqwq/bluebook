@@ -1,19 +1,26 @@
 <template>
-  <div class="users_box">
-    <div class="user_card" v-for="user in users" :key="(user as any).userid">
+  <div class="users_box" v-if="users && users.length">
+    <div class="user_card" v-for="user in users" :key="(user as any).personId">
       <user-card :item="user"></user-card>
     </div>
   </div>
+  <div v-else>没有相关用户</div>
 </template>
 
 <script setup lang="ts">
   import UserCard from './UserCard.vue';
-  import request from '@/utils/requestMock';
+  import requestMock from '@/utils/requestMock';
+  import request from '@/utils/request';
+  import { useNoteStore } from '@/store/note';
   import { onMounted, ref } from 'vue';
   const users = ref([]);
   onMounted(() => {
-    request.get('/search/users').then((res: any) => {
-      users.value = res.users;
+    // requestMock.get('/search/users').then((res: any) => {
+    //   users.value = res.users;
+    //   // console.log('users', users);
+    // });
+    request.get(`/search/personSearch?tagName=${useNoteStore().curSearchKey}`).then((res: any) => {
+      users.value = res.personList.personList;
       // console.log('users', users);
     });
   });

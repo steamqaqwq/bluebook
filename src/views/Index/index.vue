@@ -12,7 +12,7 @@
 
     <div class="other-fun">
       <div class="search" ref="search">
-        <Search class="search-1" @showSearchList="showSearchList" v-if="isShowSearch()"></Search>
+        <Search class="search-1" @showSearchList="showSearchList" v-if="isShowSearch"></Search>
         <Transition leave-active-class="animate__animated animate__fadeOut" enter-active-class="animate__animated animate__fadeIn">
           <div class="searchList" v-show="isShowSearchList" v-if="history">
             <div class="searchItem" v-for="(item, index) in history" :key="item.index" :class="{ active: curSearchIndex == index }" @mouseover="curSearchIndex = index" @mouseout="curSearchIndex = -1" @click="searchItemClick(item)">
@@ -28,7 +28,7 @@
       <div class="usermsg">
         <router-link to="/search" class="search-2 mr-5"><span @click="expandSearch" class="iconfont icon-search relative hover:text-indigo-500 text-2xl"></span></router-link>
         <div class="avatar" @click="jumpNewWindow('my')">
-          <img :src="$store.avatar" alt="" @error="errImage($event)" />
+          <avatar :src="$store.avatar" width="38px" height="38px"></avatar>
         </div>
         <div class="username">{{ $store.username }}</div>
       </div>
@@ -52,6 +52,7 @@
   import { useRouter, onBeforeRouteUpdate, useRoute } from 'vue-router';
   import { Plus } from '@element-plus/icons-vue';
   import { getToken } from '@/utils/auth';
+  import avatar from '@/components/avatar.vue';
   import requestMock from '@/utils/requestMock';
   import request from '@/utils/request';
   import { useUserStore } from '@/store/user';
@@ -86,12 +87,10 @@
     hover.value = false;
     curIndex.value = initIndex.value;
   };
-  const isShowSearch = () => {
-    console.log('useRoute', useRoute());
-    if (useRoute().path.includes('search')) {
-      return false;
-    }
-  };
+  const isShowSearch = computed(() => {
+    console.log('path', useRoute().path.includes('search'));
+    return !useRoute().path.includes('search');
+  });
   const errImage = (e) => {
     // console.log('errsrc', src);
     e.path[0].src = '/public/defaultAvatar.jpg';
