@@ -3,7 +3,7 @@
     <div class="title">上传视频</div>
     <div class="content">
       <div class="upload_video">
-        <el-upload class="upload-demo" :limit="1" :show-file-list="true" drag action="#" :before-upload="handleBeforeUpload" :http-request="uploadVideo" :file-list="fileList">
+        <el-upload class="upload-demo" :limit="1" :show-file-list="true" drag action="#" :before-upload="handleBeforeUpload" :http-request="(uploadVideo as any)" :file-list="fileList">
           <el-icon class="el-icon--upload"><upload-filled /></el-icon>
           <div class="el-upload__text">拖拽视频或<em>点击上传</em></div>
           <!-- <template #tip>
@@ -184,7 +184,7 @@
       form.append('video', item['raw']!);
     });
     form.append('type', 'video');
-    return request({
+    request({
       url: '/upload/video',
       method: 'POST',
       data: form,

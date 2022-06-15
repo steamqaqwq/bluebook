@@ -8,7 +8,7 @@
             <!-- <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" style="float: left" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :auto-upload="false">
           <el-icon><Plus /></el-icon>
         </el-upload> -->
-            <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" style="float: left" :before-upload="handleBeforeUpload" :http-request="uploadImage" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :on-exceed="exceedTips">
+            <el-upload action="#" drag multiple list-type="picture-card" ref="uploadRef" style="float: left" :before-upload="handleBeforeUpload" :http-request="(uploadImage as any)" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :file-list="fileList" :limit="9" :on-exceed="exceedTips">
               <el-icon><Plus /></el-icon>
             </el-upload>
             <el-dialog v-model="dialogVisible">
@@ -249,7 +249,7 @@
     fileList.value.forEach((item) => {
       form.append('files', item['raw']!);
     });
-    return request({
+    request({
       url: '/upload/image',
       method: 'POST',
       headers: {},
