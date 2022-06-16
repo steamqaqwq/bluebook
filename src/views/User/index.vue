@@ -44,7 +44,7 @@
           <img src="@/assets/images/抗疫精神.jpg" alt="" />
         </div>
         <div class="calendar">
-          <Calendar></Calendar>
+          <!-- <Calendar></Calendar> -->
         </div>
       </div>
     </div>
