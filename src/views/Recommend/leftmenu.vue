@@ -28,6 +28,7 @@
     overflow: hidden;
     top: 10%;
     z-index: 100;
+    user-select: none;
     // padding:10px;
     :deep(.el-menu) {
       border-right: none;

@@ -1,6 +1,7 @@
 <template>
   <div class="search">
     <input class="search_input" v-if="isShowInput" :style="{ width: width }" :class="{}" placeholder="搜你想搜" type="text" v-model="search_v" @focus="emit('showSearchList')" />
+    <!-- <span class="close" @click="clean">x</span> -->
     <span class="iconfont icon-search" @click="toSearch"></span>
   </div>
 </template>
@@ -22,13 +23,17 @@
     }
   );
   const $router = useRouter();
+  function clean() {
+    useNoteStore().curSearchKey = '';
+    search_v.value = '';
+  }
   onMounted(() => {
     // console.log('props.key', props.key);
     if (search_v.value) {
       toSearch();
     }
   });
-  const search_v = ref(props.key || useNoteStore().curSearchKey || '');
+  const search_v = ref(useNoteStore().curSearchKey);
   // const res = ref('')
   const toSearch = () => {
     useNoteStore().curSearchKey = search_v.value;
@@ -94,7 +99,8 @@
       }
     }
 
-    .icon-search {
+    .icon-search,
+    .close {
       position: absolute;
       right: 10px;
       top: 50%;
@@ -104,6 +110,10 @@
       &:hover {
         color: @themecolor2;
       }
+    }
+    .close {
+      font-size: 24px;
+      right: 30px !important;
     }
   }
 </style>

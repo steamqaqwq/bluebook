@@ -11,18 +11,28 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, nextTick } from 'vue';
+  import { ref, onMounted, nextTick, toRaw } from 'vue';
   import LeftNav from './leftmenu.vue';
   import mainShow from './mainshow.vue';
   import ShowNotes from '@/components/ShowNotes.vue';
   import request from '@/utils/request';
-
+  import { useUserStore } from '@/store/user';
   // 获取外盒子
   let outerwidth = ref<number>();
   const notesElement = ref();
   const timer = ref();
   const notes = ref();
+  const noteBackup = ref();
   onMounted(() => {
+    //获取个人信息
+    request.get('/person/information').then((res: any) => {
+      if (res.code == 200) console.log('personmsg', res);
+      let data = res.map;
+      let username = data.personName || 'XXu';
+      let avatar = data.avatar || '@/assets/images/defaultAvatar.jpg';
+      let id = data.personId;
+      useUserStore().updateUser(username, avatar, id);
+    });
     outerwidth.value = notesElement.value.clientWidth;
     // alert(outer_width.value);
     //简单的防抖函数
@@ -41,24 +51,39 @@
       debounce(() => {
         nextTick(() => {
           // console.log('页面变化！！', notesElement.value);
-          if (notesElement.value.clientWidth) {
-            outerwidth.value = notesElement.value.clientWidth;
+          if (notesElement.value) {
+            if (notesElement.value.clientWidth) {
+              outerwidth.value = notesElement.value.clientWidth;
+            }
           }
         });
       }, 300)
     );
-
+    requestData();
+  });
+  function requestData() {
     request.get('/blog/blogRecommend').then((res: any) => {
       console.log('blogs', res);
       // 去除无效图片链接
       let list = res.list.filter((item) => item.blogImage.includes('http'));
       console.log('list', list);
       notes.value = list;
+      noteBackup.value = list;
     });
-  });
+  }
   function updateData(nav) {
-    // let newlist = notes.value.filter(item=>{
-    // })
+    console.log('nav', nav);
+    if (nav == '视频') {
+      let newlist = toRaw(noteBackup.value).filter((item) => {
+        return item.videoOrImage == 1;
+      });
+      console.log('newlist', newlist);
+      notes.value = newlist;
+    } else if (nav == '推荐') {
+      requestData();
+    } else {
+      notes.value = [];
+    }
   }
 </script>
 

@@ -2,7 +2,8 @@
   <div class="usercard" v-if="item">
     <div class="user_avatar">
       <div class="avatar mr-5">
-        <img :src="item.avatar" alt="" />
+        <!-- <img :src="item.avatar" alt="" /> -->
+        <avatar :src="item.avatar"></avatar>
       </div>
       <div class="username text-xl text-black">{{ item.personName }}</div>
       <div class="follow_btn"><button>关注</button></div>
@@ -24,6 +25,7 @@
   //   user_desc: string;
   //   username: string;
   // }
+  import avatar from '@/components/avatar.vue';
   const props = defineProps<{
     item: any;
   }>();

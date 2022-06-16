@@ -48,7 +48,7 @@ export const useNoteStore = defineStore({
           type: 'success'
         });
         blogdata.collectIs = res.isCollects;
-        blogdata.collectSum =res.collectSum
+        blogdata.collectSum +=res.collectSum
       }
     });
   }, 

@@ -177,7 +177,7 @@
         }
       }).then((res: any) => {
         // 弹窗
-        formdata.password = res.verify;
+        // formdata.password = res.verify;
       });
     } else {
       ElMessage({

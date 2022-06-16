@@ -34,6 +34,7 @@ declare module 'vue' {
     Header: typeof import('./src/components/header.vue')['default']
     IconFont: typeof import('./src/components/iconFont.vue')['default']
     Newcomp: typeof import('./src/components/newcomp.vue')['default']
+    Nonotes: typeof import('./src/components/nonotes.vue')['default']
     PublishBtn: typeof import('./src/components/PublishBtn.vue')['default']
     Search: typeof import('./src/components/search.vue')['default']
     ShowNotes: typeof import('./src/components/ShowNotes.vue')['default']

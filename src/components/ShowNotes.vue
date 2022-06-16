@@ -73,6 +73,9 @@
       </template>
     </div>
   </div>
+  <div v-else>
+    <nonotes></nonotes>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -82,7 +85,7 @@
   import useColumns from '@/hooks/useColumns';
   import Avatar from '@/components/avatar.vue';
   import { throttle, debounce } from '@/utils/debounce';
-
+  import nonotes from '@/components/nonotes.vue';
   const props = withDefaults(
     defineProps<{
       maxColumns: number;
@@ -112,7 +115,6 @@
   onMounted(() => {
     // 创建交叉观测者
     let preRatio = -1;
-
     const io = new IntersectionObserver((config) => {
       // intersectionRatio 触发观测者显示的比例
       // io.disconnect() 讲该观测者失效
@@ -184,6 +186,13 @@
     };
 
     // 监听列数变化 笔记变化 再分列
+    watch(
+      () => props.notesListProp,
+      () => {
+        console.log('watch了个寂寞');
+        notes.value = props.notesListProp;
+      }
+    );
     watch(initColumns, (old, cur) => {
       splitNotes(notes.value);
     });
@@ -210,7 +219,7 @@
         console.log('lastchild', curlastchild);
         (curlastchild as HTMLElement).style.color = 'purple';
         // return lastchild;
-        lastchild.value = lastchild;
+        lastchild.value = curlastchild;
       });
     };
   });
@@ -250,8 +259,8 @@
 <style lang="less" scoped>
   .main_box {
     display: flex;
-    // justify-content: space-evenly;
-    justify-content: flex-start;
+    justify-content: space-evenly;
+    // justify-content: flex-start;
     width: 100%;
     .column {
       // flex: 1;
