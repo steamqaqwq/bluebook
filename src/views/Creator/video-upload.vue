@@ -114,9 +114,9 @@
   onMounted(() => {
     textArea.value = document.querySelector('textArea');
     let ip = (window as any).returnCitySN.cip;
-    // ak  F4oiQviHpdsR3rIuEafCWmPInZgIok4P
+    // ak  yourAk
     // ip 183.236.187.196
-    request.get(`http://localhost:3000/baiduapi/location/ip?ak=F4oiQviHpdsR3rIuEafCWmPInZgIok4P&ip=${ip}&coor=bd09ll`).then((res: any) => {
+    request.get(`http://localhost:3000/baiduapi/location/ip?ak=yourAk&ip=${ip}&coor=bd09ll`).then((res: any) => {
       // console.log('ip-res', res);
       options.value.push({ value: res.content.address_detail.city, label: res.content.address_detail.city });
       formdata.x = res.content.point.x;

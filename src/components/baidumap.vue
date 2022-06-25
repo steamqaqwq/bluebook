@@ -12,9 +12,9 @@
     // console.log((window as any).returnCitySN);
     // 请求获取ip
     let ip = (window as any).returnCitySN.cip;
-    // ak  F4oiQviHpdsR3rIuEafCWmPInZgIok4P
+    // ak  yourAk
     // ip 183.236.187.196
-    request.get(`http://localhost:3000/baiduapi/location/ip?ak=F4oiQviHpdsR3rIuEafCWmPInZgIok4P&ip=${ip}&coor=bd09ll`).then((res) => {
+    request.get(`http://localhost:3000/baiduapi/location/ip?ak=yourAk&ip=${ip}&coor=bd09ll`).then((res) => {
       console.log('ip-res', res);
     });
     // var Ip = returnCitySN['cip'];

@@ -5,8 +5,6 @@
       <div class="left">
         <div class="user_avatar_outer">
           <div class="user_avatar">
-            <!-- <img v-if="userMsg.avatar" :src="userMsg.avatar" alt="" />
-            <img v-else src="@/assets/images/defaultAvatar.jpg" alt="" /> -->
             <Avatar width="80px" height="80px" :src="userMsg.avatar"></Avatar>
           </div>
         </div>
@@ -44,7 +42,7 @@
           <img src="@/assets/images/抗疫精神.jpg" alt="" />
         </div>
         <div class="calendar">
-          <!-- <Calendar></Calendar> -->
+          <Calendar></Calendar>
         </div>
       </div>
     </div>
@@ -191,10 +189,6 @@
   });
 
   onMounted(() => {
-    function transformData(object) {
-      let newObj = {};
-      object.forEach((key) => {});
-    }
     if (isMySpace.value) {
       navs.value.pop();
     }
@@ -217,6 +211,10 @@
       // res [1,1,0] 收藏点赞总数 收藏 点赞
       statusData.value[2].nums = res.list[0];
       statuslist.value = res.list;
+    });
+
+    request.get('/sign/showSign').then((res: any) => {
+      let monthSignArray = res.array;
     });
   });
 </script>

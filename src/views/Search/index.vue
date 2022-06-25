@@ -44,7 +44,7 @@
   import UserSearch from './UserSearch.vue';
   import Rank from './Rank.vue';
   import request from '@/utils/request';
-  import { useRoute, onBeforeRouteUpdate } from 'vue-router';
+  import { useRoute, onBeforeRouteUpdate, onBeforeRouteLeave } from 'vue-router';
   import { useNoteStore } from '@/store/note';
   import { ref, computed, onMounted } from 'vue';
   // import {}
@@ -61,8 +61,15 @@
     console.log('getData', res);
   };
   onBeforeRouteUpdate((to) => {
-    // console.log('to', to.query);
+    console.log('to', to.query);
     key.value = to.query.key as string;
+    // location.reload();
+  });
+
+  // !!!十分重要，可以跳轉路由了
+  onBeforeRouteLeave((to) => {
+    useNoteStore().curSearchKey = '';
+    console.log('leave', to);
   });
   onMounted(() => {
     //获取路由当前key

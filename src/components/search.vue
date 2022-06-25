@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-    <input class="search_input" v-if="isShowInput" :style="{ width: width }" :class="{}" placeholder="搜你想搜" type="text" v-model="search_v" @focus="emit('showSearchList')" />
+    <input class="search_input" v-if="isShowInput" :style="{ width: width }" :class="{}" placeholder="搜你想搜" type="text" v-model="search_v" @focus="emit('showSearchList')" @keydown.enter="toSearch" />
     <!-- <span class="close" @click="clean">x</span> -->
     <span class="iconfont icon-search" @click="toSearch"></span>
   </div>

@@ -6,7 +6,7 @@ export function getToken() {
 }
 
 export function setToken(token:string) {
-  return Cookies.set(TokenKey, token)  //献祭了
+  return Cookies.set(TokenKey, token, { expires: 10 })  //献祭了
 
 }
 

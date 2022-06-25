@@ -1,38 +1,6 @@
 <template>
   <div class="main_box" v-if="notesList.length">
     <div class="column" v-for="(notes, index) in notesList" :key="index">
-      <!-- 假数据 -->
-      <!-- <template v-for="note in notes" :key="note.id">
-        <router-link
-          :to="{
-            name: 'notedetail',
-            params: {
-              id: note.id
-            }
-          }"
-        >
-          <div class="note">
-            <div class="note_cover" :class="{ animation: isanimate }">
-              <img src="/public/imgLoading.png" @load="loadImage(note.cover, $event)" @error="" @alt="" />
-            </div>
-            <div class="video_icon" v-show="note.isVideo"><span class="iconfont icon-videofill text-xl text-white"></span></div>
-            <div class="note_title">{{ note.title }}</div>
-            <div class="note_usermsg">
-              <div class="useravatar">
-                <img :src="note.avatar" alt="" />
-              </div>
-              <div class="username text-sm text-gray-400">{{ note.username }}</div>
-              <div class="fav">
-                <div class="icon">
-                  <span class="iconfont icon-xihuan1"></span>
-                </div>
-                <div class="favnums text-xs">{{ note.favs }}</div>
-              </div>
-            </div>
-          </div>
-        </router-link>
-      </template> -->
-
       <!-- 真实数据 -->
       <template v-for="note in notes" :key="note['blogId']">
         <router-link
@@ -125,6 +93,7 @@
         preRatio = config[0].intersectionRatio;
         io.unobserve(lastchild.value!);
         console.log(111);
+        // 请求更多列表元素
         requestMock('/notes/getnewnotes')
           .then((res: any) => {
             console.log(notes.value);

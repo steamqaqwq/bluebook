@@ -14,7 +14,7 @@
       <div class="search" ref="search">
         <Search class="search-1" @showSearchList="showSearchList" v-if="isShowSearch"></Search>
         <Transition leave-active-class="animate__animated animate__fadeOut" enter-active-class="animate__animated animate__fadeIn">
-          <div class="searchList" v-show="isShowSearchList" v-if="history">
+          <div class="searchList" v-show="isShowSearchList" v-if="history.length">
             <div class="searchItem" v-for="(item, index) in history" :key="item.index" :class="{ active: curSearchIndex == index }" @mouseover="curSearchIndex = index" @mouseout="curSearchIndex = -1" @click="searchItemClick(item)">
               {{ item }}
               <!-- <span class="absolute iconfont icon-xihuan" style="right: 10%" @click="deleteSearch(item.id)"></span> -->
@@ -189,9 +189,9 @@
       // useUserStore().updateUser(username, avatar, id);
       // 获取IP地址信息 修改navList信息
       let ip = (window as any).returnCitySN.cip;
-      // ak  F4oiQviHpdsR3rIuEafCWmPInZgIok4P
+      // ak  yourAk
       // ip 183.236.187.196
-      fetch(`http://localhost:3000/baiduapi/location/ip?ak=F4oiQviHpdsR3rIuEafCWmPInZgIok4P&ip=${ip}&coor=bd09ll`, {
+      fetch(`http://localhost:3000/baiduapi/location/ip?ak=yourAk&ip=${ip}&coor=bd09ll`, {
         method: 'GET'
       })
         .then((res: any) => res.json())
@@ -202,16 +202,6 @@
           navList.value[2].title = city;
         });
     });
-    // 获取个人资料--真
-    // request.get('/person/information').then((res: any) => {
-    //   if (res.code == 200) console.log('personmsg', res);
-    //   let data = res.map;
-    //   let username = data.personName || 'XXu';
-    //   let avatar = data.avatar || '@/assets/images/defaultAvatar.jpg';
-    //   let id = data.personId;
-    //   useUserStore().updateUser(username, avatar, id);
-    // });
-    // 获取搜索历史记录
   });
 </script>
 

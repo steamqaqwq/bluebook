@@ -15,9 +15,9 @@ export default  function (){
     })
     onMounted(async ()=>{
         let ip = (window as any).returnCitySN.cip;
-        // ak  F4oiQviHpdsR3rIuEafCWmPInZgIok4P
+        // ak  yourAk
         // ip 183.236.187.196
-        let res1 = await fetch(`http://localhost:3000/baiduapi/location/ip?ak=F4oiQviHpdsR3rIuEafCWmPInZgIok4P&ip=${ip}&coor=bd09ll`, {
+        let res1 = await fetch(`http://localhost:3000/baiduapi/location/ip?ak=yourAk&ip=${ip}&coor=bd09ll`, {
                 method: 'GET'
               })
         let res =  await res1.json()
