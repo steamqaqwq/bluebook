@@ -6,7 +6,7 @@
 
 ## 部分展示
 
-![1](https://mypic-bucket.oss-cn-hangzhou.aliyuncs.com/202208261622104.png)
+![1](https://mypic-bucket.oss-cn-hangzhou.aliyuncs.com/202208261701488.gif)
 
 ![2](https://mypic-bucket.oss-cn-hangzhou.aliyuncs.com/202208261622105.png)
 
