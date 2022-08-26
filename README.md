@@ -1,14 +1,21 @@
-# Vue 3 + Typescript + Vite
+# BlueBook
 
-This template should help get you started developing with Vue 3 and Typescript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-## 项目运行/项目拉取后
-npm install
-###启动项目
-npm run dev
-## Recommended IDE Setup
+### 简介
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+一款社交类的软件，专注年轻人的笔记短视频社区，用户可以选择歌曲，配以短视频或图片，形成自己的作品，通过它你可以分享你的生活，同时也可以在这里认识到更多朋友，了解各种奇闻趣事。
 
-## Type Support For `.vue` Imports in TS
+## 部分展示
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's `.vue` type support plugin by running `Volar: Switch TS Plugin on/off` from VSCode command palette.
+![1](https://mypic-bucket.oss-cn-hangzhou.aliyuncs.com/202208261622104.png)
+
+![2](https://mypic-bucket.oss-cn-hangzhou.aliyuncs.com/202208261622105.png)
+
+![3](https://mypic-bucket.oss-cn-hangzhou.aliyuncs.com/202208261622106.png)
+
+![4](https://mypic-bucket.oss-cn-hangzhou.aliyuncs.com/202208261622107.png)
+
+### 其它说明
+
+- 技术栈：springboot + Vue
+
+- 本人负责前端
